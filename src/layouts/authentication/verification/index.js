@@ -298,12 +298,12 @@ const Verification = () => {
                   fontSize: "20px",
                   color: "#0f0f0",
                   fontWeight: "600",
-                  caretColor: "#005A9C",
-                  borderColor: "#005A9C",
+                  caretColor: "#1A5D28",
+                  borderColor: "#1A5D28",
                   maxWidth: 50,
                 }}
                 focusStyle={{
-                  border: "1px solid #CFD3DB",
+                  border: "2px solid #1A5D28",
                   outline: "none",
                 }}
               />
