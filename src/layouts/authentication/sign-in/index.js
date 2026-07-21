@@ -247,8 +247,8 @@ import { useState, useContext, useEffect } from "react";
 import { Box, Card, Container, Typography, IconButton } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useSelector, useDispatch } from "react-redux";
-import imge from "../../../assets/images/NewBGImage.jpg";
-import Textlogo from "../../../assets/images/Textlogo.png";
+import bgArc from "../../../assets/images/bg-arc.png";
+import nutrinutsLogo from "../../../assets/images/nutrinuts-logo.png";
 import LoadingButton from "@mui/lab/LoadingButton";
 import LoginIcon from "@mui/icons-material/Login";
 import FingerprintIcon from "@mui/icons-material/Fingerprint";
@@ -257,7 +257,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { checkBiometricAvailability, biometricLogin } from "../../../action/Biometric";
-import MainLogo from "../../../assets/images/main-logo.png";
 
 const SignIn = () => {
   const [serviceNo, setserviceNo] = useState("");
@@ -376,11 +375,11 @@ const SignIn = () => {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        backgroundColor: "#F8F9FA",
-        backgroundImage: `url(${imge})`,
+        backgroundColor: "#ffffff",
+        backgroundImage: `url(${bgArc})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
+        backgroundPosition: "top center",
       }}
     >
       
@@ -391,8 +390,10 @@ const SignIn = () => {
           width: "50%",
           maxHeight: { xs: 233, md: 167 },
           maxWidth: { xs: 350, md: 250 },
+          objectFit: "contain",
         }}
-        src={Textlogo}
+        src={nutrinutsLogo}
+        alt="Nutrinuts COCO"
       />
       <Typography
         variant="h5"
@@ -405,16 +406,16 @@ const SignIn = () => {
       <Card sx={{ borderRadius: 5, boxShadow: 8 }}>
         
         <Box p={3} textAlign="center">
-              <Box
-      component="img"
-      src={MainLogo}
-      alt="Main Logo"
-      sx={{
-        width:200,
-        height: 50,
-        objectFit: "contain",
-      }}
-    />
+          <Box
+            component="img"
+            src={nutrinutsLogo}
+            alt="Nutrinuts COCO Logo"
+            sx={{
+              width: 200,
+              height: 70,
+              objectFit: "contain",
+            }}
+          />
           <Typography variant="h4" fontWeight={600} sx={{ my: 2 }}>
             Sign in
           </Typography>
@@ -479,7 +480,10 @@ const SignIn = () => {
                 sx={{
                   width: "90%",
                   maxWidth: { xs: 350, md: 250 },
-                  backgroundColor: "#0049AF",
+                  backgroundColor: "#1A5D28",
+                  "&:hover": {
+                    backgroundColor: "#13461E",
+                  },
                   textTransform: "capitalize",
                   borderRadius: 3,
                 }}
@@ -495,9 +499,9 @@ const SignIn = () => {
                   onClick={handleBiometricLogin}
                   disabled={loading || biometricLoading}
                   sx={{
-                    color: "#0049AF",
+                    color: "#1A5D28",
                     "&:hover": {
-                      backgroundColor: "rgba(0, 73, 175, 0.08)",
+                      backgroundColor: "rgba(26, 93, 40, 0.08)",
                     },
                   }}
                 >

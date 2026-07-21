@@ -171,8 +171,8 @@
 import { useState, useEffect } from "react";
 import { Box, Card, Container, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
-import imge from "../../../assets/images/NewBGImage.jpg";
-import Textlogo from "../../../assets/images/Textlogo.png";
+import bgArc from "../../../assets/images/bg-arc.png";
+import nutrinutsLogo from "../../../assets/images/nutrinuts-logo.png";
 import LoadingButton from "@mui/lab/LoadingButton";
 import OtpInput from "react-otp-input";
 import { useAuth } from "../../../context/AuthContext";
@@ -189,7 +189,9 @@ const Verification = () => {
 
   useEffect(() => {
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-    metaThemeColor.setAttribute("content", "#004AAD");
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute("content", "#1A5D28");
+    }
   }, []);
 
   async function handleClick() {
@@ -231,11 +233,11 @@ const Verification = () => {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        backgroundColor: "#F8F9FA",
-        backgroundImage: `url(${imge})`,
+        backgroundColor: "#ffffff",
+        backgroundImage: `url(${bgArc})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
+        backgroundPosition: "top center",
       }}
     >
       <Box
@@ -245,8 +247,10 @@ const Verification = () => {
           width: "50%",
           maxHeight: { xs: 233, md: 167 },
           maxWidth: { xs: 350, md: 250 },
+          objectFit: "contain",
         }}
-        src={Textlogo}
+        src={nutrinutsLogo}
+        alt="Nutrinuts COCO"
       />
       <Typography
         variant="h5"
@@ -313,7 +317,10 @@ const Verification = () => {
                 sx={{
                   width: "90%",
                   maxWidth: { xs: 350, md: 250 },
-                  backgroundColor: "#0049AF",
+                  backgroundColor: "#1A5D28",
+                  "&:hover": {
+                    backgroundColor: "#13461E",
+                  },
                   textTransform: "capitalize",
                   borderRadius: 3,
                 }}
