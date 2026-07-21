@@ -147,13 +147,13 @@ const createBiometricCredential = async () => {
   const publicKeyCredentialCreationOptions = {
     challenge: challenge,
     rp: {
-      name: "BizTrack",
+      name: "COCO",
       id: window.location.hostname,
     },
     user: {
       id: userId,
-      name: "biztrack-user",
-      displayName: "BizTrack User",
+      name: "coco-user",
+      displayName: "COCO User",
     },
     pubKeyCredParams: [
       { alg: -7, type: "public-key" }, // ES256

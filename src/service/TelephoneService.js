@@ -1,14 +1,7 @@
 import axios from "axios";
 
 const GetTelephoneCard = async () => {
-  let config = {
-    method: "post",
-    url: "PhoneDirectory/GetTelephoneCard",
-  };
-
-  return axios.request(config).then((response) => {
-    return response;
-  });
+  return Promise.resolve({ data: { StatusCode: 200, ResultSet: [] } });
 };
 
 export default {

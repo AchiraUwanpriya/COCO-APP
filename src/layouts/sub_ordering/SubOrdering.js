@@ -90,7 +90,7 @@
 //     setError(null);
 
 //     try {
-//       const url = `https://esystems.cdl.lk/backend/BizTrack/Attendance/GetsubOrderingAttendanceCard?P_MONTH=${month}&p_sno=${sno}`;
+//       const url = `Attendance/GetsubOrderingAttendanceCard?P_MONTH=${month}&p_sno=${sno}`;
 
 //       const response = await fetch(url, {
 //         method: 'GET',

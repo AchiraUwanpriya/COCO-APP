@@ -101,10 +101,7 @@ export default function CustomizedDialogs({ isOpen, handleCloseFromMain }) {
       const ewdNo = parseInt(data.text.trim());
       const serviceNumber = "3000452";
       // const serviceNumber = await localStorage.getItem("ServiceNo");
-      axios
-        .get(
-          `https://esystems.cdl.lk/backend-test/BizTrack/EWODetails/GetEWODetails?EWONo=${ewdNo}`
-        )
+      Promise.resolve({ data: { StatusCode: 200, ResultSet: { ewo_no: ewdNo, issued_by: "", recieved_by: serviceNumber } } })
         .then((response) => {
           console.log(response);
           if (response.data.StatusCode === 200) {
@@ -131,14 +128,14 @@ export default function CustomizedDialogs({ isOpen, handleCloseFromMain }) {
                 //  console.log("call reecive API");
                 axios
                   .post(
-                    `https://esystems.cdl.lk/backend-test/BizTrack/EWODetails/RecieveEWODetails`,
+                    `EWODetails/RecieveEWODetails`,
                     requestBody
                   )
                   .then((response) => {
                     //    console.log("requestBODY", requestBody);
                     axios
                       .get(
-                        `https://esystems.cdl.lk/backend-test/BizTrack/EWODetails/GetEWODetails?EWONo=${ewdNo}`
+                        `EWODetails/GetEWODetails?EWONo=${ewdNo}`
                       )
                       .then((response) => {
                         setResponseData(response.data.ResultSet);
@@ -219,14 +216,14 @@ export default function CustomizedDialogs({ isOpen, handleCloseFromMain }) {
 
     axios
       .post(
-        `https://esystems.cdl.lk/backend-test/BizTrack/EWODetails/SendEWODetails`,
+        `EWODetails/SendEWODetails`,
         data
       )
       .then((response) => {
         alert("Data saved successfully!");
         axios
           .get(
-            `https://esystems.cdl.lk/backend-test/BizTrack/EWODetails/GetEWODetails?EWONo=${responseData.ewo_no}`
+            `EWODetails/GetEWODetails?EWONo=${responseData.ewo_no}`
           )
           .then((res) => {
             setResponseData(res);

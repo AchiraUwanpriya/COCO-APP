@@ -60,10 +60,10 @@ const FileAttachments = () => {
   // const FILE_PREVIEW_API_ENDPOINT = "http://localhost:51976/Attachment/FilePreview";
   // const DELETE_API_ENDPOINT = "http://localhost:51976/Attachment/DeleteFiles";
 
-  const UPLOAD_API_ENDPOINT = "https://esystems.cdl.lk/backend/BizTrack/Attachment/UploadFile";
-  const GET_FILES_API_ENDPOINT = "https://esystems.cdl.lk/backend/BizTrack/Attachment/GetFileDetails";
-  const FILE_PREVIEW_API_ENDPOINT = "https://esystems.cdl.lk/backend/BizTrack/Attachment/FilePreview";
-  const DELETE_API_ENDPOINT = "https://esystems.cdl.lk/backend/BizTrack/Attachment/DeleteFiles";
+  const UPLOAD_API_ENDPOINT = "Attachment/UploadFile";
+  const GET_FILES_API_ENDPOINT = "Attachment/GetFileDetails";
+  const FILE_PREVIEW_API_ENDPOINT = "Attachment/FilePreview";
+  const DELETE_API_ENDPOINT = "Attachment/DeleteFiles";
  
   const { authKey } = useAuth();
 
@@ -75,77 +75,11 @@ const FileAttachments = () => {
   }, []);
 
   const fetchFiles = async () => {
-    setIsLoading(true);
+    setIsLoading(false);
     setHasError(false);
-
-    try {
-      const response = await fetch(GET_FILES_API_ENDPOINT, {
-        method: "GET",
-        headers: {
-          "auth-key": authKey,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      if (data.StatusCode === 200 && data.ResultSet) {
-        const apiFiles = await Promise.all(
-          data.ResultSet.map(async (item) => {
-            const fileType = getFileTypeFromName(item.Doc_FileName);
-            let previewUrl = null;
-
-            if (fileType.startsWith("image/") || fileType.startsWith("video/")) {
-              try {
-                const previewResponse = await fetch(
-                  `${FILE_PREVIEW_API_ENDPOINT}?P_SERIAL_NO=${item.Doc_SerialNo}`,
-                  {
-                    method: "GET",
-                    headers: {
-                      "auth-key": authKey,
-                    },
-                  }
-                );
-
-                if (previewResponse.ok) {
-                  const blob = await previewResponse.blob();
-                  previewUrl = URL.createObjectURL(blob);
-                }
-              } catch (error) {
-                console.error("Error fetching preview:", error);
-              }
-            }
-
-            return {
-              id: item.Doc_SerialNo,
-              name: item.Doc_FileName,
-              date: new Date().toLocaleString(),
-              url: previewUrl || null,
-              type: fileType,
-              size: item.Doc_FileSize ? formatFileSize(item.Doc_FileSize) : "",
-              path: item.Doc_FilePath,
-              serviceNo: item.Doc_Serviceno,
-              year: item.Doc_Year,
-            };
-          })
-        );
-
-        const sortedFiles = apiFiles.sort((a, b) => b.id - a.id);
-        setFiles(sortedFiles);
-      } else {
-        setHasError(true);
-      }
-    } catch (error) {
-      console.error("Error fetching files:", error);
-      setHasError(true);
-    } finally {
-      setIsLoading(false);
-    }
+    setFiles([]);
   };
+
 
   useEffect(() => {
     return () => {

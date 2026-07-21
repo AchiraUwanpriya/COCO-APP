@@ -157,7 +157,7 @@
 //           alignItems: "flex-end",
 //         }}
 //       >
-//         <Typography>© 2023 BizTrack. All Rights Reserved.</Typography>
+//         <Typography>© 2026 COCO. All Rights Reserved.</Typography>
 //       </Box>
 //     </Container>
 //   );
@@ -342,7 +342,7 @@ const Verification = () => {
           alignItems: "flex-end",
         }}
       >
-        <Typography>© 2023 BizTrack. All Rights Reserved.</Typography>
+        <Typography>© 2026 COCO. All Rights Reserved.</Typography>
       </Box>
     </Container>
   );
@@ -555,7 +555,7 @@ export default Verification;
 //           alignItems: "flex-end",
 //         }}
 //       >
-//         <Typography>© 2023 BizTrack. All Rights Reserved.</Typography>
+//         <Typography>© 2026 COCO. All Rights Reserved.</Typography>
 //       </Box>
 //     </Container>
 //   );

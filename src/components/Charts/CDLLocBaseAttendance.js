@@ -402,7 +402,7 @@
 
 //   const getEmployeeImageUrl = () => {
 //     if (!employee?.sno) return null;
-//     return `https://esystems.cdl.lk/backend/BizTrack/home/GetUserImg?serviceNo=${employee.sno}`;
+//     return `home/GetUserImg?serviceNo=${employee.sno}`;
 //   };
 
 //   const getYearOptions = () => {
@@ -1605,7 +1605,7 @@ const EmployeeDetailsPopup = ({ open, onClose, employee, currentYear }) => {
 
   const getEmployeeImageUrl = () => {
     if (!employee?.sno) return null;
-    return `https://esystems.cdl.lk/backend/BizTrack/home/GetUserImg?serviceNo=${employee.sno}`;
+    return `home/GetUserImg?serviceNo=${employee.sno}`;
   };
 
   const getYearOptions = () => {

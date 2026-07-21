@@ -45,7 +45,7 @@ function NewCarousel() {
             <div className="slide" key={index}>
               <img
                 className="carousel-image"
-                src={`https://esystems.cdl.lk/backend-test/BizTrack/home/GetBannerImg?imgName=${name}`}
+                src={`home/GetBannerImg?imgName=${name}`}
                 alt={`banner-${index}`}
               />
             </div>

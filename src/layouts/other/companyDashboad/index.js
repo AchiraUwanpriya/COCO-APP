@@ -95,7 +95,7 @@
 //             for (const yr of yearsToFetch) {
 //                 try {
 //                     const res = await axios.get(
-//                         `https://esystems.cdl.lk/backend/kpi/KPI_Dashboard/DashboardDetails?year=${yr}`
+//                         `KPI_Dashboard/DashboardDetails?year=${yr}`
 //                     );
 //                     if (res.data?.ResultSet) {
 //                         const match = res.data.ResultSet.find(
@@ -816,7 +816,7 @@
 //         setError(null);
         
 //         try {
-//             const res = await axios.get(`https://esystems.cdl.lk/backend/kpi/KPI_Dashboard/DashboardDetails?year=${year}`);
+//             const res = await axios.get(`KPI_Dashboard/DashboardDetails?year=${year}`);
 //             if (res.data?.ResultSet) {
 //                 const items = res.data.ResultSet.filter(i => i.Type === typeCode);
 //                 const rows = items.map(buildRowData);
@@ -874,7 +874,7 @@
 //         const statuses = {};
 //         for (const row of items) {
 //             try {
-//                 await axios.get(`https://esystems.cdl.lk/backend/kpi/KPI_Dashboard/ViewPDF?PDFName=${year}_${row.Serial_No}`, { responseType: 'blob' });
+//                 await axios.get(`KPI_Dashboard/ViewPDF?PDFName=${year}_${row.Serial_No}`, { responseType: 'blob' });
 //                 statuses[row.Serial_No] = true;
 //             } catch { 
 //                 statuses[row.Serial_No] = false; 
@@ -884,7 +884,7 @@
 //     };
 
 //     const handleDownload = (id, year) => {
-//         window.open(`https://esystems.cdl.lk/backend/kpi/KPI_Dashboard/ViewPDF?PDFName=${year}_${id}`, '_blank');
+//         window.open(`KPI_Dashboard/ViewPDF?PDFName=${year}_${id}`, '_blank');
 //     };
 
 //     const hasSub = (sn) => parentKeyMap[sn] || false;

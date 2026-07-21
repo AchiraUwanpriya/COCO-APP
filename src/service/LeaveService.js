@@ -1,64 +1,11 @@
 import axios from "axios";
 
-const GetLeaveBalance = async (month) => {
-  let formData = new FormData();
-  formData.append("P_YEAR", month);
+const mockRes = () => Promise.resolve({ data: { StatusCode: 200, ResultSet: [] } });
 
-  let config = {
-    method: "post",
-    url: "Leave/GetLeaveBalance",
-    data: formData,
-  };
-
-  return axios.request(config).then((response) => {
-    return response;
-  });
-};
-
-const GetNotEnteredLeave = async (month) => {
-  let formData = new FormData();
-  formData.append("P_YEAR", month);
-
-  let config = {
-    method: "post",
-    url: "Leave/GetNotEnteredLeave",
-    data: formData,
-  };
-
-  return axios.request(config).then((response) => {
-    return response;
-  });
-};
-
-const GetPunctuality = async (month) => {
-  let formData = new FormData();
-  formData.append("P_YEAR", month);
-
-  let config = {
-    method: "post",
-    url: "Leave/GetPunctuality",
-    data: formData,
-  };
-
-  return axios.request(config).then((response) => {
-    return response;
-  });
-};
-
-const GetLeaveSummary = async (month) => {
-  let formData = new FormData();
-  formData.append("P_YEAR", month);
-
-  let config = {
-    method: "post",
-    url: "Leave/GetLeaveSummary",
-    data: formData,
-  };
-
-  return axios.request(config).then((response) => {
-    return response;
-  });
-};
+const GetLeaveBalance = async (month) => mockRes();
+const GetNotEnteredLeave = async (month) => mockRes();
+const GetPunctuality = async (month) => mockRes();
+const GetLeaveSummary = async (month) => mockRes();
 
 export default {
   GetLeaveBalance,

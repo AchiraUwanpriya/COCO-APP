@@ -13,15 +13,30 @@ import { AuthContextProvider } from "./context/AuthContext";
 
 axios.defaults.baseURL = "https://coco.dockyardsoftware.com/";
 
-// axios.defaults.baseURL = "https://esystems.cdl.lk/backend/BizTrack/";
+axios.interceptors.request.use(
+  (config) => {
+    const url = config.url || "";
+    const isAllowedLogin = url.includes("Login/UserLogin");
+    const isAllowedAttendance =
+      url.toLowerCase().includes("attendence/getattendencedetails") ||
+      url.toLowerCase().includes("attendance/getattendencedetails");
 
+    if (!isAllowedLogin && !isAllowedAttendance) {
+      config.adapter = () => {
+        return Promise.resolve({
+          data: { StatusCode: 200, ResultSet: [], Count: 0 },
+          status: 200,
+          statusText: "OK",
+          headers: {},
+          config: config,
+        });
+      };
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
-
-// axios.defaults.baseURL = "http://localhost:51976/";
-//  axios.defaults.baseURL = "https://esystems.cdl.lk/backend-test/BizTrack/";
-// axios.defaults.baseURL = "http://172.30.30.110:5000/";
-//  axios.defaults.headers.post["Content-Type"] = "application/json";
-// axios.defaults.headers.get["Accept"] = "application/json";
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));

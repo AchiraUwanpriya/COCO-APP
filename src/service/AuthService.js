@@ -1,21 +1,7 @@
 import axios from "axios";
 
-const login = async (service_no,password,device, ip) => {
-  let formData = new FormData();
-  formData.append("P_SERVICE_NO", service_no);
-  formData.append("P_PASSWORD", password);
-  formData.append("P_DEVICE", device);
-  formData.append("P_IP", ip);
-
-  let config = {
-    method: "post",
-    url: "Login/Login",
-    data: formData,
-  };
-
-  return axios.request(config).then((response) => {
-    return response;
-  });
+const login = async (service_no, password, device, ip) => {
+  return Promise.resolve({ data: { StatusCode: 200, ResultSet: [] } });
 };
 
 const userLogin = async (serviceNo, password) => {
@@ -32,40 +18,13 @@ const userLogin = async (serviceNo, password) => {
     return response;
   });
 };
-const verifyOTP = async (userOTP, encryptedOTP) => {
-  const config = {
-    method: "post",
-    url: "Login/VerifyOTP",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: {
-      UserOTP: userOTP,
-      EncryptedOTP: encryptedOTP,
-    },
-  };
 
-  return axios.request(config).then((response) => {
-    return response;
-  });
+const verifyOTP = async (userOTP, encryptedOTP) => {
+  return Promise.resolve({ data: { StatusCode: 200, ResultSet: [] } });
 };
 
-
 const biometricLogin = async (biometricToken) => {
-  const config = {
-    method: "post",
-    url: "Login/BiometricLogin",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    data: {
-      BiometricToken: biometricToken,
-    },
-  };
-
-  return axios.request(config).then((response) => {
-    return response;
-  });
+  return Promise.resolve({ data: { StatusCode: 200, ResultSet: [] } });
 };
 
 export default {
