@@ -11,7 +11,10 @@ import store from "./store";
 import axios from "axios";
 import { AuthContextProvider } from "./context/AuthContext"; 
 
-axios.defaults.baseURL = "https://esystems.cdl.lk/backend/BizTrack/";
+axios.defaults.baseURL = "https://coco.dockyardsoftware.com/";
+
+// axios.defaults.baseURL = "https://esystems.cdl.lk/backend/BizTrack/";
+
 
 
 // axios.defaults.baseURL = "http://localhost:51976/";
