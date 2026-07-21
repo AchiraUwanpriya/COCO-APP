@@ -18,6 +18,7 @@ import AuthService from "../service/AuthService";
 import BiometricService from "../service/BiometricService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 /**
  * Helper to display custom styled themed toasts matching Colombo Dockyard corporate design
@@ -119,48 +120,32 @@ export const biometricLogin = (navigate) => async (dispatch) => {
     const credentials = await BiometricService.authenticateWithBiometric();
 
     if (credentials && credentials.serviceNo && credentials.password) {
-      // Build the same token format used by the backend: AES(serviceNo + "`" + password)
-      // We pass the stored encrypted token directly to /Login/BiometricLogin
-      const storedToken = localStorage.getItem("biometric_token");
-
-      // If no biometric_token stored yet, we need to call regular login to get the token first
-      // But normally after first OTP login, we save it. Use credentials as fallback.
-      const biometricToken = storedToken || null;
-
-      if (!biometricToken) {
-        dispatch({
-          type: BIOMETRIC_LOGIN_FAIL,
-          payload: { msg: "Biometric session not found. Please login normally first." },
-        });
-        showThemedToast("Biometric session not found. Please login normally.", "error");
-        return;
-      }
-
-      const response = await AuthService.biometricLogin(biometricToken);
+      const response = await AuthService.userLogin(
+        credentials.serviceNo,
+        credentials.password
+      );
       const data = response.data;
 
       if (data.StatusCode === 200) {
-        sessionStorage.setItem("token", JSON.stringify(data.Token));
+        const authKey = data.AuthKey;
+
+        sessionStorage.setItem("token", JSON.stringify(authKey));
+        axios.defaults.headers.common["auth-key"] = authKey;
 
         dispatch({ type: BIOMETRIC_LOGIN_SUCCESS });
         dispatch({
-          type: VERIFICATION_SUCCESS,
-          payload: { user: data.UserDetails, Token: data.Token },
-        });
-        dispatch({
           type: LOGIN_SUCCESS,
-          payload: { data: data.UserDetails },
+          payload: {},
         });
 
         showThemedToast("Biometric authentication successful! Logging you in...", "success");
-        navigate("/dashboard");
-        window.location.reload();
+        navigate("/home");
       } else {
         dispatch({
           type: BIOMETRIC_LOGIN_FAIL,
-          payload: { msg: "Biometric login failed" },
+          payload: { msg: "Your Service No or Password is incorrect" },
         });
-        showThemedToast("Biometric login failed. Please sign in manually.", "error");
+        showThemedToast("Your Service No or Password is incorrect", "error");
       }
     } else {
       dispatch({
@@ -170,15 +155,22 @@ export const biometricLogin = (navigate) => async (dispatch) => {
       showThemedToast("Biometric login failed. Please sign in manually.", "error");
     }
   } catch (error) {
+    const message =
+      (error.response &&
+        error.response.data &&
+        error.response.data.message) ||
+      error.message ||
+      "Biometric authentication failed";
+
     dispatch({
       type: BIOMETRIC_LOGIN_FAIL,
-      payload: { msg: error.message || "Biometric authentication failed" },
+      payload: { msg: message },
     });
 
     if (error.message === "Biometric authentication was cancelled or denied") {
       showThemedToast("Biometric authentication cancelled.", "warn");
     } else {
-      showThemedToast(error.message || "Biometric login failed. Please sign in manually.", "error");
+      showThemedToast(message, "error");
     }
   }
 };
