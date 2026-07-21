@@ -19,14 +19,14 @@ const Approvals = () => {
       icon: "attendance.png",
     },
 
-    {
-      id: "EMOBCI0002",
-      label: "InOut",
-      path: "/attendance-entry",
-      icon: "arrived.png",
-    },
+    // {
+    //   id: "EMOBCI0002",
+    //   label: "InOut",
+    //   path: "/attendance-entry",
+    //   icon: "arrived.png",
+    // },
     
-    { id: "EMOBCI0003", label: "Leave", path: "/Leave", icon: "exit.png" },
+    // { id: "EMOBCI0003", label: "Leave", path: "/Leave", icon: "exit.png" },
     // {
     //   id: "EMOBCI0005",
     //   label: "Extra Hours",
@@ -54,18 +54,18 @@ const Approvals = () => {
     //   path: "/budgetshop",
     //   icon: "store.png",
     // },
-    {
-      id: "EMOBCI0007",
-      label: "Medical",
-      path: "/Medical",
-      icon: "healthcare.png",
-    },
-    {
-      id: "EMOBCI0009",
-      label: "Outstanding Tools",
-      path: "/tools",
-      icon: "tools.png",
-    },
+    // {
+    //   id: "EMOBCI0007",
+    //   label: "Medical",
+    //   path: "/Medical",
+    //   icon: "healthcare.png",
+    // },
+    // {
+    //   id: "EMOBCI0009",
+    //   label: "Outstanding Tools",
+    //   path: "/tools",
+    //   icon: "tools.png",
+    // },
   ];
 
   return (
