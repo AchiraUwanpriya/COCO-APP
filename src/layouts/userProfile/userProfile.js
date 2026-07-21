@@ -195,8 +195,28 @@ const BiometricDisablePrompt = ({ closeToast, onConfirm }) => {
   );
 };
 
+const mockUserProfileData = {
+  ServiceNo: "2004867",
+  ReportName: "R.I.P Dissanayake",
+  Designation: "Senior Software Engineer",
+  MobileNo: "+94 77 123 4567",
+  Email: "rip.dissanayake@dockyardsoftware.com",
+  Division: "Information Technology",
+  Department: "Software Development",
+  Location: "Colombo Head Office",
+  RecruitmentDate: "2018-05-15",
+  PermanantDate: "2018-11-15",
+  RetirementDate: "2048-05-15",
+  ReportingOfficerDetails: {
+    ReportName: "H.M.R Sriyantha",
+    ServiceNo: "2004866",
+    Designation: "Head of Information Technology",
+  },
+};
+
 function UserProfile() {
   const { data } = useSelector((state) => state.userbyServiceNo);
+  const userData = data && data[0] ? data[0] : mockUserProfileData;
   const [hasImage, setHasImage] = useState(false);
   const [biometricSupported, setBiometricSupported] = useState(false);
   const [biometricEnabled, setBiometricEnabled] = useState(false);
@@ -212,15 +232,15 @@ function UserProfile() {
       img.onerror = function () {
         setHasImage(false);
       };
-      if (data && data[0] && data[0].ServiceNo) {
+      if (userData && userData.ServiceNo && authKey) {
         img.src = `${axios.defaults.baseURL}home/GetUserImg?serviceNo=${
-          data[0].ServiceNo
+          userData.ServiceNo
         }&authKey=${authKey.replace("+", "%2B")}`.replace(/"/g, "");
       }
     } catch (error) {
       console.error("Error loading image:", error);
     }
-  }, [authKey, data]);
+  }, [authKey, userData]);
 
   useEffect(() => {
     const checkBiometric = async () => {
@@ -241,7 +261,7 @@ function UserProfile() {
           <img
             src={
               hasImage
-                ? `${axios.defaults.baseURL}home/GetUserImg?serviceNo=${data[0].ServiceNo}`.replace(
+                ? `${axios.defaults.baseURL}home/GetUserImg?serviceNo=${userData.ServiceNo}`.replace(
                     /"/g,
                     ""
                   )
@@ -251,66 +271,66 @@ function UserProfile() {
             alt="User profile"
           />
         </div>
-        <div className="us">{data[0].ReportName}</div>
+        <div className="us">{userData.ReportName}</div>
       </div>
 
       <div className="eight-boxes">
         <div className="b">
           <h2>Designation</h2>
-          <p>{data[0].Designation}</p>
+          <p>{userData.Designation}</p>
         </div>
         <div className="b">
           <h2>Service Number</h2>
-          <p>{data[0].ServiceNo}</p>
+          <p>{userData.ServiceNo}</p>
         </div>
         <div className="row-container">
           <div className="b mobile-card">
             <h2>Mobile Number</h2>
-            <p>{data[0].MobileNo}</p>
+            <p>{userData.MobileNo}</p>
           </div>
           <div className="b email-card">
             <h2>Email</h2>
-            <p>{data[0].Email}</p>
+            <p>{userData.Email}</p>
           </div>
         </div>
         <div className="b">
           <h2>Division</h2>
-          <p>{data[0].Division}</p>
+          <p>{userData.Division}</p>
         </div>
         <div className="b">
           <h2>Department</h2>
-          <p>{data[0].Department}</p>
+          <p>{userData.Department}</p>
         </div>
         <div className="b">
           <h2>Location</h2>
-          <p>{data[0].Location}</p>
+          <p>{userData.Location}</p>
         </div>
         <div className="row-container">
           <div className="b recruitment-card">
             <h2>Recruitment Date</h2>
-            <p>{data[0].RecruitmentDate}</p>
+            <p>{userData.RecruitmentDate}</p>
           </div>
           <div className="b permanent-card">
             <h2>Permanent Date</h2>
-            <p>{data[0].PermanantDate}</p>
+            <p>{userData.PermanantDate}</p>
           </div>
         </div>
         <div className="b">
           <h2>Retirement Date</h2>
-          <p>{data[0].RetirementDate}</p>
+          <p>{userData.RetirementDate}</p>
         </div>
         <div className="b-1">
           <h2 className="report-officer-title">Report Officer</h2>
           <div className="reporting-officer-container">
             <div className="reporting-officer-name">
-              <p>{data[0].ReportingOfficerDetails.ReportName}</p>
+              <p>{userData.ReportingOfficerDetails?.ReportName}</p>
             </div>
             <div className="reporting-officer-img">
               <img
                 src={
-                  hasImage
+                  hasImage && authKey
                     ? `${axios.defaults.baseURL}home/GetUserImg?serviceNo=${
-                        data[0].ReportingOfficerDetails.ServiceNo
+                        userData.ReportingOfficerDetails?.ServiceNo
                       }&authKey=${authKey.replace("+", "%2B")}`.replace(
                         /"/g,
                         ""
@@ -323,9 +343,9 @@ function UserProfile() {
             </div>
           </div>
           <h2>Service No</h2>
-          <p>{data[0].ReportingOfficerDetails.ServiceNo}</p>
+          <p>{userData.ReportingOfficerDetails?.ServiceNo}</p>
           <h2>Designation</h2>
-          <p>{data[0].ReportingOfficerDetails.Designation}</p>
+          <p>{userData.ReportingOfficerDetails?.Designation}</p>
         </div>
 
         {biometricSupported && (

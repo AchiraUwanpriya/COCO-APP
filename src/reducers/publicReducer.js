@@ -84,26 +84,51 @@ export const GetAccessHeadComponent = (
   }
 };
 
-export const GetUserByServiceNo = (state = {}, action) => {
+const mockUserProfile = [
+  {
+    ServiceNo: "2004867",
+    ReportName: "R.I.P Dissanayake",
+    Designation: "Senior Software Engineer",
+    MobileNo: "+94 77 123 4567",
+    Email: "rip.dissanayake@dockyardsoftware.com",
+    Division: "Information Technology",
+    Department: "Software Development",
+    Location: "Colombo Head Office",
+    RecruitmentDate: "2018-05-15",
+    PermanantDate: "2018-11-15",
+    RetirementDate: "2048-05-15",
+    ReportingOfficerDetails: {
+      ReportName: "H.M.R Sriyantha",
+      ServiceNo: "2004866",
+      Designation: "Head of Information Technology",
+    },
+  },
+];
+
+const userInitialState = {
+  data: mockUserProfile,
+  loading: false,
+};
+
+export const GetUserByServiceNo = (state = userInitialState, action) => {
   switch (action.type) {
     case GET_USER_REQUEST:
       return {
         ...state,
         loading: true,
-        data: null,
       };
     case GET_USER_SUCCESS:
       return {
         ...state,
         loading: false,
-        data: action.payload.data,
+        data: action.payload.data && action.payload.data.length > 0 ? action.payload.data : mockUserProfile,
       };
     case GET_USER_FAIL:
       return {
         ...state,
         loading: false,
         msg: action.payload.msg,
-        data: null,
+        data: mockUserProfile,
       };
     default:
       return state;

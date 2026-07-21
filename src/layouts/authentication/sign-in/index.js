@@ -336,14 +336,7 @@ const SignIn = () => {
   };
 
   const getIPAddress = async () => {
-    try {
-      const response = await fetch('https://api.ipify.org?format=json');
-      const data = await response.json();
-      return data.ip || "Unknown IP";
-    } catch (error) {
-      console.error("Failed to get IP address:", error);
-      return "Unknown IP";
-    }
+    return "127.0.0.1";
   };
 
   const validate = () => {
