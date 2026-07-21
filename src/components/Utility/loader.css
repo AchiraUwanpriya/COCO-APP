@@ -5,6 +5,7 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+  position: relative;
   /* height: 100vh; */
   /* background-color: #FFFFFF; */
 }
@@ -31,8 +32,9 @@
 
 .loader img {
   position: absolute;
-  width: 50px; /* Adjust the size of your logo */
-  height: 50px; /* Adjust the size of your logo */
+  width: 55px; /* Adjust the size of your logo */
+  height: 55px; /* Adjust the size of your logo */
+  object-fit: contain;
   z-index: 1; /* Place the logo above the spinner */
 }
 

@@ -1,9 +1,9 @@
 import React from "react";
 import "./loader.css";
 import { useAuth } from "../../context/AuthContext";
-export default function Loader({ text }) {
-  //   return <div class="loader"></div>;
+import cocoLogo from "../../assets/images/nutrinuts-logo.png";
 
+export default function Loader({ text }) {
   const { isOnline } = useAuth();
   return (
     <>
@@ -12,24 +12,31 @@ export default function Loader({ text }) {
           style={{
             display: "flex",
             flexDirection: "column",
-            marginTop: "50%",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: "30%",
           }}
         >
           <div className="loader">
             <div className="spinner"></div>
-            <img src={require("../../assets/images/BT.png")} alt="Logo" />
+            <img src={cocoLogo} alt="COCO Logo" />
           </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginTop: "10%",
-              textAlign: "center",
-            }}
-          >
-            {text}
-          </div>
+          {text && (
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginTop: "20px",
+                textAlign: "center",
+                color: "#1A5D28",
+                fontWeight: 600,
+                fontSize: "14px",
+              }}
+            >
+              {text}
+            </div>
+          )}
         </div>
       ) : (
         <div className="loadingMain">
@@ -61,3 +68,4 @@ export default function Loader({ text }) {
     </>
   );
 }
+
