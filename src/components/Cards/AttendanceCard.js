@@ -298,16 +298,19 @@ export default function AttendanceCard() {
         <Table sx={{ width: "100%", minWidth: 320 }} aria-label="attendance details table">
           <TableHead>
             <TableRow>
-              <StyledTableCell align="center" sx={{ width: "22%" }}>
+              <StyledTableCell align="center" sx={{ width: "16%" }}>
                 Date
               </StyledTableCell>
               <StyledTableCell align="center" sx={{ width: "22%" }}>
                 Service No
               </StyledTableCell>
-              <StyledTableCell align="center" sx={{ width: "28%" }}>
+              <StyledTableCell align="center" sx={{ width: "26%" }}>
+                Name
+              </StyledTableCell>
+              <StyledTableCell align="center" sx={{ width: "18%" }}>
                 IN
               </StyledTableCell>
-              <StyledTableCell align="center" sx={{ width: "28%", borderRight: "none" }}>
+              <StyledTableCell align="center" sx={{ width: "18%", borderRight: "none" }}>
                 OUT
               </StyledTableCell>
             </TableRow>
@@ -346,18 +349,35 @@ export default function AttendanceCard() {
                   : false;
 
               const serviceNo =
-                row.Name ||
-                row.name ||
                 row.ServiceNo ||
                 row.serviceNo ||
                 row.Service_No ||
+                row.Service_no ||
                 row.SERVICE_NO ||
+                row.ServiceNumber ||
+                row.serviceNumber ||
+                row.ServNo ||
+                row.servNo ||
                 row.Sno ||
                 row.sno ||
                 row.SNO ||
                 row.EmpNo ||
                 row.empNo ||
+                row.Emp_No ||
+                row.EMP_NO ||
                 "-";
+
+              const empName =
+                row.Name ||
+                row.name ||
+                row.EmpName ||
+                row.empName ||
+                row.EmployeeName ||
+                row.employeeName ||
+                row.NAME ||
+                "-";
+
+              
 
               const inTimeVal =
                 row.InTime ||
@@ -426,10 +446,17 @@ export default function AttendanceCard() {
                     </Box>
                   </StyledTableCell>
 
-                  {/* Service No / Name */}
+                  {/* Service No */}
                   <StyledTableCell align="center">
                     <Typography fontSize={11} fontWeight={600} color="#1A5D28">
                       {serviceNo}
+                    </Typography>
+                  </StyledTableCell>
+
+                  {/* Name */}
+                  <StyledTableCell align="center">
+                    <Typography fontSize={11} fontWeight={500} color="#333">
+                      {empName}
                     </Typography>
                   </StyledTableCell>
 
