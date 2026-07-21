@@ -275,10 +275,9 @@ const SignIn = () => {
   const [password, setpassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
-  const [hasPromptedBiometric, setHasPromptedBiometric] = useState(false);
   
   const { loading, biometricAvailable, biometricLoading } = useSelector((state) => state.auth);
-  const { handleLogin } = useAuth();
+  const { handleLogin, handlePhoneLogin } = useAuth();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -297,14 +296,6 @@ const SignIn = () => {
     sessionStorage.removeItem("explicit_logout");
     dispatch(biometricLogin(navigate));
   };
-
-  useEffect(() => {
-    const isExplicitLogout = sessionStorage.getItem("explicit_logout") === "true";
-    if (biometricAvailable && !hasPromptedBiometric && !isExplicitLogout) {
-      setHasPromptedBiometric(true);
-      handleBiometricLogin();
-    }
-  }, [biometricAvailable, hasPromptedBiometric]);
 
   const getDeviceInfo = () => {
     const userAgent = navigator.userAgent;
@@ -360,13 +351,15 @@ const SignIn = () => {
       try {
         sessionStorage.removeItem("explicit_logout");
 
-        const device = getDeviceInfo();
-        const ip = await getIPAddress();
-        
-        const loginId = activeTab === "serviceNo" ? serviceNo : phoneNo;
-        handleLogin(loginId, password, device, ip);
+        if (activeTab === "phone") {
+          handlePhoneLogin(phoneNo);
+        } else {
+          const device = getDeviceInfo();
+          const ip = await getIPAddress();
+          handleLogin(serviceNo, password, device, ip);
+        }
       } catch (error) {
-        toast.error("Failed to get device information");
+        toast.error("Failed to process sign in");
       }
     }
   };
@@ -621,7 +614,7 @@ const SignIn = () => {
             </LoadingButton>
           </Box>
 
-          {biometricAvailable && (
+          {biometricAvailable && (activeTab === "serviceNo" || activeTab === "phone") && (
             <Box mt={2} mb={1} textAlign="center">
               <IconButton
                 onClick={handleBiometricLogin}

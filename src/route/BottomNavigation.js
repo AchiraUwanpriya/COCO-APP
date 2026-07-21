@@ -271,11 +271,8 @@ export default function Footer() {
 
   const fetchUnseenCount = async () => {
     try {
-      const userResponse = await axios.get(
-        `${axios.defaults.baseURL}/login/GetUserByServiceNo`,
-      );
-      const userData = userResponse.data.ResultSet[0];
-      const mobileNo = userData.MobileNo;
+      const mobileNo = user?.MobileNo || (data && data[0]?.MobileNo);
+      if (!mobileNo) return;
 
       const countResponse = await axios.get(
         `${axios.defaults.baseURL}Notification/GetUnSeenCount?P_PHONENO=${mobileNo}`,

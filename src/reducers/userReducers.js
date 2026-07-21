@@ -46,6 +46,7 @@ export const authReducer = (state = initialState, action) => {
         useData: action.payload.useData,
         token: action.payload.token,
         encryptedOTP: action.payload.encryptedOTP,
+        plainOTP: action.payload.plainOTP,
       };
     case VERIFICATION_SUCCESS:
       return {

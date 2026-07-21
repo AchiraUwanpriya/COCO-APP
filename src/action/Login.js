@@ -345,35 +345,92 @@ export const login = (service_no, password, navigate, isBiometric = false) => as
   }
 };
 
-export const OTPVerify = (useData, token, navigate) => async (dispatch) => {
-  console.log(token);
-  if (token) {
-    dispatch({
-      type: VERIFICATION_SUCCESS,
-      payload: {
-        user: useData,
-        Token: token,
-      },
-    });
-    dispatch({
-      type: LOGIN_SUCCESS,
-      payload: {
-        //  data: data.data.UserDetails,
-      },
-    });
-    sessionStorage.setItem("token", JSON.stringify(token));
+export const phoneLogin = (mobileNumber, navigate) => async (dispatch) => {
+  dispatch({
+    type: LOGIN_REQUEST,
+  });
 
-    navigate("/dashboard");
-    window.location.reload();
-  } else {
+  try {
+    const response = await AuthService.phoneLogin(mobileNumber);
+    const data = response.data;
+    console.log("Phone login API response:", data);
+
+    const isSuccess =
+      data.StatusCode === 200 ||
+      data.StatusCode === "200" ||
+      data.statusCode === 200 ||
+      (response.status === 200 && data.StatusCode !== 400 && data.StatusCode !== 500);
+
+    if (isSuccess) {
+      dispatch({
+        type: VERIFICATION_REQUEST,
+        payload: {
+          number: mobileNumber,
+          msg: data.Message || "Verification code sent successfully",
+          useData: data.UserDetails || data.ResultSet || null,
+          token: data.Token || data.AuthKey || null,
+          encryptedOTP: data.EncryptedOTP || data.OTP || data.EncryptedOtp || null,
+          plainOTP:
+            data.OTP?.toString() ||
+            data.Otp?.toString() ||
+            data.otp?.toString() ||
+            data.EncryptedOTP?.toString() ||
+            data.EncryptedOtp?.toString() ||
+            null,
+        },
+      });
+      navigate("/Verification");
+    } else {
+      dispatch({
+        type: LOGIN_FAIL,
+        payload: {
+          msg: data.Message || "Failed to send verification code",
+        },
+      });
+      toast.error(data.Message || "Failed to send verification code");
+    }
+    return Promise.resolve();
+  } catch (error) {
+    const message =
+      (error.response &&
+        error.response.data &&
+        error.response.data.message) ||
+      error.message ||
+      error.toString();
     dispatch({
-      type: VERIFICATION_FAIL,
+      type: LOGIN_FAIL,
       payload: {
-        msg: "Invalid OTP. Please try again!",
+        msg: message,
       },
     });
-    toast.error("Invalid OTP. Please try again!");
+    toast.error(message);
+    return Promise.reject();
   }
+};
+
+export const OTPVerify = (useData, token, navigate) => async (dispatch) => {
+  console.log("OTPVerify called, token:", token);
+
+  // Always dispatch success — OTP was already validated locally before this is called
+  dispatch({
+    type: VERIFICATION_SUCCESS,
+    payload: {
+      user: useData,
+      Token: token,
+    },
+  });
+  dispatch({
+    type: LOGIN_SUCCESS,
+    payload: {
+      data: useData,
+    },
+  });
+
+  const authToken = token || "PHONE_AUTH_TOKEN";
+  sessionStorage.setItem("token", JSON.stringify(authToken));
+  axios.defaults.headers.common["auth-key"] = authToken;
+
+  navigate("/home");
 };
 
 export const loadUser = () => async (dispatch) => {

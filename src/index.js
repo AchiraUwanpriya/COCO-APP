@@ -11,12 +11,12 @@ import store from "./store";
 import axios from "axios";
 import { AuthContextProvider } from "./context/AuthContext"; 
 
-axios.defaults.baseURL = "https://coco.dockyardsoftware.com/";
+axios.defaults.baseURL = "https://coco.dockyardsoftware.com";
 
 axios.interceptors.request.use(
   (config) => {
     const url = config.url || "";
-    const isAllowedLogin = url.includes("Login/UserLogin");
+    const isAllowedLogin = url.toLowerCase().includes("login/");
     const isAllowedAttendance =
       url.toLowerCase().includes("attendence/getattendencedetails") ||
       url.toLowerCase().includes("attendance/getattendencedetails");

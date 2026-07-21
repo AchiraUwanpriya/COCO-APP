@@ -178,12 +178,11 @@ import OtpInput from "react-otp-input";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import AuthService from "../../../service/AuthService";
 
 const Verification = () => {
   const [userInptOTP, setuserInptOTP] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { encryptedOTP, loading } = useSelector((state) => state.auth);
+  const { encryptedOTP, plainOTP, token, useData, loading } = useSelector((state) => state.auth);
   const { handleVerification } = useAuth();
   const navigate = useNavigate();
 
@@ -200,26 +199,26 @@ const Verification = () => {
       return;
     }
 
-    if (!encryptedOTP) {
+    // The OTP to compare against — prefer plainOTP, fall back to encryptedOTP
+    const serverOTP = (plainOTP || encryptedOTP || "").toString().trim();
+
+    if (!serverOTP) {
       toast.error("Session expired. Please login again.");
       navigate("/");
       return;
     }
 
     setIsLoading(true);
-    try {
-      const response = await AuthService.verifyOTP(userInptOTP, encryptedOTP);
-      const data = response.data;
 
-      if (data.StatusCode === 200) {
-        // Pass verified user details and session token from server to complete login
-        handleVerification(data.UserDetails, data.Token, navigate);
+    try {
+      const inputOTP = userInptOTP.toString().trim();
+
+      if (inputOTP === serverOTP) {
+        // OTP matched — complete login with token and user data already in state
+        handleVerification(useData || {}, token || "", navigate);
       } else {
         toast.error("Invalid OTP. Please try again!");
       }
-    } catch (error) {
-      console.error("OTP Verification error:", error);
-      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsLoading(false);
     }

@@ -19,8 +19,33 @@ const userLogin = async (serviceNo, password) => {
   });
 };
 
+const phoneLogin = async (mobileNumber) => {
+  const config = {
+    method: "post",
+    url: "Login/NewVerificationCallWithValid",
+    data: {
+      MobileNumber: mobileNumber,
+    },
+  };
+
+  return axios.request(config).then((response) => {
+    return response;
+  });
+};
+
 const verifyOTP = async (userOTP, encryptedOTP) => {
-  return Promise.resolve({ data: { StatusCode: 200, ResultSet: [] } });
+  const config = {
+    method: "post",
+    url: "Login/VerifyOTP",
+    data: {
+      userOTP,
+      encryptedOTP,
+    },
+  };
+
+  return axios.request(config).then((response) => {
+    return response;
+  });
 };
 
 const biometricLogin = async (biometricToken) => {
@@ -30,6 +55,7 @@ const biometricLogin = async (biometricToken) => {
 export default {
   login,
   userLogin,
+  phoneLogin,
   verifyOTP,
   biometricLogin,
 };

@@ -101,7 +101,7 @@
 
 import { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { login, logOut, OTPVerify } from "../action/Login";
+import { login, logOut, OTPVerify, phoneLogin } from "../action/Login";
 import { loadUser } from "../action/Login";
 import { enrollBiometric } from "../action/Biometric";
 import BiometricService from "../service/BiometricService";
@@ -203,6 +203,14 @@ export const AuthContextProvider = ({ children }) => {
     }
   };
 
+  const handlePhoneLogin = async (mobileNumber) => {
+    try {
+      await dispatch(phoneLogin(mobileNumber, navigate));
+    } catch (error) {
+      toast.error("Failed to send verification code. Please try again.");
+    }
+  };
+
   const handleVerification = async (useData, token, navigate) => {
     // Save the token as the biometric token for future biometric logins
     if (token) {
@@ -301,6 +309,7 @@ export const AuthContextProvider = ({ children }) => {
           isOnline,
           isAuthenticated,
           handleLogin,
+          handlePhoneLogin,
           handleLogout,
           handleVerification,
           setIsAuthenticated,

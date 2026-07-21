@@ -43,7 +43,7 @@ import { useDispatch } from "react-redux";
 import { UpdateResStatus } from "../../action/Reservation";
 import BuildIcon from '@mui/icons-material/Build';
 import BlockIcon from '@mui/icons-material/Block';
-import PhoneInput, { getCountries, getCountryCallingCode } from 'react-phone-number-input';
+import { getCountries, getCountryCallingCode } from 'react-phone-number-input/input-core';
 
 const style = {
   position: "absolute",
