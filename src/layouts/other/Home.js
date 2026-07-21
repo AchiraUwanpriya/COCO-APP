@@ -38,7 +38,7 @@ const Home = () => {
           paddingBottom: { md: "100px" },
         }}
       >
-        <Box
+        {/* <Box
           sx={{
             display: "flex",
             justifyContent: "center",
@@ -52,9 +52,10 @@ const Home = () => {
           }}
         >
           <NewCarousel />
-        </Box>
+        </Box> */}
         <Box
           sx={{
+            marginTop: 4,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",

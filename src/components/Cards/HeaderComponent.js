@@ -979,6 +979,7 @@ export default function HeaderComponent() {
           ) : (
             <></>
           )}
+          {/* 
           {isComponentIdAvailable("EMOBCI0011") ? (
             <Grow
               in={isComponentIdAvailable("EMOBCI0011")}
@@ -1039,6 +1040,7 @@ export default function HeaderComponent() {
           ) : (
             <></>
           )}
+
           {isComponentIdAvailable("EMOBCI0006") ? (
             <Grow
               in={isComponentIdAvailable("EMOBCI0006")}
@@ -1099,6 +1101,7 @@ export default function HeaderComponent() {
           ) : (
             <></>
           )}
+
           {isComponentIdAvailable("EMOBCE0002") ? (
             <Grow
               in={isComponentIdAvailable("EMOBCE0002")}
@@ -1154,7 +1157,6 @@ export default function HeaderComponent() {
                         Approvals
                       </Typography>
                       
-                      {/* Red Badge for pending EWO count */}
                       {pendingEwoCount > 0 && (
                         <Badge
                           badgeContent={pendingEwoCount}
@@ -1182,6 +1184,7 @@ export default function HeaderComponent() {
           ) : (
             <></>
           )}
+
           {isComponentIdAvailable("EMOBCE0001") ? (
             <Grow
               in={isComponentIdAvailable("EMOBCE0001")}
@@ -1242,6 +1245,7 @@ export default function HeaderComponent() {
           ) : (
             <></>
           )}
+
           {isComponentIdAvailable("EMOBCI0010") ? (
             <Grow
               in={isComponentIdAvailable("EMOBCI0010")}
@@ -1365,6 +1369,7 @@ export default function HeaderComponent() {
           ) : (
             <></>
           )}
+
           {isComponentIdAvailable("EMOBCE0003") ? (
             <Grow
               in={isComponentIdAvailable("EMOBCE0003")}
@@ -1427,15 +1432,7 @@ export default function HeaderComponent() {
             <></>
           )}
 
-          {/* To-Do List */}
-          
-
-              {/* {isComponentIdAvailable("EMOBCE0003") ? (
-            <Grow
-              in={isComponentIdAvailable("EMOBCE0003")}
-              style={{ transformOrigin: "0 0 0" }}
-              {...(isComponentIdAvailable("EMOBCE0003") */}
-            {isComponentIdAvailable("EMOBCE0004") ? (
+          {isComponentIdAvailable("EMOBCE0004") ? (
             <Grow
               in={isComponentIdAvailable("EMOBCE0004")}
               style={{ transformOrigin: "0 0 0" }}
@@ -1497,7 +1494,6 @@ export default function HeaderComponent() {
             <></>
           )}
 
-          {/* Sub Ordering Attendance */}
           {isComponentIdAvailable("EMOBCI0014") ? (
             <Grow
               in={isComponentIdAvailable("EMOBCI0014")}
@@ -1558,7 +1554,8 @@ export default function HeaderComponent() {
             </Grow>
           ) : (
             <></>
-          )}
+          )} 
+          */}
         </Grid>
       </Box>
     </>
