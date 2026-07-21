@@ -406,9 +406,9 @@ const SignIn = () => {
         component="img"
         sx={{
           height: "auto",
-          width: "45%",
-          maxHeight: { xs: 150, md: 120 },
-          maxWidth: { xs: 280, md: 220 },
+          width: "60%",
+          maxHeight: { xs: 180, md: 150 },
+          maxWidth: { xs: 340, md: 280 },
           objectFit: "contain",
           mb: 2,
         }}

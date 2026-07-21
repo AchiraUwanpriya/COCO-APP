@@ -569,10 +569,12 @@ function App() {
   const { isOnline, isAuthenticated } = useAuth();
   useEffect(() => {
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-    if (isOnline) {
-      metaThemeColor.setAttribute("content", "#F2F2F2");
-    } else {
-      metaThemeColor.setAttribute("content", "#004AAD");
+    if (metaThemeColor) {
+      if (isOnline) {
+        metaThemeColor.setAttribute("content", "#F2F2F2");
+      } else {
+        metaThemeColor.setAttribute("content", "#1A5D28");
+      }
     }
   }, [isOnline]);
 

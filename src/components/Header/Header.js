@@ -505,7 +505,7 @@ const Header = ({ title }) => {
     try {
       const metaThemeColor = document.querySelector('meta[name="theme-color"]');
       if (metaThemeColor) {
-        metaThemeColor.setAttribute("content", "#004AAD");
+        metaThemeColor.setAttribute("content", "#1A5D28");
       }
     } catch (error) {
       console.error("Error setting theme color:", error);
@@ -556,26 +556,19 @@ const Header = ({ title }) => {
       <Box sx={{ display: "flex", flexDirection: "column" }}>
         <div
           style={{
-            maxWidth: "400px",
             display: "flex",
             alignItems: "center",
-            gap: "1px",
-            marginTop: "12px",
+            marginTop: "2px",
+            marginBottom: "4px",
           }}
         >
           <img
-            src={require("../../assets/icons/a.png")}
-            alt="First slide"
+            src={require("../../assets/images/nutrinuts-logo.png")}
+            alt="Nutrinuts COCO Logo"
             style={{
-              width: "37%",
-              display: "block",
-            }}
-          />
-          <img
-            src={require("../../assets/icons/CDPLC.png")}
-            alt="CDPLC"
-            style={{
-              width: "37%",
+              height: "80px",
+              maxWidth: "280px",
+              objectFit: "contain",
               display: "block",
             }}
           />

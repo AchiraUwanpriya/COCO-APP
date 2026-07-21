@@ -323,7 +323,7 @@ export default function Footer() {
           borderTopRightRadius: "20px",
           borderBottomLeftRadius: 0,
           borderBottomRightRadius: 0,
-          background: "linear-gradient(135deg, #5B52B3 0%, #004AAD 100%)",
+          background: "linear-gradient(135deg, #1A5D28 0%, #13461E 100%)",
         }}
       >
         <BottomNavigation
@@ -348,7 +348,7 @@ export default function Footer() {
             }, 
             "& .MuiBottomNavigationAction-root.Mui-selected": {
               background: "#ffffff",
-              color: "#004AAD",
+              color: "#1A5D28",
               fontWeight: 700,
               borderRadius: "8px",
               padding: "8px 12px",
@@ -358,11 +358,11 @@ export default function Footer() {
               "& .MuiBottomNavigationAction-label": {
                 fontSize: "12px",
                 fontWeight: 700,
-                color: "#004AAD",
+                color: "#1A5D28",
               },
               "& svg": {
                 transform: "scale(1.15)",
-                color: "#004AAD",
+                color: "#1A5D28",
               },
             },
           }}
