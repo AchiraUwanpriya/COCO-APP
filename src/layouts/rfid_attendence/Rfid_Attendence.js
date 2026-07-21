@@ -1416,7 +1416,7 @@ const Rfid_Attendence = () => {
             )}
             <Box sx={{ maxHeight: "400px", overflow: "auto" }}>
               <Table size="small">
-                <TableHead sx={{ position: "sticky", top: 0, backgroundColor: "#1976d2" }}>
+                <TableHead sx={{ position: "sticky", top: 0, backgroundColor: "#1A5D28" }}>
                   <TableRow>
                     <TableCell sx={{ color: "white", textAlign: "center", fontWeight: "bold" }}>#</TableCell>
                     <TableCell sx={{ color: "white", textAlign: "center", fontWeight: "bold" }}>Service No</TableCell>
@@ -1480,7 +1480,7 @@ const Rfid_Attendence = () => {
             )}
             <Box sx={{ maxHeight: "400px", overflow: "auto" }}>
               <Table size="small">
-                <TableHead sx={{ position: "sticky", top: 0, backgroundColor: "#1976d2" }}>
+                <TableHead sx={{ position: "sticky", top: 0, backgroundColor: "#1A5D28" }}>
                   <TableRow>
                     <TableCell sx={{ color: "white", textAlign: "center", fontWeight: "bold" }}>#</TableCell>
                     <TableCell sx={{ color: "white", textAlign: "center", fontWeight: "bold" }}>User ID</TableCell>

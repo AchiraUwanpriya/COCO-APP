@@ -60,7 +60,7 @@ const Time_Endoresement = () => {
         icon: "error",
         title: "Error",
         text: "Please enter an endorsement number.",
-        confirmButtonColor: "#1976d2",
+        confirmButtonColor: "#1A5D28",
       });
     }
   };
@@ -122,7 +122,7 @@ const Time_Endoresement = () => {
       {tableData.length > 0 && (
         <Table sx={{ backgroundColor: "white", borderRadius: "8px" }}>
           <TableHead>
-            <TableRow sx={{ backgroundColor: "#1976d2" }}>
+            <TableRow sx={{ backgroundColor: "#1A5D28" }}>
               <TableCell sx={{ color: "white", fontWeight: "bold" ,fontSize: "12px",}}>
                 Date
               </TableCell>

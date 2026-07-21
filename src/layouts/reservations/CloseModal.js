@@ -682,7 +682,7 @@ const CloseModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
           <Box
             sx={{
               p: 2,
-              bgcolor: "#1976d2",
+              bgcolor: "#1A5D28",
               color: "white",
               borderTopLeftRadius: 8,
               borderTopRightRadius: 8,
@@ -731,7 +731,7 @@ const CloseModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
                   display: "flex",
                   alignItems: "center",
                   fontWeight: "500",
-                  color: "#1976d2",
+                  color: "#1A5D28",
                 }}
               >
                 <HomeIcon sx={{ mr: 1 }} /> Select Bungalow
@@ -772,7 +772,7 @@ const CloseModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
                   display: "flex",
                   alignItems: "center",
                   fontWeight: "500",
-                  color: "#1976d2",
+                  color: "#1A5D28",
                 }}
               >
                 <CalendarMonthIcon sx={{ mr: 1 }} /> Select Dates
@@ -903,9 +903,9 @@ const CloseModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
               }
               sx={{
                 borderRadius: 2,
-                bgcolor: "#1976d2",
+                bgcolor: "#1A5D28",
                 "&:hover": {
-                  bgcolor: "#303f9f",
+                  bgcolor: "#13461E",
                 },
                 "&:disabled": {
                   bgcolor: "#cccccc",

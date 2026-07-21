@@ -381,7 +381,7 @@ function UserProfile() {
                 width: 44,
                 height: 24,
                 borderRadius: 12,
-                backgroundColor: biometricEnabled ? "#0049AF" : "#ccc",
+                backgroundColor: biometricEnabled ? "#1A5D28" : "#ccc",
                 position: "relative",
                 transition: "background-color 0.3s",
                 flexShrink: 0,

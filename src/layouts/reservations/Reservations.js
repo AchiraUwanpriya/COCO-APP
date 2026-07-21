@@ -6616,7 +6616,7 @@ useEffect(() => {
                               fontSize: "10px",
                               width: "30px",
                               textAlign: "center",
-                              backgroundColor: "#1976D2",
+                              backgroundColor: "#1A5D28",
                               color: "white",
                               padding: '2px 1px',
                             }}
@@ -6629,7 +6629,7 @@ useEffect(() => {
                               fontSize: "10px",
                               width: "50px",
                               textAlign: "center",
-                              backgroundColor: "#1976D2",
+                              backgroundColor: "#1A5D28",
                               color: "white",
                               padding: '2px 1px',
                             }}
@@ -6642,7 +6642,7 @@ useEffect(() => {
                               fontSize: "10px",
                               width: "70px",
                               textAlign: "center",
-                              backgroundColor: "#1976D2",
+                              backgroundColor: "#1A5D28",
                               color: "white",
                               padding: '2px 1px',
                             }}
@@ -6655,7 +6655,7 @@ useEffect(() => {
                               fontSize: "10px",
                               width: "120px",
                               textAlign: "center",
-                              backgroundColor: "#1976D2",
+                              backgroundColor: "#1A5D28",
                               color: "white",
                               padding: '2px 4px',
                             }}
@@ -6668,7 +6668,7 @@ useEffect(() => {
                               fontSize: "10px",
                               width: "80px",
                               textAlign: "center",
-                              backgroundColor: "#1976D2",
+                              backgroundColor: "#1A5D28",
                               color: "white",
                               padding: '2px 1px',
                             }}

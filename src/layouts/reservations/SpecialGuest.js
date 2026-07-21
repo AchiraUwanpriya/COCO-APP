@@ -599,7 +599,7 @@ const SpecialModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
           <Box
             sx={{
               p: 2,
-              bgcolor: "#1976d2",
+              bgcolor: "#1A5D28",
               color: "white",
               borderTopLeftRadius: 8,
               borderTopRightRadius: 8,
@@ -671,7 +671,7 @@ const SpecialModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
                   display: "flex",
                   alignItems: "center",
                   fontWeight: "500",
-                  color: "#1976d2",
+                  color: "#1A5D28",
                 }}
               >
                 <HomeIcon sx={{ mr: 1 }} /> Select Bungalow
@@ -714,7 +714,7 @@ const SpecialModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
                     display: "flex",
                     alignItems: "center",
                     fontWeight: "500",
-                    color: "#1976d2",
+                    color: "#1A5D28",
                   }}
                 >
                   <FamilyRestroomIcon sx={{ mr: 1 }} /> Guest Information
@@ -782,7 +782,7 @@ const SpecialModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
                 <Grid container spacing={2} sx={{ mt: 1 }}>
                   <Grid item xs={12} sm={6} md={3}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <PersonIcon sx={{ mr: 1, color: '#1976d2' }} />
+                      <PersonIcon sx={{ mr: 1, color: '#1A5D28' }} />
                       <Typography variant="body2" sx={{ fontWeight: '500' }}>Name</Typography>
                     </Box>
                     <TextField
@@ -800,7 +800,7 @@ const SpecialModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <HomeIcon sx={{ mr: 1, color: '#1976d2' }} />
+                      <HomeIcon sx={{ mr: 1, color: '#1A5D28' }} />
                       <Typography variant="body2" sx={{ fontWeight: '500' }}>Address</Typography>
                     </Box>
                     <TextField
@@ -818,7 +818,7 @@ const SpecialModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <PublicIcon sx={{ mr: 1, color: '#1976d2' }} />
+                      <PublicIcon sx={{ mr: 1, color: '#1A5D28' }} />
                       <Typography variant="body2" sx={{ fontWeight: '500' }}>Country</Typography>
                     </Box>
                     <Autocomplete
@@ -853,7 +853,7 @@ const SpecialModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <PhoneIcon sx={{ mr: 1, color: '#1976d2' }} />
+                      <PhoneIcon sx={{ mr: 1, color: '#1A5D28' }} />
                       <Typography variant="body2" sx={{ fontWeight: '500' }}>Phone</Typography>
                     </Box>
                     <Box sx={{
@@ -864,10 +864,10 @@ const SpecialModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
                       backgroundColor: loading ? '#f5f5f5' : 'white',
                       transition: 'border-color 0.2s',
                       '&:hover': {
-                        borderColor: '#1976d2',
+                        borderColor: '#1A5D28',
                       },
                       '&:focus-within': {
-                        borderColor: '#1976d2',
+                        borderColor: '#1A5D28',
                         boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.2)',
                       },
                     }}>
@@ -910,7 +910,7 @@ const SpecialModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <EmailIcon sx={{ mr: 1, color: '#1976d2' }} />
+                      <EmailIcon sx={{ mr: 1, color: '#1A5D28' }} />
                       <Typography variant="body2" sx={{ fontWeight: '500' }}>Email</Typography>
                     </Box>
                     <TextField
@@ -939,7 +939,7 @@ const SpecialModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
                   display: "flex",
                   alignItems: "center",
                   fontWeight: "500",
-                  color: "#1976d2",
+                  color: "#1A5D28",
                 }}
               >
                 <CalendarMonthIcon sx={{ mr: 1 }} /> Select Dates
@@ -1070,9 +1070,9 @@ const SpecialModal = ({ open, handleClose, maintenanceDates = new Set() }) => {
               }
               sx={{
                 borderRadius: 2,
-                bgcolor: "#1976d2",
+                bgcolor: "#1A5D28",
                 "&:hover": {
-                  bgcolor: "#303f9f",
+                  bgcolor: "#13461E",
                 },
                 "&:disabled": {
                   bgcolor: "#cccccc",

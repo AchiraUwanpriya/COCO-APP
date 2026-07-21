@@ -1197,10 +1197,10 @@ const NavigationDrawer = ({ open, onClose, activeTab, onTabChange }) => {
       <Box sx={{ p: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Box sx={{ width: 32, height: 32, borderRadius: "10px", background: "linear-gradient(135deg, #004AAD 0%, #3b82f6 100%)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Box sx={{ width: 32, height: 32, borderRadius: "10px", background: "linear-gradient(135deg, #1A5D28 0%, #3b82f6 100%)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <DashboardIcon sx={{ color: "white", fontSize: 18 }} />
             </Box>
-            <Typography sx={{ fontSize: "1.2rem", fontWeight: 700, background: "linear-gradient(135deg, #004AAD 0%, #3b82f6 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <Typography sx={{ fontSize: "1.2rem", fontWeight: 700, background: "linear-gradient(135deg, #1A5D28 0%, #3b82f6 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               Dashboards
             </Typography>
           </Box>
@@ -1340,7 +1340,7 @@ const DateFilter = ({ selectedDate, onDateChange, onApply, onClear, loading }) =
             "& .MuiOutlinedInput-root": {
               borderRadius: "12px",
               "&:hover .MuiOutlinedInput-notchedOutline": {
-                borderColor: "#004AAD",
+                borderColor: "#1A5D28",
               },
             },
           }}
@@ -1371,9 +1371,9 @@ const DateFilter = ({ selectedDate, onDateChange, onApply, onClear, loading }) =
               borderRadius: "10px",
               textTransform: "none",
               flex: 1,
-              backgroundColor: "#004AAD",
+              backgroundColor: "#1A5D28",
               "&:hover": {
-                backgroundColor: "#003b8f",
+                backgroundColor: "#13461E",
               },
             }}
           >

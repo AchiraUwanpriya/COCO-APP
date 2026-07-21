@@ -4756,7 +4756,7 @@ export default function CustomizedDialogs({ isOpen, isOpenDetailScreen }) {
         {/* Header – Blue background with icon and EWO No */}
         <Box
           sx={{
-            backgroundColor: "#1976d2",
+            backgroundColor: "#1A5D28",
             px: { xs: 2, sm: 3 },
             py: 2,
             display: "flex",
@@ -5191,12 +5191,12 @@ export default function CustomizedDialogs({ isOpen, isOpenDetailScreen }) {
                 fontWeight: 600,
                 whiteSpace: "nowrap",
                 flexDirection: "row",
-                backgroundColor: "#1976d2",
-                boxShadow: "0 4px 14px rgba(25, 118, 210, 0.3)",
+                backgroundColor: "#1A5D28",
+                boxShadow: "0 4px 14px rgba(26, 93, 40, 0.3)",
                 "& .MuiButton-endIcon": { marginLeft: 0.75 },
                 "&:hover": {
-                  backgroundColor: "#1565c0",
-                  boxShadow: "0 4px 20px rgba(25, 118, 210, 0.4)",
+                  backgroundColor: "#13461E",
+                  boxShadow: "0 4px 20px rgba(26, 93, 40, 0.4)",
                 },
               }}
             >
@@ -5382,7 +5382,7 @@ export default function CustomizedDialogs({ isOpen, isOpenDetailScreen }) {
                   }}
                 >
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <CalendarToday sx={{ color: "#1976d2", fontSize: 20 }} />
+                    <CalendarToday sx={{ color: "#1A5D28", fontSize: 20 }} />
                     <Typography variant="body2" fontWeight={600}>
                       {reservationAction === "checkin" ? "Check-in Date" : "Check-out Date"}
                     </Typography>
