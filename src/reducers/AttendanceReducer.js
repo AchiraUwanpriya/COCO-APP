@@ -37,8 +37,14 @@ export const GetAttendanceCard = (state = initialState, action) => {
       return {
         ...state,
         loading: false,
-        responseBody: action.payload.responseBody || state.responseBody,
-        attendenceDetails: action.payload.attendenceDetails || state.attendenceDetails,
+        responseBody:
+          action.payload.responseBody !== undefined
+            ? action.payload.responseBody
+            : state.responseBody,
+        attendenceDetails:
+          action.payload.attendenceDetails !== undefined
+            ? action.payload.attendenceDetails
+            : state.attendenceDetails,
         divisionData: action.payload.divisionData || state.divisionData,
         subOrderingAttendance:
           action.payload.subOrderingAttendance || state.subOrderingAttendance,

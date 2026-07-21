@@ -1,9 +1,17 @@
 import axios from "axios";
+import dayjs from "dayjs";
 
-const GetAttendenceDetails = async () => {
+const GetAttendenceDetails = async (adate) => {
+  const formattedDate = adate
+    ? dayjs(adate).format("YYYY-MM-DD")
+    : dayjs().format("YYYY-MM-DD");
+
   const config = {
     method: "get",
     url: "/Attendence/GetAttendenceDetails",
+    params: {
+      Adate: formattedDate,
+    },
   };
 
   return axios.request(config).then((response) => {

@@ -183,31 +183,67 @@ export const GetAttendanceCard = (month) => async (dispatch) => {
   }
 };
 
-export const GetAttendenceDetails = () => async (dispatch) => {
+export const GetAttendenceDetails = (adate) => async (dispatch) => {
   dispatch({
     type: ATTENDANCE_REQUEST,
   });
 
   try {
-    const data = await AttendanceService.GetAttendenceDetails();
-    if (data.data.StatusCode === 200) {
+    const data = await AttendanceService.GetAttendenceDetails(adate);
+    const resData = data?.data;
+
+    const isSuccess =
+      data?.status === 200 ||
+      resData?.StatusCode == 200 ||
+      resData?.statusCode == 200 ||
+      resData?.Status == 200 ||
+      resData?.status == 200 ||
+      Array.isArray(resData);
+
+    if (isSuccess) {
+      let list = [];
+      if (Array.isArray(resData)) {
+        list = resData;
+      } else if (resData) {
+        list =
+          resData.ResultSet ||
+          resData.resultSet ||
+          resData.Data ||
+          resData.data ||
+          resData.attendenceDetails ||
+          resData.AttendanceDetails ||
+          resData.Result ||
+          resData.result ||
+          [];
+      }
+
+      if (!Array.isArray(list) && typeof list === "object") {
+        list = Object.values(list);
+      }
+
       dispatch({
         type: ATTENDANCE_SUCCESS,
         payload: {
-          attendenceDetails: data.data.ResultSet || [],
+          attendenceDetails: list,
+          responseBody: list,
         },
       });
     } else {
       dispatch({
         type: ATTENDANCE_FAIL,
         payload: {
-          msg: "Sorry, could not load attendance details. Please try again!",
+          msg:
+            resData?.message ||
+            resData?.Message ||
+            "Sorry, could not load attendance details. Please try again!",
         },
       });
     }
   } catch (error) {
     const message =
-      (error.response && error.response.data && error.response.data.message) ||
+      (error.response &&
+        error.response.data &&
+        (error.response.data.message || error.response.data.Message)) ||
       error.message ||
       error.toString();
     dispatch({

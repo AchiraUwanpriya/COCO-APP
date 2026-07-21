@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Box, MenuItem, Select, FormControl, InputLabel, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, TextField, Button } from "@mui/material";
 import { useDispatch } from "react-redux";
 import AttendanceCard from "../../components/Cards/AttendanceCard";
 import dayjs from "dayjs";
@@ -7,42 +7,26 @@ import { GetAttendenceDetails } from "../../action/Attendance";
 import { useNavigate } from "react-router-dom";
 
 const Attendance = () => {
-  const [year, setYear] = React.useState(dayjs().year());
-  const [month, setMonth] = React.useState(dayjs().format("MM"));
+  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
   const dispatch = useDispatch();
-  const currentMonth = dayjs().format("MM");
   const navigate = useNavigate();
-  useEffect(() => {
-    dispatch(GetAttendenceDetails());
-  }, [dispatch]);
-  const handleChangeYear = (e) => {
-    setYear(e.target.value);
-  };
-  const handleChangeMonth = (e) => {
-    setMonth(e.target.value);
-  };
-  const months = [
-    { label: "December", value: "12" },
-    { label: "November", value: "11" },
-    { label: "October", value: "10" },
-    { label: "September", value: "09" },
-    { label: "August", value: "08" },
-    { label: "July", value: "07" },
-    { label: "June", value: "06" },
-    { label: "May", value: "05" },
-    { label: "April", value: "04" },
-    { label: "March", value: "03" },
-    { label: "February", value: "02" },
-    { label: "January", value: "01" },
-  ];
 
-  
+  useEffect(() => {
+    dispatch(GetAttendenceDetails(selectedDate));
+  }, [dispatch, selectedDate]);
+
+  const handleDateChange = (e) => {
+    if (e.target.value) {
+      setSelectedDate(e.target.value);
+    }
+  };
+
   return (
     <Box
       sx={{
         display: "flex",
         flexDirection: "column",
-        mt:1
+        mt: 1,
       }}
     >
       <Box
@@ -51,80 +35,29 @@ const Attendance = () => {
           justifyContent: "space-between",
           alignItems: "center",
           mt: 2,
-          mx: 2,  
+          mx: 2,
           gap: 2,
         }}
       >
-        {/* Left Side - Dropdowns */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1}}>
-          {/* Year Dropdown */}
-          <FormControl sx={{ minWidth: 135, height: "40px" }}>
-            <InputLabel sx={{ fontSize: "12px", top: "-5px" }}>Year</InputLabel>
-            <Select
-              value={year}
-              onChange={handleChangeYear}
-              label="Year"
-              sx={{
-                height: "32px",
-                fontSize: "12px",
-                padding: "4px 8px",
-              }}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    maxHeight: "200px",
-                  },
-                },
-              }}
-            >
-              {Array.from({ length: 10 }, (_, index) => {
-                const currentYear = new Date().getFullYear();
-                const y = currentYear - index;
-
-                return (
-                  <MenuItem
-                    key={y}
-                    value={y}
-                    sx={{ fontSize: "12px", height: "28px" }}
-                  >
-                    {y}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-
-          {/* Month Dropdown */}
-          <FormControl sx={{ minWidth: 135, height: "40px" }}>
-            <InputLabel sx={{ fontSize: "12px", top: "-5px" }}>Month</InputLabel>
-            <Select
-              value={month}
-              onChange={handleChangeMonth}
-              label="Month"
-              sx={{
-                height: "32px",
-                fontSize: "12px",
-                padding: "4px 8px",
-              }}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    maxHeight: "200px",
-                  },
-                },
-              }}
-            >
-              {months.map((chip) => (
-                <MenuItem
-                  key={chip.value}
-                  value={chip.value}
-                  sx={{ fontSize: "12px", height: "28px" }}
-                >
-                  {chip.label}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        {/* Left Side - Date Input */}
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <TextField
+            label="Attendance Date"
+            type="date"
+            size="small"
+            value={selectedDate}
+            onChange={handleDateChange}
+            InputLabelProps={{ shrink: true }}
+            sx={{
+              minWidth: 170,
+              backgroundColor: "#fff",
+              borderRadius: 1,
+              "& .MuiInputBase-root": {
+                height: "36px",
+                fontSize: "13px",
+              },
+            }}
+          />
         </Box>
 
         {/* Right Side - Back Button */}
@@ -132,11 +65,12 @@ const Attendance = () => {
           variant="contained"
           color="primary"
           onClick={() => navigate(-1)}
-          sx={{ textTransform: "none", height: "30px" ,mb:1}}
+          sx={{ textTransform: "none", height: "32px" }}
         >
           Back
         </Button>
       </Box>
+
       <Box
         sx={{
           display: "flex",

@@ -273,12 +273,22 @@ const StyledTableRow = styled(TableRow)(({ iseven }) => ({
 }));
 
 export default function AttendanceCard() {
-  const { attendenceDetails, loading, msg } = useSelector(
+  const { attendenceDetails, responseBody, loading, msg } = useSelector(
     (state) => state.attendanceCard
   );
 
+  const listData = useMemo(() => {
+    if (Array.isArray(attendenceDetails) && attendenceDetails.length > 0) {
+      return attendenceDetails;
+    }
+    if (Array.isArray(responseBody) && responseBody.length > 0) {
+      return responseBody;
+    }
+    return [];
+  }, [attendenceDetails, responseBody]);
+
   const tableContent = useMemo(() => {
-    if (!attendenceDetails || attendenceDetails.length === 0) return null;
+    if (!listData || listData.length === 0) return null;
 
     return (
       <TableContainer
@@ -304,18 +314,82 @@ export default function AttendanceCard() {
           </TableHead>
 
           <TableBody>
-            {attendenceDetails.map((row, index) => {
-              const attDate = row.AttDate
-                ? dayjs(row.AttDate)
-                : null;
-              const dateLabel = attDate && attDate.isValid()
-                ? attDate.format("DD")
-                : "-";
-              const dayLabel = attDate && attDate.isValid()
-                ? attDate.format("ddd")
-                : "";
+            {listData.map((row, index) => {
+              const rawDate =
+                row.AttDate ||
+                row.Date ||
+                row.attDate ||
+                row.date ||
+                row.ATT_DATE ||
+                row.Att_Date ||
+                row.Adate ||
+                row.adate;
+              const attDate = rawDate ? dayjs(rawDate) : null;
+
+              const dateLabel =
+                attDate && attDate.isValid()
+                  ? attDate.format("DD")
+                  : rawDate
+                  ? String(rawDate)
+                  : "-";
+
+              const dayLabel =
+                attDate && attDate.isValid()
+                  ? attDate.format("ddd")
+                  : row.Day || row.day
+                  ? String(row.Day || row.day).substring(0, 3)
+                  : "";
+
               const isWeekend =
-                attDate && (attDate.day() === 0 || attDate.day() === 6);
+                attDate && attDate.isValid()
+                  ? attDate.day() === 0 || attDate.day() === 6
+                  : false;
+
+              const serviceNo =
+                row.Name ||
+                row.name ||
+                row.ServiceNo ||
+                row.serviceNo ||
+                row.Service_No ||
+                row.SERVICE_NO ||
+                row.Sno ||
+                row.sno ||
+                row.SNO ||
+                row.EmpNo ||
+                row.empNo ||
+                "-";
+
+              const inTimeVal =
+                row.InTime ||
+                row.inTime ||
+                row.In_Time ||
+                row.IN_TIME ||
+                row.intime ||
+                row.In ||
+                row.in;
+
+              const outTimeVal =
+                row.OutTime ||
+                row.outTime ||
+                row.Out_Time ||
+                row.OUT_TIME ||
+                row.outtime ||
+                row.Out ||
+                row.out;
+
+              const leaveReason =
+                row.LeaveReason || row.leaveReason || row.LeaveType || row.leaveType;
+
+              const formatTime = (t) => {
+                if (!t) return null;
+                const str = String(t).trim();
+                if (!str) return null;
+                const parsed = dayjs(str, ["hh:mm A", "HH:mm", "YYYY-MM-DDTHH:mm:ss"]);
+                return parsed.isValid() ? parsed.format("HH:mm") : str;
+              };
+
+              const formattedIn = formatTime(inTimeVal);
+              const formattedOut = formatTime(outTimeVal);
 
               return (
                 <StyledTableRow key={index} iseven={(index % 2 === 0).toString()}>
@@ -340,60 +414,73 @@ export default function AttendanceCard() {
                       >
                         {dateLabel}
                       </Typography>
-                      <Typography
-                        fontSize={9}
-                        fontWeight={600}
-                        sx={{ color: isWeekend ? "#bf360c" : "#1976d2", lineHeight: 1 }}
-                      >
-                        {dayLabel}
-                      </Typography>
+                      {dayLabel && (
+                        <Typography
+                          fontSize={9}
+                          fontWeight={600}
+                          sx={{ color: isWeekend ? "#bf360c" : "#1976d2", lineHeight: 1, mt: 0.2 }}
+                        >
+                          {dayLabel}
+                        </Typography>
+                      )}
                     </Box>
                   </StyledTableCell>
 
-                  {/* Service No */}
+                  {/* Service No / Name */}
                   <StyledTableCell align="center">
                     <Typography fontSize={11} fontWeight={600} color="#1A5D28">
-                      {row.Name || "-"}
+                      {serviceNo}
                     </Typography>
                   </StyledTableCell>
 
-                  {/* IN Time */}
-                  <StyledTableCell align="center">
-                    {row.InTime ? (
-                      <Chip
-                        label={row.InTime}
-                        size="small"
-                        sx={{
-                          fontSize: 11,
-                          fontWeight: 600,
-                          backgroundColor: "#e8f5e9",
-                          color: "#1A5D28",
-                          height: 20,
-                        }}
-                      />
-                    ) : (
-                      <Typography fontSize={11} color="#bbb">—</Typography>
-                    )}
-                  </StyledTableCell>
+                  {/* IN Time / Leave Reason */}
+                  {leaveReason && !formattedIn && !formattedOut ? (
+                    <StyledTableCell align="center" colSpan={2} sx={{ borderRight: "none" }}>
+                      <Typography fontSize={11} fontWeight={600} color="#d32f2f">
+                        {leaveReason}
+                      </Typography>
+                    </StyledTableCell>
+                  ) : (
+                    <>
+                      {/* IN Time */}
+                      <StyledTableCell align="center">
+                        {formattedIn ? (
+                          <Chip
+                            label={formattedIn}
+                            size="small"
+                            sx={{
+                              fontSize: 11,
+                              fontWeight: 600,
+                              backgroundColor: "#e8f5e9",
+                              color: "#1A5D28",
+                              height: 20,
+                            }}
+                          />
+                        ) : (
+                          <Typography fontSize={11} color="#bbb">—</Typography>
+                        )}
+                      </StyledTableCell>
 
-                  {/* OUT Time */}
-                  <StyledTableCell align="center" sx={{ borderRight: "none" }}>
-                    {row.OutTime ? (
-                      <Chip
-                        label={row.OutTime}
-                        size="small"
-                        sx={{
-                          fontSize: 11,
-                          fontWeight: 600,
-                          backgroundColor: "#fce4ec",
-                          color: "#c62828",
-                          height: 20,
-                        }}
-                      />
-                    ) : (
-                      <Typography fontSize={11} color="#bbb">—</Typography>
-                    )}
-                  </StyledTableCell>
+                      {/* OUT Time */}
+                      <StyledTableCell align="center" sx={{ borderRight: "none" }}>
+                        {formattedOut ? (
+                          <Chip
+                            label={formattedOut}
+                            size="small"
+                            sx={{
+                              fontSize: 11,
+                              fontWeight: 600,
+                              backgroundColor: "#fce4ec",
+                              color: "#c62828",
+                              height: 20,
+                            }}
+                          />
+                        ) : (
+                          <Typography fontSize={11} color="#bbb">—</Typography>
+                        )}
+                      </StyledTableCell>
+                    </>
+                  )}
                 </StyledTableRow>
               );
             })}
@@ -401,15 +488,13 @@ export default function AttendanceCard() {
         </Table>
       </TableContainer>
     );
-  }, [attendenceDetails]);
+  }, [listData]);
 
   return loading ? (
     <Loader />
   ) : (
     <Box sx={{ width: "100%", mt: 1 }}>
-      {attendenceDetails && attendenceDetails.length > 0
-        ? tableContent
-        : <NotFound text={msg} />}
+      {listData && listData.length > 0 ? tableContent : <NotFound text={msg} />}
     </Box>
   );
 }
