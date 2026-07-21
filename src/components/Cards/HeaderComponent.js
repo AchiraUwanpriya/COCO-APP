@@ -819,6 +819,7 @@ export default function HeaderComponent() {
   let navigate = useNavigate();
 
   const isComponentIdAvailable = (componentId) => {
+    if (!headComponent || headComponent.length === 0) return true;
     return headComponent.some((item) => item.ComponentId === componentId);
   };
 

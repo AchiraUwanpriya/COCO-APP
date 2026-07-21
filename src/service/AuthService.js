@@ -17,6 +17,21 @@ const login = async (service_no,password,device, ip) => {
     return response;
   });
 };
+
+const userLogin = async (serviceNo, password) => {
+  const config = {
+    method: "post",
+    url: "Login/UserLogin",
+    params: {
+      serviceNo,
+      password,
+    },
+  };
+
+  return axios.request(config).then((response) => {
+    return response;
+  });
+};
 const verifyOTP = async (userOTP, encryptedOTP) => {
   const config = {
     method: "post",
@@ -55,6 +70,7 @@ const biometricLogin = async (biometricToken) => {
 
 export default {
   login,
+  userLogin,
   verifyOTP,
   biometricLogin,
 };

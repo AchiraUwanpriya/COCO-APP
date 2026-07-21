@@ -7,6 +7,7 @@ import {
 const initialState = {
   requestBody: null,
   responseBody: [],
+  attendenceDetails: [],
   divisionData: [],
   subOrderingAttendance: [],
   weeklyAttendance: [],
@@ -37,6 +38,7 @@ export const GetAttendanceCard = (state = initialState, action) => {
         ...state,
         loading: false,
         responseBody: action.payload.responseBody || state.responseBody,
+        attendenceDetails: action.payload.attendenceDetails || state.attendenceDetails,
         divisionData: action.payload.divisionData || state.divisionData,
         subOrderingAttendance:
           action.payload.subOrderingAttendance || state.subOrderingAttendance,

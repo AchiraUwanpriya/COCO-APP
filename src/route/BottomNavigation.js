@@ -263,9 +263,10 @@ export default function Footer() {
   const [unreadCount, setUnreadCount] = React.useState(0);
  
   
-  const hasDashboardAccess = headComponent?.some(
-    (component) => component.ComponentId === "EMOBCI0013"
-  );
+  const hasDashboardAccess =
+    !headComponent ||
+    headComponent.length === 0 ||
+    headComponent?.some((component) => component.ComponentId === "EMOBCI0013");
 
 
   const fetchUnseenCount = async () => {

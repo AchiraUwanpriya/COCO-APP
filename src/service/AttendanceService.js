@@ -1,5 +1,16 @@
 import axios from "axios";
 
+const GetAttendenceDetails = async () => {
+  const config = {
+    method: "get",
+    url: "/Attendence/GetAttendenceDetails",
+  };
+
+  return axios.request(config).then((response) => {
+    return response;
+  });
+};
+
 const GetAttendanceCard = async (month) => {
   let formData = new FormData();
   formData.append("P_MONTH", month);
@@ -138,6 +149,7 @@ const GetsubOrderingAttendanceCard = async (month, sno) => {
 
 
 export default {
+  GetAttendenceDetails,
   GetAttendanceCard,
   GetCdlBasedDivison,
   GetTraineeBasedTypes,

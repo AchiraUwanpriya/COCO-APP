@@ -236,8 +236,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import Checkbox from "@mui/material/Checkbox";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Typography, Chip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import dayjs from "dayjs";
 import Loader from "../Utility/Loader";
@@ -245,211 +244,172 @@ import NotFound from "../Utility/NotFound";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   "&.MuiTableCell-head": {
-    // backgroundColor: theme.palette.common.black,
-    backgroundColor: "#1976d2",
+    backgroundColor: "#1A5D28",
     color: theme.palette.common.white,
     fontSize: 12,
     fontWeight: 600,
-    padding: "4px",
-    height: "30px",
+    padding: "6px 8px",
+    height: "32px",
     lineHeight: "1",
-    borderRight: "1px solid #ddd",
+    borderRight: "1px solid rgba(255,255,255,0.2)",
   },
   "&.MuiTableCell-body": {
     fontSize: 12,
-    color: "black",
-    padding: "2px 4px",
+    color: "#333",
+    padding: "4px 8px",
     lineHeight: "1",
-    borderRight: "1px solid #ddd",
+    borderRight: "1px solid #e0e0e0",
   },
 }));
 
-const StyledTableRow = styled(TableRow)(({ bgcolor }) => ({
-  backgroundColor: bgcolor || "inherit",
+const StyledTableRow = styled(TableRow)(({ iseven }) => ({
+  backgroundColor: iseven === "true" ? "#f9fbe7" : "#ffffff",
+  "&:hover": {
+    backgroundColor: "#e8f5e9",
+  },
   "& td, & th": {
-    backgroundColor: "inherit",
-    textAlign: "center",
-    padding: "2px 4px",
-    height: "30px",
-    borderBottom: "1px solid #ddd",
+    borderBottom: "1px solid #e0e0e0",
   },
 }));
 
 export default function AttendanceCard() {
-  const { responseBody, loading, msg } = useSelector(
+  const { attendenceDetails, loading, msg } = useSelector(
     (state) => state.attendanceCard
   );
 
-  const mappedItems = useMemo(() => {
+  const tableContent = useMemo(() => {
+    if (!attendenceDetails || attendenceDetails.length === 0) return null;
+
     return (
       <TableContainer
         component={Paper}
-        sx={{ width: "100%", overflowX: "auto" }}
+        sx={{ width: "100%", overflowX: "auto", borderRadius: 2, boxShadow: "0 2px 8px rgba(0,0,0,0.08)" }}
       >
-        {/* Handle the Table column sizes */}
-        <Table sx={{ width: "100%" }} aria-label="attendance table">
+        <Table sx={{ width: "100%", minWidth: 320 }} aria-label="attendance details table">
           <TableHead>
             <TableRow>
-              <StyledTableCell
-                align="center"
-                rowSpan={2}
-                sx={{ width: "20%", borderRight: "1px solid #ddd" }}
-              >
-                Day
+              <StyledTableCell align="center" sx={{ width: "22%" }}>
+                Date
               </StyledTableCell>
-              <StyledTableCell
-                align="center"
-                colSpan={3}
-                sx={{ borderRight: "1px solid #ddd" }}
-              >
-                Attendance
+              <StyledTableCell align="center" sx={{ width: "22%" }}>
+                Service No
               </StyledTableCell>
-              <StyledTableCell align="center" colSpan={2}>
-                Vehicle
-              </StyledTableCell>
-            </TableRow>
-            <TableRow>
-              <StyledTableCell
-                align="center"
-                sx={{ width: "15%", borderRight: "1px solid #ddd" }}
-              >
+              <StyledTableCell align="center" sx={{ width: "28%" }}>
                 IN
               </StyledTableCell>
-              <StyledTableCell
-                align="center"
-                sx={{ width: "5%", borderRight: "1px solid #ddd" }}
-              >
-                C
-              </StyledTableCell>
-              <StyledTableCell
-                align="center"
-                sx={{ width: "15%", borderRight: "1px solid #ddd" }}
-              >
-                OUT
-              </StyledTableCell>
-              <StyledTableCell
-                align="center"
-                sx={{ width: "15%", borderRight: "1px solid #ddd" }}
-              >
-                IN
-              </StyledTableCell>
-              <StyledTableCell align="center" sx={{ width: "15%" }}>
+              <StyledTableCell align="center" sx={{ width: "28%", borderRight: "none" }}>
                 OUT
               </StyledTableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {responseBody.map((row, index) => (
-              <StyledTableRow key={index} bgcolor={row.BackgroundColor}>
-                <StyledTableCell
-                  component="th"
-                  scope="row"
-                  align="center"
-                  sx={{ borderRight: "1px solid #ddd" }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      flexDirection: "column",
-                      justifyContent: "center",
-                      backgroundColor: "#B5E8FF",
-                      padding: "4px",
-                      borderRadius: 2,
-                      width: "100%",
-                      height: "30px",
-                    }}
-                  >
-                    <Typography
-                      fontSize={12}
-                      fontWeight={600}
-                      sx={{ color: "black", lineHeight: "1" }}
-                    >
-                      {new Date(row.Date).getDate()}
-                    </Typography>
-                    <Typography
-                      fontSize={9}
-                      fontWeight={600}
-                      sx={{ color: "black", lineHeight: "1" }}
-                    >
-                      {row.Day.toString().substring(0, 3)}
-                    </Typography>
-                  </Box>
-                </StyledTableCell>
+            {attendenceDetails.map((row, index) => {
+              const attDate = row.AttDate
+                ? dayjs(row.AttDate)
+                : null;
+              const dateLabel = attDate && attDate.isValid()
+                ? attDate.format("DD")
+                : "-";
+              const dayLabel = attDate && attDate.isValid()
+                ? attDate.format("ddd")
+                : "";
+              const isWeekend =
+                attDate && (attDate.day() === 0 || attDate.day() === 6);
 
-                {row.LeaveType !== "" ? (
-                  <StyledTableCell
-                    align="center"
-                    colSpan={5}
-                    sx={{
-                      fontWeight: "bold",
-                      fontSize: "14px",
-                      color: "black",
-                    }}
-                  >
-                    {row.LeaveReason}
+              return (
+                <StyledTableRow key={index} iseven={(index % 2 === 0).toString()}>
+                  {/* Date Cell */}
+                  <StyledTableCell component="th" scope="row" align="center">
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        backgroundColor: isWeekend ? "#ffecb3" : "#e3f2fd",
+                        borderRadius: 1.5,
+                        py: 0.4,
+                        px: 0.5,
+                      }}
+                    >
+                      <Typography
+                        fontSize={13}
+                        fontWeight={700}
+                        sx={{ color: isWeekend ? "#e65100" : "#1565c0", lineHeight: 1 }}
+                      >
+                        {dateLabel}
+                      </Typography>
+                      <Typography
+                        fontSize={9}
+                        fontWeight={600}
+                        sx={{ color: isWeekend ? "#bf360c" : "#1976d2", lineHeight: 1 }}
+                      >
+                        {dayLabel}
+                      </Typography>
+                    </Box>
                   </StyledTableCell>
-                ) : (
-                  <>
-                    <StyledTableCell
-                      align="center"
-                      sx={{ borderRight: "1px solid #ddd" }}
-                    >
-                      {row.InTime
-                        ? dayjs(row.InTime, "hh:mm A").format("HH:mm")
-                        : ""}
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align="center"
-                      sx={{ borderRight: "1px solid #ddd" }}
-                    >
-                      {row.ContinuedStatus === "Y" ? (
-                        <Checkbox checked disabled />
-                      ) : (
-                        ""
-                      )}
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align="center"
-                      sx={{ borderRight: "1px solid #ddd" }}
-                    >
-                      {row.OutTime
-                        ? dayjs(row.OutTime, "hh:mm A").format("HH:mm")
-                        : ""}
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align="center"
-                      sx={{ borderRight: "1px solid #ddd" }}
-                    >
-                      {row.VIn && dayjs(row.VIn, ["hh:mm A", "HH:mm"]).isValid()
-                        ? dayjs(row.VIn, ["hh:mm A", "HH:mm"]).format("HH:mm")
-                        : ""}
-                    </StyledTableCell>
-                    <StyledTableCell
-                      align="center"
-                      sx={{ borderRight: "1px solid #ddd" }}
-                    >
-                      {row.VOut &&
-                      dayjs(row.VOut, ["hh:mm A", "HH:mm"]).isValid()
-                        ? dayjs(row.VOut, ["hh:mm A", "HH:mm"]).format("HH:mm")
-                        : ""}
-                    </StyledTableCell>
-                  </>
-                )}
-              </StyledTableRow>
-            ))}
+
+                  {/* Service No */}
+                  <StyledTableCell align="center">
+                    <Typography fontSize={11} fontWeight={600} color="#1A5D28">
+                      {row.Name || "-"}
+                    </Typography>
+                  </StyledTableCell>
+
+                  {/* IN Time */}
+                  <StyledTableCell align="center">
+                    {row.InTime ? (
+                      <Chip
+                        label={row.InTime}
+                        size="small"
+                        sx={{
+                          fontSize: 11,
+                          fontWeight: 600,
+                          backgroundColor: "#e8f5e9",
+                          color: "#1A5D28",
+                          height: 20,
+                        }}
+                      />
+                    ) : (
+                      <Typography fontSize={11} color="#bbb">—</Typography>
+                    )}
+                  </StyledTableCell>
+
+                  {/* OUT Time */}
+                  <StyledTableCell align="center" sx={{ borderRight: "none" }}>
+                    {row.OutTime ? (
+                      <Chip
+                        label={row.OutTime}
+                        size="small"
+                        sx={{
+                          fontSize: 11,
+                          fontWeight: 600,
+                          backgroundColor: "#fce4ec",
+                          color: "#c62828",
+                          height: 20,
+                        }}
+                      />
+                    ) : (
+                      <Typography fontSize={11} color="#bbb">—</Typography>
+                    )}
+                  </StyledTableCell>
+                </StyledTableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
     );
-  }, [responseBody]);
+  }, [attendenceDetails]);
 
   return loading ? (
     <Loader />
   ) : (
-    <Box sx={{ width: "100%" }}>
-      {responseBody.length > 0 ? mappedItems : <NotFound text={msg} />}
+    <Box sx={{ width: "100%", mt: 1 }}>
+      {attendenceDetails && attendenceDetails.length > 0
+        ? tableContent
+        : <NotFound text={msg} />}
     </Box>
   );
 }

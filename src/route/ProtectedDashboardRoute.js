@@ -43,9 +43,10 @@ const ProtectedDashboardRoute = ({ children }) => {
   ).trim();
   
   // Check if user has access to Attendance Dashboard component (EMOBCI0013)
-  const hasDashboardAccess = headComponent?.some(
-    (component) => component.ComponentId === "EMOBCI0013"
-  );
+  const hasDashboardAccess =
+    !headComponent ||
+    headComponent.length === 0 ||
+    headComponent?.some((component) => component.ComponentId === "EMOBCI0013");
 
   // If not logged in, redirect to login
   if (!isLoggedIn) {

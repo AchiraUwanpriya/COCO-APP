@@ -3,7 +3,7 @@ import { Box, MenuItem, Select, FormControl, InputLabel, Button } from "@mui/mat
 import { useDispatch } from "react-redux";
 import AttendanceCard from "../../components/Cards/AttendanceCard";
 import dayjs from "dayjs";
-import { GetAttendanceCard } from "../../action/Attendance";
+import { GetAttendenceDetails } from "../../action/Attendance";
 import { useNavigate } from "react-router-dom";
 
 const Attendance = () => {
@@ -13,9 +13,8 @@ const Attendance = () => {
   const currentMonth = dayjs().format("MM");
   const navigate = useNavigate();
   useEffect(() => {
-    const selectedYear = year ? year : null;
-    dispatch(GetAttendanceCard(selectedYear + "-" + month));
-  }, [year, month, dispatch]);
+    dispatch(GetAttendenceDetails());
+  }, [dispatch]);
   const handleChangeYear = (e) => {
     setYear(e.target.value);
   };

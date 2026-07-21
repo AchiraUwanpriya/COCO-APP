@@ -250,6 +250,7 @@ import AuthService from "../service/AuthService";
 import CommonService from "../service/CommonService";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const getDeviceInfo = () => {
   const userAgent = navigator.userAgent;
@@ -297,35 +298,28 @@ export const login = (service_no, password, navigate, isBiometric = false) => as
   });
 
   try {
-    const device = getDeviceInfo();
-    const ip = await getIPAddress();
-
-    return await AuthService.login(service_no, password, device, ip).then(
+    return await AuthService.userLogin(service_no, password).then(
       (data) => {
         if (data.data.StatusCode === 200) {
-          localStorage.setItem("logId", data.data.LogId);
+          const authKey = data.data.AuthKey;
+
+          sessionStorage.setItem("token", JSON.stringify(authKey));
+          axios.defaults.headers.common["auth-key"] = authKey;
 
           dispatch({
-            type: VERIFICATION_REQUEST,
-            payload: {
-              number: service_no,
-              useData: data.data.UserDetails,
-              token: data.data.Token,
-              encryptedOTP: data.data.TokenO,
-              device: device,
-              logId: data.data.LogId,
-              ip: ip,
-            },
+            type: LOGIN_SUCCESS,
+            payload: {},
           });
-          navigate(`/Verification`);
+
+          navigate("/home");
         } else {
           dispatch({
             type: LOGIN_FAIL,
             payload: {
-              msg: "Your User ID or Password is incorrect",
+              msg: "Your Service No or Password is incorrect",
             },
           });
-          toast.error("Your User ID or Password is incorrect");
+          toast.error("Your Service No or Password is incorrect");
         }
         return Promise.resolve();
       },
@@ -350,10 +344,10 @@ export const login = (service_no, password, navigate, isBiometric = false) => as
     dispatch({
       type: LOGIN_FAIL,
       payload: {
-        msg: "Failed to get device information",
+        msg: "Login failed. Please try again.",
       },
     });
-    toast.error("Failed to get device information");
+    toast.error("Login failed. Please try again.");
     return Promise.reject();
   }
 };

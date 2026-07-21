@@ -183,6 +183,42 @@ export const GetAttendanceCard = (month) => async (dispatch) => {
   }
 };
 
+export const GetAttendenceDetails = () => async (dispatch) => {
+  dispatch({
+    type: ATTENDANCE_REQUEST,
+  });
+
+  try {
+    const data = await AttendanceService.GetAttendenceDetails();
+    if (data.data.StatusCode === 200) {
+      dispatch({
+        type: ATTENDANCE_SUCCESS,
+        payload: {
+          attendenceDetails: data.data.ResultSet || [],
+        },
+      });
+    } else {
+      dispatch({
+        type: ATTENDANCE_FAIL,
+        payload: {
+          msg: "Sorry, could not load attendance details. Please try again!",
+        },
+      });
+    }
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    dispatch({
+      type: ATTENDANCE_FAIL,
+      payload: {
+        msg: message,
+      },
+    });
+  }
+};
+
 export const GetCdlBasedDivison = (mcvDate, hadDate) => async (dispatch) => {
   dispatch({
     type: ATTENDANCE_REQUEST,
