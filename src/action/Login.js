@@ -361,6 +361,27 @@ export const phoneLogin = (mobileNumber, navigate) => async (dispatch) => {
       data.statusCode === 200 ||
       (response.status === 200 && data.StatusCode !== 400 && data.StatusCode !== 500);
 
+    const extractedToken =
+      data.Token ||
+      data.AuthKey ||
+      data.token ||
+      data.authKey ||
+      data.ResultSet?.Token ||
+      data.ResultSet?.AuthKey ||
+      data.ResultSet?.token ||
+      data.ResultSet?.authKey ||
+      (Array.isArray(data.ResultSet) && (data.ResultSet[0]?.AuthKey || data.ResultSet[0]?.Token || data.ResultSet[0]?.authKey || data.ResultSet[0]?.token)) ||
+      data.UserDetails?.Token ||
+      data.UserDetails?.AuthKey ||
+      data.UserDetails?.token ||
+      data.UserDetails?.authKey ||
+      (Array.isArray(data.UserDetails) && (data.UserDetails[0]?.AuthKey || data.UserDetails[0]?.Token || data.UserDetails[0]?.authKey || data.UserDetails[0]?.token)) ||
+      data.Data?.Token ||
+      data.Data?.AuthKey ||
+      data.Data?.token ||
+      data.Data?.authKey ||
+      null;
+
     if (isSuccess) {
       dispatch({
         type: VERIFICATION_REQUEST,
@@ -368,7 +389,7 @@ export const phoneLogin = (mobileNumber, navigate) => async (dispatch) => {
           number: mobileNumber,
           msg: data.Message || "Verification code sent successfully",
           useData: data.UserDetails || data.ResultSet || null,
-          token: data.Token || data.AuthKey || null,
+          token: extractedToken,
           encryptedOTP: data.EncryptedOTP || data.OTP || data.EncryptedOtp || null,
           plainOTP:
             data.OTP?.toString() ||
@@ -411,24 +432,35 @@ export const phoneLogin = (mobileNumber, navigate) => async (dispatch) => {
 export const OTPVerify = (useData, token, navigate) => async (dispatch) => {
   console.log("OTPVerify called, token:", token);
 
+  const originalToken =
+    token ||
+    useData?.Token ||
+    useData?.AuthKey ||
+    useData?.token ||
+    useData?.authKey ||
+    (Array.isArray(useData) && (useData[0]?.AuthKey || useData[0]?.Token || useData[0]?.authKey || useData[0]?.token)) ||
+    "";
+
   // Always dispatch success — OTP was already validated locally before this is called
   dispatch({
     type: VERIFICATION_SUCCESS,
     payload: {
       user: useData,
-      Token: token,
+      Token: originalToken,
     },
   });
   dispatch({
     type: LOGIN_SUCCESS,
     payload: {
       data: useData,
+      token: originalToken,
     },
   });
 
-  const authToken = token || "PHONE_AUTH_TOKEN";
-  sessionStorage.setItem("token", JSON.stringify(authToken));
-  axios.defaults.headers.common["auth-key"] = authToken;
+  if (originalToken) {
+    sessionStorage.setItem("token", JSON.stringify(originalToken));
+    axios.defaults.headers.common["auth-key"] = originalToken;
+  }
 
   navigate("/home");
 };

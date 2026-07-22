@@ -55,6 +55,7 @@ export const authReducer = (state = initialState, action) => {
         number: action.payload.number,
         msg: null,
         user: action.payload.user,
+        token: action.payload.Token || action.payload.token || state.token,
       };
     case VERIFICATION_FAIL:
       return {
@@ -72,7 +73,7 @@ export const authReducer = (state = initialState, action) => {
         loading: false,
         data: action.payload.data,
         number: null,
-        token: null,
+        token: action.payload.token || action.payload.Token || state.token,
       };
     case LOGIN_FAIL:
       return {

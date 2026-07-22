@@ -212,11 +212,20 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   const handleVerification = async (useData, token, navigate) => {
-    // Save the token as the biometric token for future biometric logins
-    if (token) {
-      localStorage.setItem("biometric_token", token);
+    const originalToken =
+      token ||
+      useData?.Token ||
+      useData?.AuthKey ||
+      useData?.token ||
+      useData?.authKey ||
+      (Array.isArray(useData) && (useData[0]?.AuthKey || useData[0]?.Token || useData[0]?.authKey || useData[0]?.token)) ||
+      "";
+
+    // Save the original token as the biometric token for future biometric logins
+    if (originalToken) {
+      localStorage.setItem("biometric_token", originalToken);
     }
-    dispatch(OTPVerify(useData, token, navigate));
+    dispatch(OTPVerify(useData, originalToken, navigate));
   };
 
   const handleLogout = () => {
