@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Box, TextField, Button, MenuItem, IconButton } from "@mui/material";
+import { Box, TextField, Button, MenuItem, IconButton, InputAdornment, Tooltip } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ClearIcon from "@mui/icons-material/Clear";
 import { useDispatch } from "react-redux";
 import AttendanceCard from "../../components/Cards/AttendanceCard";
 import dayjs from "dayjs";
@@ -25,7 +26,7 @@ const MONTHS = [
 const Attendance = () => {
   const [year, setYear] = useState(dayjs().format("YYYY"));
   const [month, setMonth] = useState(dayjs().format("MM"));
-  const [day, setDay] = useState(""); // empty = no day selected
+  const [day, setDay] = useState(dayjs().format("DD")); // default = today
   const [sno, setSno] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -164,29 +165,49 @@ const Attendance = () => {
             ))}
           </TextField>
           {/* Day selector — optional. When selected, API receives fromDate instead of year+month */}
-          <TextField
-            select
-            label="Day"
-            size="small"
-            value={day}
-            onChange={(e) => setDay(e.target.value)}
-            sx={{
-              minWidth: 90,
-              backgroundColor: "#fff",
-              borderRadius: 1,
-              "& .MuiInputBase-root": {
-                height: "36px",
-                fontSize: "13px",
-              },
-            }}
-          >
-            <MenuItem value=""><em>All Days</em></MenuItem>
-            {daysInMonth.map((d) => (
-              <MenuItem key={d} value={d}>
-                {d}
-              </MenuItem>
-            ))}
-          </TextField>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <TextField
+              select
+              label="Date"
+              size="small"
+              value={day}
+              onChange={(e) => setDay(e.target.value)}
+              sx={{
+                minWidth: 90,
+                backgroundColor: "#fff",
+                borderRadius: 1,
+                "& .MuiInputBase-root": {
+                  height: "36px",
+                  fontSize: "13px",
+                },
+              }}
+            >
+              <MenuItem value=""><em>All Days</em></MenuItem>
+              {daysInMonth.map((d) => (
+                <MenuItem key={d} value={d}>
+                  {d}
+                </MenuItem>
+              ))}
+            </TextField>
+            {/* Clear day button — only visible when a day is selected */}
+            {day && (
+              <Tooltip title="Clear day">
+                <IconButton
+                  size="small"
+                  onClick={() => setDay("")}
+                  sx={{
+                    backgroundColor: "#f5f5f5",
+                    border: "1px solid #ddd",
+                    width: 28,
+                    height: 28,
+                    "&:hover": { backgroundColor: "#ffebee", borderColor: "#e53935" },
+                  }}
+                >
+                  <ClearIcon sx={{ fontSize: 14, color: "#e53935" }} />
+                </IconButton>
+              </Tooltip>
+            )}
+          </Box>
           <TextField
             label="Service No"
             size="small"
