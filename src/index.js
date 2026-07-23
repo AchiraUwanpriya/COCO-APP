@@ -149,6 +149,8 @@ axios.interceptors.request.use(
     const url = config.url || "";
     const isAllowedLogin = url.toLowerCase().includes("login/");
     const isAllowedAttendance =
+      url.toLowerCase().includes("attendence/getfilterdattendencedetails") ||
+      url.toLowerCase().includes("attendance/getfilterdattendencedetails") ||
       url.toLowerCase().includes("attendence/getattendencedetails") ||
       url.toLowerCase().includes("attendance/getattendencedetails");
 

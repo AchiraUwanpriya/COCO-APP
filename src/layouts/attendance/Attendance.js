@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Box, TextField, Button, MenuItem, IconButton } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useDispatch } from "react-redux";
@@ -25,23 +25,47 @@ const MONTHS = [
 const Attendance = () => {
   const [year, setYear] = useState(dayjs().format("YYYY"));
   const [month, setMonth] = useState(dayjs().format("MM"));
+  const [day, setDay] = useState(""); // empty = no day selected
   const [sno, setSno] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const fetchAttendance = (overrideSno) => {
+  // Dynamically compute days available for selected year+month
+  const daysInMonth = useMemo(() => {
+    if (year && month) {
+      const count = dayjs(`${year}-${month}-01`).daysInMonth();
+      return Array.from({ length: count }, (_, i) =>
+        String(i + 1).padStart(2, "0")
+      );
+    }
+    return Array.from({ length: 31 }, (_, i) =>
+      String(i + 1).padStart(2, "0")
+    );
+  }, [year, month]);
+
+  const buildParams = (overrideSno) => {
     const activeSno =
       typeof overrideSno === "string" || typeof overrideSno === "number"
         ? String(overrideSno)
         : sno;
     const finalSno = activeSno ? String(activeSno).trim() : "";
-    dispatch(
-      GetAttendenceDetails({
-        year: year ? String(year).trim() : undefined,
-        month: month ? String(month).trim() : undefined,
-        sno: finalSno,
-      })
-    );
+
+    // If all three (year, month, day) are selected → send as fromDate
+    if (year && month && day) {
+      const fromDate = `${year}-${month}-${day}`;
+      return { fromDate, sno: finalSno };
+    }
+
+    // Otherwise send year + month separately
+    return {
+      year: year ? String(year).trim() : undefined,
+      month: month ? String(month).trim() : undefined,
+      sno: finalSno,
+    };
+  };
+
+  const fetchAttendance = (overrideSno) => {
+    dispatch(GetAttendenceDetails(buildParams(overrideSno)));
   };
 
   const handleSnoChange = (e) => {
@@ -52,9 +76,16 @@ const Attendance = () => {
     }
   };
 
+  // Reset day if it exceeds days in the newly chosen month
+  useEffect(() => {
+    if (day && daysInMonth.length > 0 && !daysInMonth.includes(day)) {
+      setDay("");
+    }
+  }, [year, month]);
+
   useEffect(() => {
     fetchAttendance();
-  }, [dispatch, year, month]);
+  }, [dispatch, year, month, day]);
 
   return (
     <Box
@@ -92,7 +123,7 @@ const Attendance = () => {
         }}
       >
         
-        {/* Left Side - Year, Month & Service No Inputs */}
+        {/* Left Side - Year, Month, Day & Service No Inputs */}
         <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 1.5 }}>
           <TextField
             label="Year"
@@ -101,7 +132,7 @@ const Attendance = () => {
             value={year}
             onChange={(e) => setYear(e.target.value)}
             sx={{
-              width: 110,
+              width: 100,
               backgroundColor: "#fff",
               borderRadius: 1,
               "& .MuiInputBase-root": {
@@ -117,7 +148,7 @@ const Attendance = () => {
             value={month}
             onChange={(e) => setMonth(e.target.value)}
             sx={{
-              minWidth: 140,
+              minWidth: 130,
               backgroundColor: "#fff",
               borderRadius: 1,
               "& .MuiInputBase-root": {
@@ -132,6 +163,30 @@ const Attendance = () => {
               </MenuItem>
             ))}
           </TextField>
+          {/* Day selector — optional. When selected, API receives fromDate instead of year+month */}
+          <TextField
+            select
+            label="Day"
+            size="small"
+            value={day}
+            onChange={(e) => setDay(e.target.value)}
+            sx={{
+              minWidth: 90,
+              backgroundColor: "#fff",
+              borderRadius: 1,
+              "& .MuiInputBase-root": {
+                height: "36px",
+                fontSize: "13px",
+              },
+            }}
+          >
+            <MenuItem value=""><em>All Days</em></MenuItem>
+            {daysInMonth.map((d) => (
+              <MenuItem key={d} value={d}>
+                {d}
+              </MenuItem>
+            ))}
+          </TextField>
           <TextField
             label="Service No"
             size="small"
@@ -139,7 +194,7 @@ const Attendance = () => {
             value={sno}
             onChange={handleSnoChange}
             sx={{
-              width: 250,
+              width: 220,
               backgroundColor: "#fff",
               borderRadius: 1,
               "& .MuiInputBase-root": {

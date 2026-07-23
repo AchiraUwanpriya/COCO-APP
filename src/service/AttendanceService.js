@@ -10,6 +10,7 @@ const GetAttendenceDetails = async (
   let sno = snoParam;
   let year = yearParam;
   let month = monthParam;
+  let fromDate = undefined;
 
   if (
     adate &&
@@ -27,34 +28,43 @@ const GetAttendenceDetails = async (
         : adate.ServiceNo !== undefined
         ? adate.ServiceNo
         : sno;
-    year = adate.year || adate.Year || year;
-    month = adate.month || adate.Month || month;
+
+    // If a specific day was selected, fromDate is provided (YYYY-MM-DD)
+    if (adate.fromDate) {
+      fromDate = adate.fromDate;
+    } else {
+      year = adate.year || adate.Year || year;
+      month = adate.month || adate.Month || month;
+    }
   } else if (adate) {
     const formatted = dayjs(adate).isValid() ? dayjs(adate) : null;
     if (formatted) {
-      if (!year) year = formatted.format("YYYY");
-      if (!month) month = formatted.format("MM");
+      fromDate = formatted.format("YYYY-MM-DD");
     }
   }
 
   const today = dayjs();
 
   sno = sno ? String(sno).trim() : "";
-  if (!year) year = today.format("YYYY");
-  if (!month) month = today.format("MM");
 
-  if (month && String(month).length === 1) {
-    month = `0${month}`;
+  let params;
+  if (fromDate) {
+    // Single-day query → ?fromDate=2026-07-22
+    params = { sno, fromDate };
+  } else {
+    // Month-range query → ?year=2026&month=07
+    if (!year) year = today.format("YYYY");
+    if (!month) month = today.format("MM");
+    if (month && String(month).length === 1) {
+      month = `0${month}`;
+    }
+    params = { sno, year, month };
   }
 
   const config = {
     method: "get",
-    url: "/Attendence/GetAttendenceDetails",
-    params: {
-      sno,
-      year,
-      month,
-    },
+    url: "/Attendence/GetFilterdAttendenceDetails",
+    params,
   };
 
   return axios.request(config).then((response) => {

@@ -301,11 +301,11 @@ export default function AttendanceCard() {
               <StyledTableCell align="center" sx={{ width: "16%" }}>
                 Date
               </StyledTableCell>
-              <StyledTableCell align="center" sx={{ width: "22%" }}>
+              {/* <StyledTableCell align="center" sx={{ width: "22%" }}>
                 Service No
-              </StyledTableCell>
+              </StyledTableCell> */}
               <StyledTableCell align="center" sx={{ width: "26%" }}>
-                Name
+                Service No
               </StyledTableCell>
               <StyledTableCell align="center" sx={{ width: "18%" }}>
                 IN
@@ -447,11 +447,11 @@ export default function AttendanceCard() {
                   </StyledTableCell>
 
                   {/* Service No */}
-                  <StyledTableCell align="center">
+                  {/* <StyledTableCell align="center">
                     <Typography fontSize={11} fontWeight={600} color="#1A5D28">
                       {serviceNo}
                     </Typography>
-                  </StyledTableCell>
+                  </StyledTableCell> */}
 
                   {/* Name */}
                   <StyledTableCell align="center">
