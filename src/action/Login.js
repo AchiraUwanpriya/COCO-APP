@@ -459,6 +459,7 @@ export const OTPVerify = (useData, token, navigate) => async (dispatch) => {
 
   if (originalToken) {
     sessionStorage.setItem("token", JSON.stringify(originalToken));
+    localStorage.setItem("biometric_token", originalToken);
     axios.defaults.headers.common["auth-key"] = originalToken;
   }
 

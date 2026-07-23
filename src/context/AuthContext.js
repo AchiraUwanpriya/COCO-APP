@@ -205,8 +205,12 @@ export const AuthContextProvider = ({ children }) => {
 
   const handlePhoneLogin = async (mobileNumber) => {
     try {
+      sessionStorage.setItem("_bio_tmp_sn", mobileNumber);
+      sessionStorage.setItem("_bio_tmp_pw", "phone_login");
       await dispatch(phoneLogin(mobileNumber, navigate));
     } catch (error) {
+      sessionStorage.removeItem("_bio_tmp_sn");
+      sessionStorage.removeItem("_bio_tmp_pw");
       toast.error("Failed to send verification code. Please try again.");
     }
   };

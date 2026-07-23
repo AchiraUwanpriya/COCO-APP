@@ -269,7 +269,7 @@ import { useNavigate } from "react-router-dom";
 import { checkBiometricAvailability, biometricLogin } from "../../../action/Biometric";
 
 const SignIn = () => {
-  const [activeTab, setActiveTab] = useState("serviceNo");
+  const [activeTab, setActiveTab] = useState("phone");
   const [phoneNo, setPhoneNo] = useState("");
   const [serviceNo, setserviceNo] = useState("");
   const [password, setpassword] = useState("");
@@ -421,7 +421,8 @@ const SignIn = () => {
           </Typography>
         </Box>
 
-        <Box
+        {/* Tab switcher - Service No option commented out for now */}
+        {/* <Box
           sx={{
             display: "flex",
             backgroundColor: "#F5F6F8",
@@ -469,37 +470,38 @@ const SignIn = () => {
           >
             Service No
           </Button>
-        </Box>
+        </Box> */}
 
         <Box>
-          {activeTab === "phone" ? (
-            <Box mb={2}>
-              <TextField
-                fullWidth
-                id="phone-input"
-                placeholder="Enter mobile number"
-                variant="outlined"
-                value={phoneNo}
-                onChange={(e) => setPhoneNo(e.target.value)}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <PhoneIcon sx={{ color: "#1A5D28" }} />
-                    </InputAdornment>
-                  ),
-                  sx: { borderRadius: 3, backgroundColor: "#FAFAFA" },
-                }}
-                sx={{
-                  input: { fontSize: 16, caretColor: "#1A5D28" },
-                  "& .MuiOutlinedInput-root": {
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#1A5D28",
-                    },
+          <Box mb={2}>
+            <TextField
+              fullWidth
+              id="phone-input"
+              placeholder="Enter mobile number"
+              variant="outlined"
+              value={phoneNo}
+              onChange={(e) => setPhoneNo(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <PhoneIcon sx={{ color: "#1A5D28" }} />
+                  </InputAdornment>
+                ),
+                sx: { borderRadius: 3, backgroundColor: "#FAFAFA" },
+              }}
+              sx={{
+                input: { fontSize: 16, caretColor: "#1A5D28" },
+                "& .MuiOutlinedInput-root": {
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#1A5D28",
                   },
-                }}
-              />
-            </Box>
-          ) : (
+                },
+              }}
+            />
+          </Box>
+
+          {/* Service No Option - Commented for now */}
+          {/* activeTab === "serviceNo" && (
             <>
               <Box mb={2}>
                 <TextField
@@ -587,7 +589,7 @@ const SignIn = () => {
                 />
               </Box>
             </>
-          )}
+          ) */}
 
           <Box mt={2.5} mb={2}>
             <LoadingButton

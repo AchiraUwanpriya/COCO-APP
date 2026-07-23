@@ -120,6 +120,24 @@ export const biometricLogin = (navigate) => async (dispatch) => {
     const credentials = await BiometricService.authenticateWithBiometric();
 
     if (credentials && credentials.serviceNo && credentials.password) {
+      if (credentials.password === "phone_login") {
+        const savedToken = localStorage.getItem("biometric_token") || JSON.parse(sessionStorage.getItem("token") || '""');
+        if (savedToken) {
+          sessionStorage.setItem("token", JSON.stringify(savedToken));
+          axios.defaults.headers.common["auth-key"] = savedToken;
+
+          dispatch({ type: BIOMETRIC_LOGIN_SUCCESS });
+          dispatch({
+            type: LOGIN_SUCCESS,
+            payload: {},
+          });
+
+          showThemedToast("Biometric authentication successful! Logging you in...", "success");
+          navigate("/home");
+          return;
+        }
+      }
+
       const response = await AuthService.userLogin(
         credentials.serviceNo,
         credentials.password
