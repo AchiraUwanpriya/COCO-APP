@@ -817,7 +817,7 @@ export const CdplcKpiCard = ({ strength, eligible, attendance, liveData, onClick
   const rate = eligible > 0 ? Math.round((attendance / eligible) * 100) : 0;
 
   const liveRows = [
-    { label: "Live Employees", value: liveData?.liveEmployees, color: "#0314fa", icon: <Users size={14} strokeWidth={2} /> },
+    { label: "Live Employees", value: liveData?.liveEmployees, color: "#1A5D28", icon: <Users size={14} strokeWidth={2} /> },
     { label: "Duty Off", value: liveData?.dutyOff, color: "#f59e0b", icon: <CalendarOff size={14} strokeWidth={2} /> },
     { label: "OT Entered", value: liveData?.otEntered, color: "#10b981", icon: <CheckCircle2 size={14} strokeWidth={2} /> },
     { label: "OT Not Entered", value: liveData?.otNotEntered, color: "#e53935", icon: <XCircle size={14} strokeWidth={2} /> },
@@ -837,7 +837,7 @@ export const CdplcKpiCard = ({ strength, eligible, attendance, liveData, onClick
         overflow: "hidden",
         border: "0.5px solid",
         borderColor: "divider",
-        background: "linear-gradient(135deg, #EEF2FF 0%)",
+        background: "linear-gradient(135deg, #f0f7f2 0%)",
         transition: "transform 0.2s, box-shadow 0.2s",
         cursor: onClick ? "pointer" : "default",
         mb: { xs: "10px", sm: "12px", md: "14px" },
@@ -1388,11 +1388,11 @@ export const EmployeeTypeKpiGrid = ({ allAttendance, loading, onCardClick, locat
       <TableRow
         key={`${row.id}-${index}`}
         sx={{
-          "&:nth-of-type(even)": { backgroundColor: "rgba(0, 74, 173, 0.02)" },
-          "&:hover": { backgroundColor: "rgba(0, 74, 173, 0.05)" },
+          "&:nth-of-type(even)": { backgroundColor: "rgba(26, 93, 40, 0.02)" },
+          "&:hover": { backgroundColor: "rgba(26, 93, 40, 0.05)" },
         }}
       >
-        <TableCell sx={{ fontWeight: 600, fontSize: "12px", py: "5px", color: "#004AAD", width: { xs: "65px", sm: "80px" }, minWidth: { xs: "65px", sm: "80px" } }}>
+        <TableCell sx={{ fontWeight: 600, fontSize: "12px", py: "5px", color: "#1A5D28", width: { xs: "65px", sm: "80px" }, minWidth: { xs: "65px", sm: "80px" } }}>
           {row.id}
         </TableCell>
         <TableCell sx={{ fontSize: "12px", py: "5px", verticalAlign: "middle", width: { xs: "210px", sm: "250px" }, minWidth: { xs: "210px", sm: "250px" } }}>
@@ -1683,7 +1683,7 @@ export const EmployeeTypeKpiGrid = ({ allAttendance, loading, onCardClick, locat
                 {employeeListLoading ? (
                   <TableRow>
                     <TableCell colSpan={6} sx={{ textAlign: "center", py: 6 }}>
-                      <CircularProgress size={32} sx={{ color: "#004AAD" }} />
+                      <CircularProgress size={32} sx={{ color: "#1A5D28" }} />
                       <Typography sx={{ mt: 1, color: "text.secondary", fontSize: "13px" }}>
                         Loading employees...
                       </Typography>

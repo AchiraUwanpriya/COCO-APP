@@ -24,11 +24,11 @@ import axios from "axios";
  * Helper to display custom styled themed toasts matching Colombo Dockyard corporate design
  */
 const showThemedToast = (message, type = "success") => {
-  let themeColor = "#0049AF"; // Colombo Dockyard corporate blue
+  let themeColor = "#1A5D28"; // Corporate primary green
   let icon = "ℹ";
 
   if (type === "success") {
-    themeColor = "#10B981"; // Success Green
+    themeColor = "#1A5D28"; // Success Green
     icon = "✓";
   } else if (type === "error") {
     themeColor = "#EF4444"; // Error Red
@@ -37,7 +37,7 @@ const showThemedToast = (message, type = "success") => {
     themeColor = "#F59E0B"; // Warn Orange
     icon = "⚠";
   } else if (type === "info") {
-    themeColor = "#0049AF"; // Info Blue
+    themeColor = "#1A5D28"; // Info Green Accent
     icon = "ℹ";
   }
 

@@ -1044,13 +1044,13 @@ import {
   LabelList,
 } from "recharts";
 
-// ─── Color palette (blue family) ─────────────────────────────────────────────
+// // ─── Color palette (green family) ─────────────────────────────────────────────
 const COLORS = {
-  strength:   "#1E3A8A",
-  eligible:   "#2563EB",
-  attendance: "#38BDF8",
-  kry:        "#6EE7B7",
-  accent:     "#93C5FD",
+  strength:   "#13461E",
+  eligible:   "#1A5D28",
+  attendance: "#4C8C58",
+  kry:        "#82C491",
+  accent:     "#A8E0B7",
 };
 
 // ─── Tooltip ──────────────────────────────────────────────────────────────────
@@ -1070,13 +1070,13 @@ const CustomTooltip = ({ active, payload, label }) => {
         backgroundColor: "#fff",
         borderRadius: "12px",
         padding: "12px 16px",
-        border: "1px solid #BFDBFE",
+        border: "1px solid #C2E2C9",
         minWidth: "190px",
       }}
     >
       <Typography
-        sx={{ fontWeight: 700, fontSize: 13, color: "#1E3A8A", mb: 1,
-          borderBottom: "1px solid #BFDBFE", pb: 0.8 }}
+        sx={{ fontWeight: 700, fontSize: 13, color: "#13461E", mb: 1,
+          borderBottom: "1px solid #C2E2C9", pb: 0.8 }}
       >
         {label}
       </Typography>
@@ -1088,7 +1088,7 @@ const CustomTooltip = ({ active, payload, label }) => {
               bgcolor: DK_COLOR[entry.dataKey] || entry.color }} />
             <Typography sx={{ fontSize: 12, color: "#334155" }}>{entry.name}:</Typography>
           </Box>
-          <Typography sx={{ fontSize: 12, fontWeight: 700, color: "#1E3A8A" }}>
+          <Typography sx={{ fontSize: 12, fontWeight: 700, color: "#13461E" }}>
             {Number(entry.value || 0).toLocaleString()}
           </Typography>
         </Box>
@@ -1171,12 +1171,12 @@ export function EmployeeStrengthAttendanceChart({ allAttendance = [] }) {
       .filter((c) => !existingTypes.has(c))
       .map((c) => ({ type: c, strength: 0, attendance: 0, eligible: 0, kryAttendance: 0, attendanceRate: 0 })),
   ].sort((a, b) => (TYPE_ORDER[a.type] || 99) - (TYPE_ORDER[b.type] || 99));
- 
+
   const activeSeries = SERIES.filter((s) => vis[s.key]);
   const chartData = allData.filter((row) =>
     activeSeries.some((s) => (row[s.dataKey] || 0) > 0)
   );
- 
+
   const totals = allData.reduce(
     (acc, d) => ({
       strength:      acc.strength      + (d.strength      || 0),
@@ -1187,7 +1187,7 @@ export function EmployeeStrengthAttendanceChart({ allAttendance = [] }) {
     { strength: 0, eligible: 0, attendance: 0, kryAttendance: 0 }
   );
   const totalAttendance = totals.attendance + totals.kryAttendance;
- 
+
   const fmtVal = (v) => (v > 0 ? v.toLocaleString() : "");
   const fmtStr = (v) => {
     if (!v || v === 0) return "";
@@ -1195,7 +1195,7 @@ export function EmployeeStrengthAttendanceChart({ allAttendance = [] }) {
     const rate = item?.attendanceRate;
     return rate ? `${v.toLocaleString()} (${rate}%)` : v.toLocaleString();
   };
- 
+
   const nBars       = activeSeries.length;
   const barSize     = isMobile ? 14 : 18;
 
@@ -1213,18 +1213,18 @@ export function EmployeeStrengthAttendanceChart({ allAttendance = [] }) {
         elevation={0}
         sx={{
           overflow: "hidden",
-          backgroundColor: "#F8FAFF",
+          backgroundColor: "#f8faf9",
           borderRadius: "20px",
           padding: { xs: "16px", sm: "20px", md: "24px" },
-          border: "1px solid #BFDBFE",
-          boxShadow: "0 4px 24px rgba(37,99,235,0.07)",
+          border: "1px solid #C2E2C9",
+          boxShadow: "0 4px 24px rgba(26,93,40,0.07)",
         }}
       >
         {/* Header */}
         <Box sx={{ mb: 2 }}>
           <Typography sx={{
             fontSize: { xs: "17px", sm: "19px", md: "21px" },
-            fontWeight: 700, color: "#1E3A8A", letterSpacing: "-0.01em",
+            fontWeight: 700, color: "#13461E", letterSpacing: "-0.01em",
           }}>
             Employee Strength Overview
           </Typography>
@@ -1249,14 +1249,14 @@ export function EmployeeStrengthAttendanceChart({ allAttendance = [] }) {
                   barCategoryGap="30%"   // percentage of row height → consistent spacing
                   barGap={3}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#DBEAFE" horizontal={false} vertical={true} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E2F0E5" horizontal={false} vertical={true} />
 
                   <YAxis
                     type="category"
                     dataKey="type"
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: "#1E3A8A", fontSize: isMobile ? 11 : 13, fontWeight: 600 }}
+                    tick={{ fill: "#13461E", fontSize: isMobile ? 11 : 13, fontWeight: 600 }}
                     width={YAXIS_W}
                     interval={0}
                   />
@@ -1265,38 +1265,38 @@ export function EmployeeStrengthAttendanceChart({ allAttendance = [] }) {
                     type="number"
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: "#94a3b8", fontSize: isMobile ? 9 : 11 }}
+                    tick={{ fill: "#64748b", fontSize: isMobile ? 9 : 11 }}
                     tickFormatter={(v) => v.toLocaleString()}
                   />
 
-                  <RechartsTooltip content={<CustomTooltip />} cursor={{ fill: alpha("#2563EB", 0.05) }} />
+                  <RechartsTooltip content={<CustomTooltip />} cursor={{ fill: alpha("#1A5D28", 0.05) }} />
 
                   {vis.showStrength && (
                     <Bar dataKey="strength" name="Actual Strength"
                       fill={COLORS.strength} radius={[0, 5, 5, 0]} barSize={barSize}>
                       <LabelList dataKey="strength" position="right" formatter={fmtStr}
-                        style={{ fill: "#1E3A8A", fontSize: isMobile ? 9 : 11, fontWeight: 700 }} />
+                        style={{ fill: "#13461E", fontSize: isMobile ? 9 : 11, fontWeight: 700 }} />
                     </Bar>
                   )}
                   {vis.showEligible && (
                     <Bar dataKey="eligible" name="Eligible Strength"
                       fill={COLORS.eligible} radius={[0, 5, 5, 0]} barSize={barSize}>
                       <LabelList dataKey="eligible" position="right" formatter={fmtVal}
-                        style={{ fill: "#2563EB", fontSize: isMobile ? 9 : 11, fontWeight: 700 }} />
+                        style={{ fill: "#1A5D28", fontSize: isMobile ? 9 : 11, fontWeight: 700 }} />
                     </Bar>
                   )}
                   {vis.showAttendance && (
                     <Bar dataKey="attendance" name="Regular Attendance"
                       fill={COLORS.attendance} radius={[0, 5, 5, 0]} barSize={barSize}>
                       <LabelList dataKey="attendance" position="right" formatter={fmtVal}
-                        style={{ fill: "#0284c7", fontSize: isMobile ? 9 : 11, fontWeight: 700 }} />
+                        style={{ fill: "#4C8C58", fontSize: isMobile ? 9 : 11, fontWeight: 700 }} />
                     </Bar>
                   )}
                   {vis.showKRY && (
                     <Bar dataKey="kryAttendance" name="KRY Site Attendance"
                       fill={COLORS.kry} radius={[0, 5, 5, 0]} barSize={barSize}>
                       <LabelList dataKey="kryAttendance" position="right" formatter={fmtVal}
-                        style={{ fill: "#0f766e", fontSize: isMobile ? 9 : 11, fontWeight: 700 }} />
+                        style={{ fill: "#2E7D32", fontSize: isMobile ? 9 : 11, fontWeight: 700 }} />
                     </Bar>
                   )}
                 </BarChart>
@@ -1311,7 +1311,7 @@ export function EmployeeStrengthAttendanceChart({ allAttendance = [] }) {
         {/* Footer totals */}
         <Box sx={{
           display: "flex", flexWrap: "wrap", gap: 2, mt: 2, pt: 2,
-          borderTop: "1px solid #BFDBFE",
+          borderTop: "1px solid #C2E2C9",
           justifyContent: { xs: "flex-start", sm: "flex-end" },
         }}>
           {[
@@ -1323,9 +1323,9 @@ export function EmployeeStrengthAttendanceChart({ allAttendance = [] }) {
           ].map(({ color, label, value, bold }) => (
             <Box key={label} sx={{ display: "flex", alignItems: "center", gap: 0.8 }}>
               <Box sx={{ width: 9, height: 9, borderRadius: "3px",
-                bgcolor: color, border: "1px solid #BFDBFE" }} />
+                bgcolor: color, border: "1px solid #C2E2C9" }} />
               <Typography variant="caption" sx={{ color: "#475569", fontWeight: bold ? 700 : 400 }}>
-                {label}: <strong style={{ color: "#1E3A8A" }}>{value.toLocaleString()}</strong>
+                {label}: <strong style={{ color: "#13461E" }}>{value.toLocaleString()}</strong>
               </Typography>
             </Box>
           ))}

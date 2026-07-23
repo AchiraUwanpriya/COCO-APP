@@ -34,6 +34,15 @@ const mockUserProfile = [
   },
 ];
 
+const mockCdllocbaseAttendance = [
+  { Division: "SHIP REPAIR", Location: "Head Office / Dock 1", Sno: "0004086", Name: "A.B. Perera", Desc: "Senior Engineer", CIN: "07:45 AM", COUT: "04:30 PM", CNO: "C-101" },
+  { Division: "SHIP REPAIR", Location: "Head Office / Dock 1", Sno: "0002810", Name: "M.N. Silva", Desc: "Supervisor", CIN: "07:50 AM", COUT: "", CNO: "C-102" },
+  { Division: "SHIP REPAIR", Location: "Head Office / Dock 2", Sno: "0003112", Name: "K.D. Gunaratne", Desc: "Technician", CIN: "08:00 AM", COUT: "05:00 PM", CNO: "C-103" },
+  { Division: "SHIP BUILDING", Location: "Yard 2 Berth", Sno: "0003595", Name: "K.L. Fernando", Desc: "Technician", CIN: "07:30 AM", COUT: "", CNO: "C-201" },
+  { Division: "SHIP BUILDING", Location: "Yard 2 Workshop", Sno: "0004120", Name: "P.R. Kumara", Desc: "Fabricator", CIN: "07:40 AM", COUT: "04:30 PM", CNO: "C-202" },
+  { Division: "OFFSHORE & ENG", Location: "Offshore Site A", Sno: "0001890", Name: "H.M. Wickramasinghe", Desc: "Project Engineer", CIN: "08:10 AM", COUT: "", CNO: "C-301" }
+];
+
 const getBannerImages = async () => mockRes();
 const GetAccessHeadComponent = async () => mockRes();
 const GetUserByServiceNo = async () => Promise.resolve({ data: { StatusCode: 200, ResultSet: mockUserProfile } });
@@ -42,7 +51,7 @@ const GetDailyCollect = async (params = {}) => mockRes();
 const GetChaserDailyCollect = async (params = {}) => mockRes();
 const PostDailyCollect = async (payload) => mockRes();
 const UpdateDailyCollect = async (payload) => mockRes();
-const GetCdllocbaseAttendance = async (hadDate) => mockRes();
+const GetCdllocbaseAttendance = async (hadDate) => Promise.resolve({ data: { StatusCode: 200, ResultSet: mockCdllocbaseAttendance } });
 const GetEmployeeNoPay = async (barcodeNo, currentYear) => mockRes();
 const GetEmployeeDetails = async (p_sno) => mockRes();
 const GetEmployeeAttSummary = async (p_sno) => mockRes();

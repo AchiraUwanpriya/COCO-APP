@@ -1420,7 +1420,7 @@ const OtherInfoTab = ({ sno }) => {
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
-        <CircularProgress sx={{ color: "#004AAD" }} size={32} />
+        <CircularProgress sx={{ color: "#1A5D28" }} size={32} />
       </Box>
     );
   }
@@ -1486,7 +1486,7 @@ const AttendanceTab = ({ sno }) => {
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
-        <CircularProgress sx={{ color: "#004AAD" }} size={32} />
+        <CircularProgress sx={{ color: "#1A5D28" }} size={32} />
       </Box>
     );
   }
@@ -1637,7 +1637,7 @@ const EmployeeDetailsPopup = ({ open, onClose, employee, currentYear }) => {
       }}
     >
       {/* Header */}
-      <Box sx={{ position: "relative", bgcolor: "#004AAD", p: "20px" }}>
+      <Box sx={{ position: "relative", bgcolor: "#1A5D28", p: "20px" }}>
         <IconButton onClick={onClose} size="small"
           sx={{ position: "absolute", right: 14, top: 14, color: "#fff", bgcolor: "rgba(255,255,255,0.15)", "&:hover": { bgcolor: "rgba(255,255,255,0.25)" }, width: 32, height: 32 }}>
           <Close sx={{ fontSize: 18 }} />
@@ -1646,7 +1646,7 @@ const EmployeeDetailsPopup = ({ open, onClose, employee, currentYear }) => {
           <Avatar
             src={!imageError ? getEmployeeImageUrl() : undefined}
             onError={() => setImageError(true)}
-            sx={{ width: 68, height: 68, bgcolor: "#d0dff5", color: "#004AAD", fontSize: "1.5rem", fontWeight: 500, border: "3px solid rgba(255,255,255,0.85)", flexShrink: 0 }}
+            sx={{ width: 68, height: 68, bgcolor: "#EAF4EC", color: "#1A5D28", fontSize: "1.5rem", fontWeight: 500, border: "3px solid rgba(255,255,255,0.85)", flexShrink: 0 }}
           >
             {getInitials(employee?.repname)}
           </Avatar>
@@ -1679,8 +1679,8 @@ const EmployeeDetailsPopup = ({ open, onClose, employee, currentYear }) => {
         sx={{
           borderBottom: "0.5px solid #e2e8f0", minHeight: 44,
           "& .MuiTab-root": { textTransform: "none", fontWeight: 600, fontSize: "0.72rem", minHeight: 44, py: 0, gap: "4px", color: "#94a3b8" },
-          "& .Mui-selected": { color: "#004AAD" },
-          "& .MuiTabs-indicator": { backgroundColor: "#004AAD", height: 2 },
+          "& .Mui-selected": { color: "#1A5D28" },
+          "& .MuiTabs-indicator": { backgroundColor: "#1A5D28", height: 2 },
         }}
       >
         {TABS.map((t, i) => <Tab key={i} icon={t.icon} iconPosition="start" label={t.label} />)}
@@ -1690,7 +1690,7 @@ const EmployeeDetailsPopup = ({ open, onClose, employee, currentYear }) => {
       <DialogContent sx={{ p: 0, overflow: "auto" }}>
         {loading ? (
           <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
-            <CircularProgress sx={{ color: "#004AAD" }} />
+            <CircularProgress sx={{ color: "#1A5D28" }} />
           </Box>
         ) : (
           <>
@@ -1722,20 +1722,20 @@ const EmployeeDetailsPopup = ({ open, onClose, employee, currentYear }) => {
             {tabValue === 2 && (
               <Box sx={{ p: 2 }}>
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
-                  <Typography sx={{ fontWeight: 700, color: "#004AAD", fontSize: "0.82rem", display: "flex", alignItems: "center", gap: 0.8 }}>
+                  <Typography sx={{ fontWeight: 700, color: "#1A5D28", fontSize: "0.82rem", display: "flex", alignItems: "center", gap: 0.8 }}>
                     <AttachMoney sx={{ fontSize: 16 }} /> No Pay Summary
                   </Typography>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Typography sx={{ fontSize: "0.7rem", color: "#64748b" }}>Year:</Typography>
                     <Box component="select" value={selectedYear} onChange={handleYearChange}
-                      sx={{ px: 1.5, py: 0.6, fontSize: "0.75rem", fontWeight: 600, border: "1px solid #e2e8f0", borderRadius: "8px", backgroundColor: "#fff", color: "#004AAD", cursor: "pointer", outline: "none", "&:focus": { borderColor: "#004AAD", boxShadow: "0 0 0 2px rgba(0,74,173,0.1)" } }}>
+                      sx={{ px: 1.5, py: 0.6, fontSize: "0.75rem", fontWeight: 600, border: "1px solid #e2e8f0", borderRadius: "8px", backgroundColor: "#fff", color: "#1A5D28", cursor: "pointer", outline: "none", "&:focus": { borderColor: "#1A5D28", boxShadow: "0 0 0 2px rgba(26,93,40,0.1)" } }}>
                       {getYearOptions().map((year) => <option key={year} value={year}>{year}</option>)}
                     </Box>
                   </Box>
                 </Box>
                 {noPayLoading ? (
                   <Box sx={{ display: "flex", justifyContent: "center", py: 6 }}>
-                    <CircularProgress sx={{ color: "#004AAD" }} size={32} />
+                    <CircularProgress sx={{ color: "#1A5D28" }} size={32} />
                   </Box>
                 ) : noPayError ? (
                   <Box sx={{ textAlign: "center", py: 4 }}>
@@ -1828,13 +1828,13 @@ const DivisionLevelChart = ({ data, onDivisionClick }) => {
         borderRadius: "16px",
         background: "#fff",
         border: "1.5px solid #e2e8f0",
-        boxShadow: "0 2px 12px rgba(0,74,173,0.06)",
+        boxShadow: "0 2px 12px rgba(26,93,40,0.06)",
       }}
     >
       {/* Header */}
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1.5 }}>
         <Box>
-          <Typography sx={{ fontSize: "0.75rem", fontWeight: 700, color: "#004AAD", letterSpacing: "0.03em" }}>
+          <Typography sx={{ fontSize: "0.75rem", fontWeight: 700, color: "#1A5D28", letterSpacing: "0.03em" }}>
             Division Overview
           </Typography>
           <Typography sx={{ fontSize: "12px", color: "#94a3b8", mt: "1px" }}>
@@ -1863,12 +1863,12 @@ const DivisionLevelChart = ({ data, onDivisionClick }) => {
                 p: "8px 10px",
                 mx: "-8px",
                 transition: "all 0.18s ease",
-                "&:hover": { bgcolor: "#f0f5ff", transform: "translateX(4px)" },
+                "&:hover": { bgcolor: "#EAF4EC", transform: "translateX(4px)" },
               }}
             >
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: "4px" }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: "5px", minWidth: 0, flex: 1 }}>
-                  <AccountTree sx={{ fontSize: 12, color: "#004AAD", flexShrink: 0 }} />
+                  <AccountTree sx={{ fontSize: 12, color: "#1A5D28", flexShrink: 0 }} />
                   <Typography sx={{ fontSize: "12px", fontWeight: 600, color: "#1e293b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {row.division}
                   </Typography>
@@ -1949,13 +1949,13 @@ const InlineLocationChart = ({ data, division, onEmployeeClick }) => {
         borderRadius: "16px",
         background: "#fff",
         border: "1.5px solid #e2e8f0",
-        boxShadow: "0 2px 12px rgba(0,74,173,0.06)",
+        boxShadow: "0 2px 12px rgba(26,93,40,0.06)",
       }}
     >
       {/* Header */}
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1.5 }}>
         <Box>
-          <Typography sx={{ fontSize: "0.75rem", fontWeight: 700, color: "#004AAD", letterSpacing: "0.03em" }}>
+          <Typography sx={{ fontSize: "0.75rem", fontWeight: 700, color: "#1A5D28", letterSpacing: "0.03em" }}>
             Location Overview - {division}
           </Typography>
           <Typography sx={{ fontSize: "12px", color: "#94a3b8", mt: "1px" }}>
@@ -1985,12 +1985,12 @@ const InlineLocationChart = ({ data, division, onEmployeeClick }) => {
                 borderBottom: isOpen ? "none" : undefined,
                 bgcolor: isOpen ? `${barColor}0d` : "transparent",
                 transition: "background 0.15s ease, border-color 0.15s ease",
-                "&:hover": { bgcolor: isOpen ? `${barColor}0d` : "#f0f5ff" },
+                "&:hover": { bgcolor: isOpen ? `${barColor}0d` : "#EAF4EC" },
               }}
             >
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: "4px" }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: "5px", minWidth: 0, flex: 1 }}>
-                  <LocationOn sx={{ fontSize: 12, color: isOpen ? barColor : "#004AAD", flexShrink: 0 }} />
+                  <LocationOn sx={{ fontSize: 12, color: isOpen ? barColor : "#1A5D28", flexShrink: 0 }} />
                   <Typography sx={{ fontSize: "0.72rem", fontWeight: 600, color: "#1e293b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {row.location}
                   </Typography>
@@ -2027,7 +2027,7 @@ const InlineLocationChart = ({ data, division, onEmployeeClick }) => {
                 {/* Stats strip */}
                 <Box sx={{ display: "flex", bgcolor: "#fff", borderBottom: "1px solid #f1f5f9" }}>
                   {[
-                    { label: "Strength", value: row.total,               color: "#004AAD" },
+                    { label: "Strength", value: row.total,               color: "#1A5D28" },
                     { label: "Present",  value: row.present,             color: "#16a34a" },
                     { label: "Absent",   value: row.total - row.present, color: "#dc2626" },
                   ].map((s) => (
@@ -2039,9 +2039,9 @@ const InlineLocationChart = ({ data, division, onEmployeeClick }) => {
                 </Box>
 
                 {/* Column headers */}
-                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1.6fr 1.4fr 0.7fr 0.5fr", gap: 0.5, px: 1.5, py: 0.7, bgcolor: "#e8f0fe" }}>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1.6fr 1.4fr 0.7fr 0.5fr", gap: 0.5, px: 1.5, py: 0.7, bgcolor: "#EAF4EC" }}>
                   {["Svc No", "Name", "Designation", "IN ", "OUT "].map((h) => (
-                    <Typography key={h} sx={{ fontSize: "0.6rem", fontWeight: 700, color: "#004AAD" }}>{h}</Typography>
+                    <Typography key={h} sx={{ fontSize: "0.6rem", fontWeight: 700, color: "#1A5D28" }}>{h}</Typography>
                   ))}
                 </Box>
 
@@ -2055,12 +2055,12 @@ const InlineLocationChart = ({ data, division, onEmployeeClick }) => {
                       sx={{
                         display: "grid", gridTemplateColumns: "1fr 1.6fr 1.4fr 0.7fr 0.5fr", gap: 0.5,
                         px: 1.5, py: 0.85,
-                        bgcolor: idx % 2 === 0 ? "#fff" : "#f8faff",
+                        bgcolor: idx % 2 === 0 ? "#fff" : "#f8faf9",
                         borderTop: "0.5px solid #f1f5f9",
                         alignItems: "center",
                         cursor: "pointer",
                         transition: "all 0.18s ease",
-                        "&:hover": { bgcolor: "#e8f0fe", transform: "translateX(3px)" },
+                        "&:hover": { bgcolor: "#EAF4EC", transform: "translateX(3px)" },
                       }}
                     >
                       <Typography sx={{ fontSize: "0.65rem", color: "#475569" }}>{emp.sno || "-"}</Typography>
@@ -2107,7 +2107,7 @@ const DivisionStep = ({ divisions, data, onSelect }) => {
 const DesktopLocationTable = ({ locationGroups, expandedRow, onExpand, onViewDetails, onEmployeeClick }) => (
   <TableContainer>
     <Table>
-      <TableHead sx={{ bgcolor: "#004AAD" }}>
+      <TableHead sx={{ bgcolor: "#1A5D28" }}>
         <TableRow>
           <TableCell sx={{ color: "white", fontWeight: "bold", width: "35%" }}>Location</TableCell>
           <TableCell sx={{ color: "white", fontWeight: "bold" }} align="center">Strength</TableCell>
@@ -2126,23 +2126,23 @@ const DesktopLocationTable = ({ locationGroups, expandedRow, onExpand, onViewDet
           const expanded  = expandedRow === location;
           return (
             <React.Fragment key={location}>
-              <TableRow hover sx={{ "&:hover": { bgcolor: "rgba(0,74,173,0.04)" } }}>
+              <TableRow hover sx={{ "&:hover": { bgcolor: "rgba(26,93,40,0.04)" } }}>
                 <TableCell>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <Business sx={{ color: "#004AAD" }} />
+                    <Business sx={{ color: "#1A5D28" }} />
                     <Typography fontWeight={500}>{location}</Typography>
                   </Box>
                 </TableCell>
-                <TableCell align="center"><Chip label={strength} size="small" sx={{ bgcolor: "#e8f0fe", color: "#004AAD", fontWeight: "bold" }} /></TableCell>
+                <TableCell align="center"><Chip label={strength} size="small" sx={{ bgcolor: "#EAF4EC", color: "#1A5D28", fontWeight: "bold" }} /></TableCell>
                 <TableCell align="center"><Chip label={present}  size="small" sx={{ bgcolor: "#dcfce7", color: "#16a34a", fontWeight: "bold" }} /></TableCell>
                 <TableCell align="center"><Chip label={`${rate}%`} size="small" sx={{ bgcolor: `${rateColor}18`, color: rateColor, fontWeight: "bold" }} /></TableCell>
                 <TableCell align="center">
-                  <IconButton size="small" onClick={() => onExpand(location)} sx={{ color: "#004AAD" }}>
+                  <IconButton size="small" onClick={() => onExpand(location)} sx={{ color: "#1A5D28" }}>
                     {expanded ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                   </IconButton>
                   <Button size="small" variant="outlined" startIcon={<Visibility />}
                     onClick={() => onViewDetails({ location, employees, strength, present, absent, rate })}
-                    sx={{ ml: 1, borderColor: "#004AAD", color: "#004AAD", textTransform: "none" }}>
+                    sx={{ ml: 1, borderColor: "#1A5D28", color: "#1A5D28", textTransform: "none" }}>
                     View
                   </Button>
                 </TableCell>
@@ -2150,13 +2150,13 @@ const DesktopLocationTable = ({ locationGroups, expandedRow, onExpand, onViewDet
               <TableRow>
                 <TableCell colSpan={5} sx={{ py: 0 }}>
                   <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    <Box sx={{ m: 2, bgcolor: "#f8faff", borderRadius: "12px", p: 2 }}>
-                      <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: "bold", color: "#004AAD" }}>
+                    <Box sx={{ m: 2, bgcolor: "#f8faf9", borderRadius: "12px", p: 2 }}>
+                      <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: "bold", color: "#1A5D28" }}>
                         Employee List - {location}
                       </Typography>
                       <Table size="small">
                         <TableHead>
-                          <TableRow sx={{ bgcolor: "#e8f0fe" }}>
+                          <TableRow sx={{ bgcolor: "#EAF4EC" }}>
                             {["Service No", "Name", "Designation", "Clock No", "IN Time", "Prev. OUT", "Status"].map((h) => (
                               <TableCell key={h}><b>{h}</b></TableCell>
                             ))}
@@ -2217,7 +2217,7 @@ const DetailDrawer = ({ open, onClose, data, onEmployeeClick }) => {
       <Box sx={{ pt: 1.5, pb: 0.5, display: "flex", justifyContent: "center" }}>
         <Box sx={{ width: 40, height: 4, borderRadius: 2, bgcolor: "#cbd5e1" }} />
       </Box>
-      <Box sx={{ px: 2.5, py: 2, bgcolor: "#004AAD", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
+      <Box sx={{ px: 2.5, py: 2, bgcolor: "#1A5D28", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
         <Box>
           <Typography sx={{ color: "#fff", fontWeight: 700, fontSize: "1rem", lineHeight: 1.2 }}>{location}</Typography>
           <Typography sx={{ color: "rgba(255,255,255,0.7)", fontSize: "0.75rem", mt: 0.3 }}>{strength} employees</Typography>
@@ -2225,7 +2225,7 @@ const DetailDrawer = ({ open, onClose, data, onEmployeeClick }) => {
         <IconButton onClick={onClose} sx={{ color: "#fff" }}><Close /></IconButton>
       </Box>
       <Box sx={{ display: "flex", flexShrink: 0, borderBottom: "1px solid #f1f5f9" }}>
-        {[{ label: "Total", value: strength, color: "#004AAD" }, { label: "Present", value: present, color: "#16a34a" }, { label: "Absent", value: absent, color: "#dc2626" }, { label: "Rate", value: `${rate}%`, color: rateColor }].map((s) => (
+        {[{ label: "Total", value: strength, color: "#1A5D28" }, { label: "Present", value: present, color: "#16a34a" }, { label: "Absent", value: absent, color: "#dc2626" }, { label: "Rate", value: `${rate}%`, color: rateColor }].map((s) => (
           <Box key={s.label} sx={{ flex: 1, textAlign: "center", py: 1.5, borderRight: "1px solid #f1f5f9", "&:last-child": { borderRight: "none" } }}>
             <Typography sx={{ fontSize: "0.63rem", color: "#64748b" }}>{s.label}</Typography>
             <Typography sx={{ fontSize: "1.1rem", fontWeight: 800, color: s.color }}>{s.value}</Typography>
@@ -2233,9 +2233,9 @@ const DetailDrawer = ({ open, onClose, data, onEmployeeClick }) => {
         ))}
       </Box>
       <Box sx={{ overflowY: "auto", flex: 1, px: 2, py: 1.5 }}>
-        <Box sx={{ display: "grid", gridTemplateColumns: "0.8fr 1.4fr 1fr 0.8fr 0.6fr", gap: 0.5, px: 1, py: 0.8, bgcolor: "#e8f0fe", borderRadius: "8px", mb: 1, position: "sticky", top: 0, zIndex: 1 }}>
+        <Box sx={{ display: "grid", gridTemplateColumns: "0.8fr 1.4fr 1fr 0.8fr 0.6fr", gap: 0.5, px: 1, py: 0.8, bgcolor: "#EAF4EC", borderRadius: "8px", mb: 1, position: "sticky", top: 0, zIndex: 1 }}>
           {["Svc No", "Name", "Designation", "IN Tie", "Status"].map((h) => (
-            <Typography key={h} sx={{ fontSize: "0.6rem", fontWeight: 700, color: "#004AAD" }}>{h}</Typography>
+            <Typography key={h} sx={{ fontSize: "0.6rem", fontWeight: 700, color: "#1A5D28" }}>{h}</Typography>
           ))}
         </Box>
         {employees.map((emp, idx) => {
@@ -2244,10 +2244,10 @@ const DetailDrawer = ({ open, onClose, data, onEmployeeClick }) => {
             <Box key={emp.sno || idx}
               sx={{
                 display: "grid", gridTemplateColumns: "0.8fr 1.4fr 1fr 0.8fr 0.6fr", gap: 0.5,
-                px: 1, py: 1, bgcolor: idx % 2 === 0 ? "#fff" : "#f8faff",
+                px: 1, py: 1, bgcolor: idx % 2 === 0 ? "#fff" : "#f8faf9",
                 borderRadius: "8px", mb: 0.5, alignItems: "center", border: "1px solid #f1f5f9",
                 cursor: "pointer", transition: "all 0.2s ease",
-                "&:hover": { bgcolor: "#e8f0fe", transform: "translateX(4px)" },
+                "&:hover": { bgcolor: "#EAF4EC", transform: "translateX(4px)" },
               }}
               onClick={() => onEmployeeClick(emp)}
             >
@@ -2276,16 +2276,16 @@ const DetailDrawer = ({ open, onClose, data, onEmployeeClick }) => {
 const Breadcrumb = ({ division, onBack }) => (
   <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 2 }}>
     <IconButton size="small" onClick={onBack}
-      sx={{ color: "#004AAD", bgcolor: "#e8f0fe", borderRadius: "8px", "&:hover": { bgcolor: "#d0e2ff" } }}>
+      sx={{ color: "#1A5D28", bgcolor: "#EAF4EC", borderRadius: "8px", "&:hover": { bgcolor: "#D1E7D6" } }}>
       <ArrowBack fontSize="small" />
     </IconButton>
     <Box sx={{ display: "flex", alignItems: "center", gap: 0.75, flexWrap: "wrap" }}>
       <Typography onClick={onBack}
-        sx={{ fontSize: "0.8rem", color: "#004AAD", cursor: "pointer", fontWeight: 600, "&:hover": { textDecoration: "underline" } }}>
+        sx={{ fontSize: "0.8rem", color: "#1A5D28", cursor: "pointer", fontWeight: 600, "&:hover": { textDecoration: "underline" } }}>
         All Divisions
       </Typography>
       <Typography sx={{ fontSize: "0.8rem", color: "#94a3b8" }}>/</Typography>
-      <Chip label={division} size="small" sx={{ height: 22, fontSize: "0.72rem", fontWeight: 700, bgcolor: "#004AAD", color: "#fff" }} />
+      <Chip label={division} size="small" sx={{ height: 22, fontSize: "0.72rem", fontWeight: 700, bgcolor: "#1A5D28", color: "#fff" }} />
     </Box>
   </Box>
 );
@@ -2298,7 +2298,7 @@ const SearchBar = ({ value, onChange, placeholder }) => (
       mb: 2, px: 1.5, py: 0.85,
       border: "1.5px solid #e2e8f0", borderRadius: "12px", bgcolor: "#fff",
       transition: "border-color 0.18s ease, box-shadow 0.18s ease",
-      "&:focus-within": { borderColor: "#004AAD", boxShadow: "0 0 0 3px rgba(0,74,173,0.08)" },
+      "&:focus-within": { borderColor: "#1A5D28", boxShadow: "0 0 0 3px rgba(26,93,40,0.08)" },
     }}
   >
     <Search sx={{ fontSize: 18, color: "#94a3b8", flexShrink: 0 }} />
@@ -2306,7 +2306,7 @@ const SearchBar = ({ value, onChange, placeholder }) => (
       sx={{ flex: 1, border: "none", outline: "none", fontSize: "0.85rem", color: "#1e293b", bgcolor: "transparent", fontFamily: "inherit", "&::placeholder": { color: "#94a3b8" } }} />
     {value && (
       <IconButton size="small" onClick={() => onChange("")}
-        sx={{ color: "#94a3b8", p: 0.3, "&:hover": { color: "#004AAD", bgcolor: "#e8f0fe" }, borderRadius: "6px" }}>
+        sx={{ color: "#94a3b8", p: 0.3, "&:hover": { color: "#1A5D28", bgcolor: "#EAF4EC" }, borderRadius: "6px" }}>
         <Close sx={{ fontSize: 16 }} />
       </IconButton>
     )}
@@ -2392,10 +2392,10 @@ const DGESatt = ({ data = [], loading = false ,hadDate }) => {
 
   return (
     <>
-      <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: "20px", boxShadow: "0 4px 24px rgba(0,74,173,0.06)" }}>
+      <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: "20px", boxShadow: "0 4px 24px rgba(26,93,40,0.06)" }}>
         <Box sx={{ mb: 2 }}>
-          <Typography variant="h6" sx={{ mb: 0.5, fontWeight: 700, color: "#004AAD", fontSize: "16px" }}>
-             CDPLC Attendance Based on Division
+          <Typography variant="h6" sx={{ mb: 0.5, fontWeight: 700, color: "#1A5D28", fontSize: "16px" }}>
+              Attendance Based on Division
           </Typography>
          
         </Box>

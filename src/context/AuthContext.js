@@ -115,7 +115,7 @@ import { toast } from "react-toastify";
 const BiometricEnrollPrompt = ({ closeToast, onConfirm, onCancel }) => {
   return (
     <div style={{ fontFamily: "Roboto, sans-serif", padding: "4px" }}>
-      <div style={{ fontWeight: 600, fontSize: "15px", color: "#0049AF", marginBottom: "6px" }}>
+      <div style={{ fontWeight: 600, fontSize: "15px", color: "#1A5D28", marginBottom: "6px" }}>
         Enable Biometric Login?
       </div>
       <div style={{ fontSize: "13px", color: "#555", marginBottom: "12px", lineHeight: "1.4" }}>
@@ -147,7 +147,7 @@ const BiometricEnrollPrompt = ({ closeToast, onConfirm, onCancel }) => {
             closeToast();
           }}
           style={{
-            backgroundColor: "#0049AF",
+            backgroundColor: "#1A5D28",
             border: "none",
             borderRadius: "6px",
             color: "#fff",

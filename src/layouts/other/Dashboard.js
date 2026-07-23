@@ -814,7 +814,8 @@ import WeeklyAttendanceTrend from "../../components/Charts/WeeklyAttendanceTrend
 import { EmployeeTypeChart } from "../../components/Charts/EmployeeTypeChart";
 import { CDPLCBreakdown } from "../../components/Charts/CDPLCBreakdown";
 import { CDLLocBaseAttendance } from "../../components/Charts/CDLLocBaseAttendance";
-import { EmployeeTypeKpiGrid } from "../../components/Charts/EmployeeTypeKpiGrid";
+import EmployeeTypeKpiGrid from "../../components/Charts/EmployeeTypeKpiGrid";
+import { EmployeeStrengthAttendanceChart } from "../../components/Charts/EmployeeStrengthAttendanceChart";
 import { CDLLocationAttendanceChart } from "../../components/Charts/CDLLocationAttendanceChart";
 import CDLLocationChart from "../../components/Charts/CDLLocationAttendanceChart";
 import {
@@ -1033,7 +1034,7 @@ const KpiCardSkeleton = () => (
   <Box
     sx={{
       position: "relative",
-      background: "linear-gradient(135deg, #f0f4ff 0%, #e8eeff 100%)",
+      background: "linear-gradient(135deg, #f0f7f2 0%, #e8f5e9 100%)",
       borderRadius: "16px",
       padding: "16px",
       overflow: "hidden",
@@ -1055,15 +1056,15 @@ const KpiCardSkeleton = () => (
     }}
   >
     <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
-      <Box sx={{ width: "40%", height: 22, backgroundColor: "rgba(0,74,173,0.1)", borderRadius: "10px" }} />
-      <Box sx={{ width: "20%", height: 22, backgroundColor: "rgba(0,74,173,0.08)", borderRadius: "6px" }} />
+      <Box sx={{ width: "40%", height: 22, backgroundColor: "rgba(26,93,40,0.1)", borderRadius: "10px" }} />
+      <Box sx={{ width: "20%", height: 22, backgroundColor: "rgba(26,93,40,0.08)", borderRadius: "6px" }} />
     </Box>
-    <Box sx={{ width: "50%", height: 36, backgroundColor: "rgba(0,74,173,0.12)", borderRadius: "6px", mx: "auto", mb: 1 }} />
-    <Box sx={{ width: 100, height: 54, backgroundColor: "rgba(0,74,173,0.07)", borderRadius: "50px", mx: "auto", mb: 2 }} />
+    <Box sx={{ width: "50%", height: 36, backgroundColor: "rgba(26,93,40,0.12)", borderRadius: "6px", mx: "auto", mb: 1 }} />
+    <Box sx={{ width: 100, height: 54, backgroundColor: "rgba(26,93,40,0.07)", borderRadius: "50px", mx: "auto", mb: 2 }} />
     {[1, 2].map((i) => (
       <Box key={i} sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
-        <Box sx={{ width: "30%", height: 11, backgroundColor: "rgba(0,74,173,0.06)", borderRadius: "6px" }} />
-        <Box sx={{ width: "25%", height: 11, backgroundColor: "rgba(0,74,173,0.10)", borderRadius: "6px" }} />
+        <Box sx={{ width: "30%", height: 11, backgroundColor: "rgba(26,93,40,0.06)", borderRadius: "6px" }} />
+        <Box sx={{ width: "25%", height: 11, backgroundColor: "rgba(26,93,40,0.10)", borderRadius: "6px" }} />
       </Box>
     ))}
   </Box>
@@ -1074,12 +1075,12 @@ const ChartSkeleton = ({ height = 300 }) => (
   <Box
     sx={{
       position: "relative",
-      background: "linear-gradient(135deg, #f7f9ff 0%, #eef2ff 100%)",
+      background: "linear-gradient(135deg, #f7faf8 0%, #eef7f1 100%)",
       borderRadius: "20px",
       padding: "24px",
       height,
       overflow: "hidden",
-      border: "1px solid rgba(0,74,173,0.06)",
+      border: "1px solid rgba(26,93,40,0.06)",
       "@keyframes shimmer2": {
         "0%": { backgroundPosition: "-200% 0" },
         "100%": { backgroundPosition: "200% 0" },
@@ -1096,12 +1097,12 @@ const ChartSkeleton = ({ height = 300 }) => (
     }}
   >
     <Box sx={{ display: "flex", justifyContent: "space-between", mb: 3 }}>
-      <Box sx={{ width: "28%", height: 20, backgroundColor: "rgba(0,74,173,0.1)", borderRadius: "6px" }} />
-      <Box sx={{ width: "16%", height: 20, backgroundColor: "rgba(0,74,173,0.07)", borderRadius: "6px" }} />
+      <Box sx={{ width: "28%", height: 20, backgroundColor: "rgba(26,93,40,0.1)", borderRadius: "6px" }} />
+      <Box sx={{ width: "16%", height: 20, backgroundColor: "rgba(26,93,40,0.07)", borderRadius: "6px" }} />
     </Box>
     <Box sx={{ display: "flex", alignItems: "flex-end", gap: 1.5, height: "70%" }}>
       {[65, 80, 50, 90, 70, 85, 60].map((h, i) => (
-        <Box key={i} sx={{ flex: 1, height: `${h}%`, backgroundColor: "rgba(0,74,173,0.08)", borderRadius: "6px 6px 0 0" }} />
+        <Box key={i} sx={{ flex: 1, height: `${h}%`, backgroundColor: "rgba(26,93,40,0.08)", borderRadius: "6px 6px 0 0" }} />
       ))}
     </Box>
   </Box>
@@ -1117,7 +1118,7 @@ const NavigationDrawer = ({ open, onClose, activeTab, onTabChange }) => {
     { id: 5, label: "Own", icon: <Person />, color: "#f59e0b", isBold: true, disabled: true },
   ];
   const mainItems = [
-    { id: 0, label: "HR Dashboard", icon: <PeopleAltIcon />, color: "#004AAD", description: "Employee attendance and performance metrics" },
+    { id: 0, label: "HR Dashboard", icon: <PeopleAltIcon />, color: "#1A5D28", description: "Employee attendance and performance metrics" },
     { id: 1, label: "Financial Dashboard", icon: <AccountBalanceIcon />, color: "#10b981", description: "Budget tracking and fiscal overview", disabled: true },
     { id: 2, label: "Sales Performance", icon: <TrendingUp />, color: "#f59e0b", description: "Sales metrics and targets", disabled: true },
     { id: 3, label: "Customer Support", icon: <Users />, color: "#8b5cf6", description: "Support ticket analytics", disabled: true },
@@ -1148,7 +1149,7 @@ const NavigationDrawer = ({ open, onClose, activeTab, onTabChange }) => {
                   "& .MuiListItemIcon-root": { color: item.color },
                   "& .MuiListItemText-primary": { color: item.color, fontWeight: 600 },
                 },
-                "&:hover": { backgroundColor: "rgba(0,74,173,0.04)", transform: "translateX(4px)" },
+                "&:hover": { backgroundColor: "rgba(26,93,40,0.04)", transform: "translateX(4px)" },
                 "&.Mui-disabled": { opacity: 0.5 },
               }}
             >
@@ -1174,7 +1175,7 @@ const NavigationDrawer = ({ open, onClose, activeTab, onTabChange }) => {
           </ListItem>
         ))}
       </List>
-      {showDivider && <Divider sx={{ my: 2, borderColor: "rgba(0,74,173,0.08)" }} />}
+      {showDivider && <Divider sx={{ my: 2, borderColor: "rgba(26,93,40,0.08)" }} />}
     </>
   );
 
@@ -1190,24 +1191,24 @@ const NavigationDrawer = ({ open, onClose, activeTab, onTabChange }) => {
           borderTopRightRadius: 20,
           borderBottomRightRadius: 20,
           background: "linear-gradient(135deg, #ffffff 0%, #fafcff 100%)",
-          boxShadow: "8px 0 32px rgba(0,74,173,0.12)",
+          boxShadow: "8px 0 32px rgba(26,93,40,0.12)",
         },
       }}
     >
       <Box sx={{ p: 3 }}>
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3 }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <Box sx={{ width: 32, height: 32, borderRadius: "10px", background: "linear-gradient(135deg, #1A5D28 0%, #3b82f6 100%)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <Box sx={{ width: 32, height: 32, borderRadius: "10px", background: "linear-gradient(135deg, #1A5D28 0%, #2e7d32 100%)", display: "flex", alignItems: "center", justifyContent: "center" }}>
               <DashboardIcon sx={{ color: "white", fontSize: 18 }} />
             </Box>
-            <Typography sx={{ fontSize: "1.2rem", fontWeight: 700, background: "linear-gradient(135deg, #1A5D28 0%, #3b82f6 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+            <Typography sx={{ fontSize: "1.2rem", fontWeight: 700, background: "linear-gradient(135deg, #1A5D28 0%, #2e7d32 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
               Dashboards
             </Typography>
           </Box>
           <IconButton onClick={onClose} size="small"><CloseIcon /></IconButton>
         </Box>
 
-        <Divider sx={{ mb: 2, borderColor: "rgba(0,74,173,0.08)" }} />
+        <Divider sx={{ mb: 2, borderColor: "rgba(26,93,40,0.08)" }} />
 
         <Typography variant="subtitle2" sx={{ px: 2, mb: 1, color: "#ef4444", fontWeight: 700, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
           KPI'S OVERVIEW
@@ -1216,7 +1217,7 @@ const NavigationDrawer = ({ open, onClose, activeTab, onTabChange }) => {
 
         {renderMenuItems(mainItems, false)}
 
-        <Divider sx={{ my: 2, borderColor: "rgba(0,74,173,0.12)", borderBottomWidth: 2 }} />
+        <Divider sx={{ my: 2, borderColor: "rgba(26,93,40,0.12)", borderBottomWidth: 2 }} />
 
         <Typography variant="subtitle2" sx={{ px: 2, mb: 1, color: "#f43f5e", fontWeight: 600, fontSize: "0.85rem", textTransform: "uppercase", letterSpacing: "0.5px" }}>
           OTHER KPIs
@@ -1269,7 +1270,7 @@ const DateFilter = ({ selectedDate, onDateChange, onApply, onClear, loading }) =
         invisible={selectedDate === new Date().toISOString().split("T")[0]}
         sx={{
           "& .MuiBadge-badge": {
-            backgroundColor: "#004AAD",
+            backgroundColor: "#1A5D28",
           },
         }}
       >
@@ -1280,14 +1281,14 @@ const DateFilter = ({ selectedDate, onDateChange, onApply, onClear, loading }) =
           disabled={loading}
           sx={{
             borderRadius: "12px",
-            borderColor: "#004AAD20",
-            color: "#004AAD",
+            borderColor: "#1A5D2830",
+            color: "#1A5D28",
             textTransform: "none",
             fontWeight: 600,
             minWidth: "130px",
             "&:hover": {
-              borderColor: "#004AAD",
-              backgroundColor: "#004AAD08",
+              borderColor: "#1A5D28",
+              backgroundColor: "#1A5D2808",
             },
           }}
         >
@@ -1313,7 +1314,7 @@ const DateFilter = ({ selectedDate, onDateChange, onApply, onClear, loading }) =
             borderRadius: "16px",
             minWidth: 320,
             boxShadow: "0 8px 40px rgba(0,0,0,0.12)",
-            border: "1px solid rgba(0,74,173,0.08)",
+            border: "1px solid rgba(26,93,40,0.08)",
           },
         }}
       >
@@ -1393,12 +1394,12 @@ const DateFilter = ({ selectedDate, onDateChange, onApply, onClear, loading }) =
                 onClick={() => setTempDate(dateStr)}
                 sx={{
                   borderRadius: "8px",
-                  backgroundColor: tempDate === dateStr ? "#004AAD10" : "transparent",
-                  borderColor: tempDate === dateStr ? "#004AAD" : "#e2e8f0",
-                  color: tempDate === dateStr ? "#004AAD" : "#64748b",
+                  backgroundColor: tempDate === dateStr ? "#1A5D2810" : "transparent",
+                  borderColor: tempDate === dateStr ? "#1A5D28" : "#e2e8f0",
+                  color: tempDate === dateStr ? "#1A5D28" : "#64748b",
                   fontWeight: 500,
                   "&:hover": {
-                    backgroundColor: "#004AAD08",
+                    backgroundColor: "#1A5D2808",
                   },
                 }}
               />
@@ -1410,8 +1411,8 @@ const DateFilter = ({ selectedDate, onDateChange, onApply, onClear, loading }) =
               size="small"
               sx={{
                 borderRadius: "8px",
-                backgroundColor: "#004AAD10",
-                color: "#004AAD",
+                backgroundColor: "#1A5D2810",
+                color: "#1A5D28",
                 fontWeight: 600,
               }}
             />
@@ -1547,7 +1548,7 @@ const Dashboard = () => {
   // ─── Page title effect ──────────────────────────────────────────────────────
   useEffect(() => {
     const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-    if (metaThemeColor) metaThemeColor.setAttribute("content", "#004AAD");
+    if (metaThemeColor) metaThemeColor.setAttribute("content", "#1A5D28");
   }, []);
 
   const transformedDivisionData =
@@ -1596,9 +1597,9 @@ const Dashboard = () => {
         display: "flex",
         flexDirection: "column",
         height: "calc(100vh - 120px)",
-        backgroundColor: "#f8faff",
+        backgroundColor: "#f8faf9",
         padding: { xs: "20px 14px", sm: "28px 20px", md: "36px 28px" },
-        backgroundImage: "radial-gradient(rgba(0,74,173,0.06) 1px, transparent 1px)",
+        backgroundImage: "radial-gradient(rgba(26,93,40,0.06) 1px, transparent 1px)",
         backgroundSize: "28px 28px",
         overflow: "hidden",
       }}
@@ -1606,30 +1607,30 @@ const Dashboard = () => {
       {/* ── Header ── */}
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3, flexShrink: 0 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <IconButton
+          {/* <IconButton
             onClick={() => setDrawerOpen(true)}
             sx={{
               backgroundColor: "#ffffff",
-              boxShadow: "0 2px 8px rgba(0,74,173,0.12)",
+              boxShadow: "0 2px 8px rgba(26,93,40,0.12)",
               borderRadius: "12px",
               padding: "10px",
               "&:hover": { backgroundColor: "#f5f5f5", transform: "scale(1.05)" },
               transition: "all 0.2s ease",
             }}
           >
-            <MenuIcon sx={{ color: "#004AAD" }} />
-          </IconButton>
+            <MenuIcon sx={{ color: "#1A5D28" }} />
+          </IconButton> */}
           <Typography
             variant="h5"
             sx={{
               fontWeight: 700,
-              background: "linear-gradient(135deg, #004AAD 0%, #3b82f6 100%)",
+              background: "linear-gradient(135deg, #1A5D28 0%, #4C8C58 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               fontSize: { xs: "1.2rem", sm: "1.5rem" },
             }}
           >
-            {activeTab === 0 ? "HR Dashboard"
+            {activeTab === 0 ? " Dashboard"
               : activeTab === 1 ? "Financial Dashboard"
               : activeTab === 4 ? "Company Overview"
               : activeTab === 5 ? "Own Overview"
@@ -1646,9 +1647,6 @@ const Dashboard = () => {
             onClear={handleDateClear}
             loading={isDataLoading}
           />
-
-          {/* ── Date Display ── */}
-          
         </Box>
       </Box>
 
@@ -1674,46 +1672,52 @@ const Dashboard = () => {
           <Fade in timeout={600}>
             <Box>
               {/* ── Attendance KPI Cards ── */}
-              <EmployeeTypeKpiGrid
+              {/* <EmployeeTypeKpiGrid
                 allAttendance={attendanceData}
                 loading={loadingStates.allAttendance}
                 onCardClick={handleAttendanceCardClick}
-              />
+              /> */}
 
               {/* ── CDPLC Breakdown ── */}
-              <Box ref={cdplcChartRef} sx={{ mb: "24px" }}>
+              {/* <Box ref={cdplcChartRef} sx={{ mb: "24px" }}>
                 {loadingStates.divisionData ? (
                   <ChartSkeleton height={300} />
                 ) : (
                   <CDPLCBreakdown hadDate={selectedDate} />
                 )}
+              </Box> */}
+
+              {/* ── Employee Strength & Attendance Chart ── */}
+              <Box sx={{ mb: "24px" }}>
+                <EmployeeStrengthAttendanceChart allAttendance={attendanceData} />
               </Box>
 
-              {/* ── CDLLocationChart ── */}
+              {/* ── CDL Location Attendance Based on Division ── */}
               <Box sx={{ mb: "24px" }}>
-                <CDLLocBaseAttendance  hadDate={selectedDate} />
+                <CDLLocBaseAttendance hadDate={selectedDate} />
               </Box>
+
 
               {/* ── Employee Type Chart ── */}
-              <Box ref={traineeTypeChartRef} sx={{ mb: "24px" }}>
+              {/* <Box ref={traineeTypeChartRef} sx={{ mb: "24px" }}>
                 {loadingStates.traineeTypes ? (
                   <ChartSkeleton height={300} />
                 ) : (
                   <EmployeeTypeChart employeeTypeData={employeeTypeData} />
                 )}
-              </Box>
+              </Box> */}
 
               {/* ── Trainees Division Breakdown ── */}
-              <Box sx={{ mb: "24px" }}>
+              {/* <Box sx={{ mb: "24px" }}>
                 {loadingStates.traineeDivision ? (
                   <ChartSkeleton height={400} />
                 ) : (
                   <TraineesDivisionBreakdown traineeDivisionData={traineeDivision} />
                 )}
-              </Box>
+              </Box> */}
 
               {/* ── Weekly Attendance ── */}
-              <Box sx={{ mb: "24px" }}>
+              {/* <Box sx={{ mb: "24px" }}>
                 {loadingStates.weeklyAttendance ? (
                   <ChartSkeleton height={400} />
                 ) : (
@@ -1723,7 +1727,7 @@ const Dashboard = () => {
                     targetRate={75}
                   />
                 )}
-              </Box>
+              </Box> */}
 
               <Box sx={{ height: "20px" }} />
             </Box>
@@ -1733,7 +1737,7 @@ const Dashboard = () => {
         {/* ── Financial Dashboard ── */}
         {activeTab === 1 && (
           <Fade in timeout={500}>
-            <Box sx={{ background: "linear-gradient(135deg, #10b981 0%, #059669 100%)", color: "white", padding: "40px 36px", borderRadius: "20px", mb: "32px", boxShadow: "0 8px 40px rgba(16,185,129,0.25)" }}>
+            <Box sx={{ background: "linear-gradient(135deg, #1A5D28 0%, #13461E 100%)", color: "white", padding: "40px 36px", borderRadius: "20px", mb: "32px", boxShadow: "0 8px 40px rgba(26,93,40,0.25)" }}>
               <Typography variant="h4" sx={{ fontWeight: 700, mb: "8px", fontSize: "28px" }}>Financial Dashboard</Typography>
               <Typography sx={{ fontSize: "16px", opacity: 0.85 }}>Financial metrics, budgets, and fiscal performance overview.</Typography>
               <Typography sx={{ mt: "24px", fontSize: "14px", opacity: 0.75, fontStyle: "italic" }}>Financial dashboard content coming soon...</Typography>

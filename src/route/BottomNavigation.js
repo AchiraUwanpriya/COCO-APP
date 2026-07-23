@@ -399,7 +399,7 @@ export default function Footer() {
           {/* QR */}
           <BottomNavigationAction
             label="Scan"
-            value="QR"
+            // value="QR"
             icon={<QrCodeScannerIcon />}
           />
 
