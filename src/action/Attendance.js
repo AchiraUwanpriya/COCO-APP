@@ -147,113 +147,160 @@ export const GetCDLCategoryAtt = (hadDate) => async (dispatch) => {
     });
   }
 };
-export const GetAttendanceCard = (month) => async (dispatch) => {
-  dispatch({
-    type: ATTENDANCE_REQUEST,
-  });
+export const GetAttendanceCard =
+  (year, month, sno) => async (dispatch) => {
+    dispatch({
+      type: ATTENDANCE_REQUEST,
+    });
 
-  try {
-    const data = await AttendanceService.GetAttendanceCard(month);
-    if (data.data.StatusCode === 200) {
-      dispatch({
-        type: ATTENDANCE_SUCCESS,
-        payload: {
-          responseBody: data.data.ResultSet,
-        },
-      });
-    } else {
+    try {
+      const data = await AttendanceService.GetAttendanceCard(
+        year,
+        month,
+        sno
+      );
+      const resData = data?.data;
+
+      const isSuccess =
+        data?.status === 200 ||
+        resData?.StatusCode == 200 ||
+        resData?.statusCode == 200 ||
+        resData?.Status == 200 ||
+        resData?.status == 200 ||
+        Array.isArray(resData);
+
+      if (isSuccess) {
+        let list = [];
+        if (Array.isArray(resData)) {
+          list = resData;
+        } else if (resData) {
+          list =
+            resData.ResultSet ||
+            resData.resultSet ||
+            resData.Data ||
+            resData.data ||
+            resData.attendenceDetails ||
+            resData.AttendanceDetails ||
+            resData.Result ||
+            resData.result ||
+            [];
+        }
+
+        if (!Array.isArray(list) && typeof list === "object") {
+          list = Object.values(list);
+        }
+
+        dispatch({
+          type: ATTENDANCE_SUCCESS,
+          payload: {
+            responseBody: list,
+            attendenceDetails: list,
+          },
+        });
+      } else {
+        dispatch({
+          type: ATTENDANCE_FAIL,
+          payload: {
+            msg:
+              resData?.message ||
+              resData?.Message ||
+              "Sorry we could not find result for your search query. Please try again!",
+          },
+        });
+      }
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          (error.response.data.message || error.response.data.Message)) ||
+        error.message ||
+        error.toString();
       dispatch({
         type: ATTENDANCE_FAIL,
         payload: {
-          msg: "Sorry we could not find result for your search query. Please try again!",
+          msg: message,
         },
       });
     }
-  } catch (error) {
-    const message =
-      (error.response && error.response.data && error.response.data.message) ||
-      error.message ||
-      error.toString();
+  };
+
+export const GetAttendenceDetails =
+  (adate, sno, year, month) => async (dispatch) => {
     dispatch({
-      type: ATTENDANCE_FAIL,
-      payload: {
-        msg: message,
-      },
+      type: ATTENDANCE_REQUEST,
     });
-  }
-};
 
-export const GetAttendenceDetails = (adate) => async (dispatch) => {
-  dispatch({
-    type: ATTENDANCE_REQUEST,
-  });
+    try {
+      const data = await AttendanceService.GetAttendenceDetails(
+        adate,
+        sno,
+        year,
+        month
+      );
+      const resData = data?.data;
 
-  try {
-    const data = await AttendanceService.GetAttendenceDetails(adate);
-    const resData = data?.data;
+      const isSuccess =
+        data?.status === 200 ||
+        resData?.StatusCode == 200 ||
+        resData?.statusCode == 200 ||
+        resData?.Status == 200 ||
+        resData?.status == 200 ||
+        Array.isArray(resData);
 
-    const isSuccess =
-      data?.status === 200 ||
-      resData?.StatusCode == 200 ||
-      resData?.statusCode == 200 ||
-      resData?.Status == 200 ||
-      resData?.status == 200 ||
-      Array.isArray(resData);
+      if (isSuccess) {
+        let list = [];
+        if (Array.isArray(resData)) {
+          list = resData;
+        } else if (resData) {
+          list =
+            resData.ResultSet ||
+            resData.resultSet ||
+            resData.Data ||
+            resData.data ||
+            resData.attendenceDetails ||
+            resData.AttendanceDetails ||
+            resData.Result ||
+            resData.result ||
+            [];
+        }
 
-    if (isSuccess) {
-      let list = [];
-      if (Array.isArray(resData)) {
-        list = resData;
-      } else if (resData) {
-        list =
-          resData.ResultSet ||
-          resData.resultSet ||
-          resData.Data ||
-          resData.data ||
-          resData.attendenceDetails ||
-          resData.AttendanceDetails ||
-          resData.Result ||
-          resData.result ||
-          [];
+        if (!Array.isArray(list) && typeof list === "object") {
+          list = Object.values(list);
+        }
+
+        dispatch({
+          type: ATTENDANCE_SUCCESS,
+          payload: {
+            attendenceDetails: list,
+            responseBody: list,
+          },
+        });
+      } else {
+        dispatch({
+          type: ATTENDANCE_FAIL,
+          payload: {
+            msg:
+              resData?.message ||
+              resData?.Message ||
+              "Sorry, could not load attendance details. Please try again!",
+          },
+        });
       }
-
-      if (!Array.isArray(list) && typeof list === "object") {
-        list = Object.values(list);
-      }
-
-      dispatch({
-        type: ATTENDANCE_SUCCESS,
-        payload: {
-          attendenceDetails: list,
-          responseBody: list,
-        },
-      });
-    } else {
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          (error.response.data.message || error.response.data.Message)) ||
+        error.message ||
+        error.toString();
       dispatch({
         type: ATTENDANCE_FAIL,
         payload: {
-          msg:
-            resData?.message ||
-            resData?.Message ||
-            "Sorry, could not load attendance details. Please try again!",
+          msg: message,
         },
       });
     }
-  } catch (error) {
-    const message =
-      (error.response &&
-        error.response.data &&
-        (error.response.data.message || error.response.data.Message)) ||
-      error.message ||
-      error.toString();
-    dispatch({
-      type: ATTENDANCE_FAIL,
-      payload: {
-        msg: message,
-      },
-    });
-  }
-};
+  };
 
 export const GetCdlBasedDivison = (mcvDate, hadDate) => async (dispatch) => {
   dispatch({

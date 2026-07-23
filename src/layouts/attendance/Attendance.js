@@ -1,25 +1,60 @@
 import React, { useEffect, useState } from "react";
-import { Box, TextField, Button } from "@mui/material";
+import { Box, TextField, Button, MenuItem, IconButton } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useDispatch } from "react-redux";
 import AttendanceCard from "../../components/Cards/AttendanceCard";
 import dayjs from "dayjs";
 import { GetAttendenceDetails } from "../../action/Attendance";
 import { useNavigate } from "react-router-dom";
 
+const MONTHS = [
+  { value: "01", label: "January" },
+  { value: "02", label: "February" },
+  { value: "03", label: "March" },
+  { value: "04", label: "April" },
+  { value: "05", label: "May" },
+  { value: "06", label: "June" },
+  { value: "07", label: "July" },
+  { value: "08", label: "August" },
+  { value: "09", label: "September" },
+  { value: "10", label: "October" },
+  { value: "11", label: "November" },
+  { value: "12", label: "December" },
+];
+
 const Attendance = () => {
-  const [selectedDate, setSelectedDate] = useState(dayjs().format("YYYY-MM-DD"));
+  const [year, setYear] = useState(dayjs().format("YYYY"));
+  const [month, setMonth] = useState(dayjs().format("MM"));
+  const [sno, setSno] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    dispatch(GetAttendenceDetails(selectedDate));
-  }, [dispatch, selectedDate]);
+  const fetchAttendance = (overrideSno) => {
+    const activeSno =
+      typeof overrideSno === "string" || typeof overrideSno === "number"
+        ? String(overrideSno)
+        : sno;
+    const finalSno = activeSno ? String(activeSno).trim() : "";
+    dispatch(
+      GetAttendenceDetails({
+        year: year ? String(year).trim() : undefined,
+        month: month ? String(month).trim() : undefined,
+        sno: finalSno,
+      })
+    );
+  };
 
-  const handleDateChange = (e) => {
-    if (e.target.value) {
-      setSelectedDate(e.target.value);
+  const handleSnoChange = (e) => {
+    const val = e.target.value;
+    setSno(val);
+    if (!val.trim()) {
+      fetchAttendance("");
     }
   };
+
+  useEffect(() => {
+    fetchAttendance();
+  }, [dispatch, year, month]);
 
   return (
     <Box
@@ -29,27 +64,44 @@ const Attendance = () => {
         mt: 1,
       }}
     >
+        {/* Right Side - Green Back Arrow Button */}
+        <IconButton
+          onClick={() => navigate(-1)}
+          sx={{
+            backgroundColor: "#1A5D28",
+            color: "#fff",
+            "&:hover": { backgroundColor: "#14471e" },
+            width: 36,
+            height: 36,
+            borderRadius: 1,
+            ml: 2,
+          }}
+          aria-label="back"
+        >
+          <ArrowBackIcon fontSize="small" />
+        </IconButton>
       <Box
         sx={{
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          flexWrap: "wrap",
           mt: 2,
           mx: 2,
           gap: 2,
         }}
       >
-        {/* Left Side - Date Input */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+        
+        {/* Left Side - Year, Month & Service No Inputs */}
+        <Box sx={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 1.5 }}>
           <TextField
-            label="Attendance Date"
-            type="date"
+            label="Year"
             size="small"
-            value={selectedDate}
-            onChange={handleDateChange}
-            InputLabelProps={{ shrink: true }}
+            type="number"
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
             sx={{
-              minWidth: 170,
+              width: 110,
               backgroundColor: "#fff",
               borderRadius: 1,
               "& .MuiInputBase-root": {
@@ -58,17 +110,55 @@ const Attendance = () => {
               },
             }}
           />
+          <TextField
+            select
+            label="Month"
+            size="small"
+            value={month}
+            onChange={(e) => setMonth(e.target.value)}
+            sx={{
+              minWidth: 140,
+              backgroundColor: "#fff",
+              borderRadius: 1,
+              "& .MuiInputBase-root": {
+                height: "36px",
+                fontSize: "13px",
+              },
+            }}
+          >
+            {MONTHS.map((m) => (
+              <MenuItem key={m.value} value={m.value}>
+                {m.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          <TextField
+            label="Service No"
+            size="small"
+            placeholder="e.g. 700026"
+            value={sno}
+            onChange={handleSnoChange}
+            sx={{
+              width: 250,
+              backgroundColor: "#fff",
+              borderRadius: 1,
+              "& .MuiInputBase-root": {
+                height: "36px",
+                fontSize: "13px",
+              },
+            }}
+          />
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => fetchAttendance()}
+            sx={{ textTransform: "none", height: "36px", fontWeight: 600 }}
+          >
+            Search
+          </Button>
         </Box>
 
-        {/* Right Side - Back Button */}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => navigate(-1)}
-          sx={{ textTransform: "none", height: "32px" }}
-        >
-          Back
-        </Button>
+      
       </Box>
 
       <Box
@@ -93,4 +183,5 @@ const Attendance = () => {
     </Box>
   );
 };
+
 export default Attendance;
