@@ -473,35 +473,34 @@ const SignIn = () => {
         </Box> */}
 
         <Box>
-          <Box mb={2}>
-            <TextField
-              fullWidth
-              id="phone-input"
-              placeholder="Enter mobile number"
-              variant="outlined"
-              value={phoneNo}
-              onChange={(e) => setPhoneNo(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <PhoneIcon sx={{ color: "#1A5D28" }} />
-                  </InputAdornment>
-                ),
-                sx: { borderRadius: 3, backgroundColor: "#FAFAFA" },
-              }}
-              sx={{
-                input: { fontSize: 16, caretColor: "#1A5D28" },
-                "& .MuiOutlinedInput-root": {
-                  "&.Mui-focused fieldset": {
-                    borderColor: "#1A5D28",
+          {activeTab === "phone" ? (
+            <Box mb={2}>
+              <TextField
+                fullWidth
+                id="phone-input"
+                placeholder="Enter mobile number"
+                variant="outlined"
+                value={phoneNo}
+                onChange={(e) => setPhoneNo(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PhoneIcon sx={{ color: "#1A5D28" }} />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: 3, backgroundColor: "#FAFAFA" },
+                }}
+                sx={{
+                  input: { fontSize: 16, caretColor: "#1A5D28" },
+                  "& .MuiOutlinedInput-root": {
+                    "&.Mui-focused fieldset": {
+                      borderColor: "#1A5D28",
+                    },
                   },
-                },
-              }}
-            />
-          </Box>
-
-          {/* Service No Option - Commented for now */}
-          {/* activeTab === "serviceNo" && (
+                }}
+              />
+            </Box>
+          ) : (
             <>
               <Box mb={2}>
                 <TextField
@@ -589,7 +588,7 @@ const SignIn = () => {
                 />
               </Box>
             </>
-          ) */}
+          )}
 
           <Box mt={2.5} mb={2}>
             <LoadingButton
