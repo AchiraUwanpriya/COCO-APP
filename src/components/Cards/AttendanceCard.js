@@ -29,9 +29,10 @@ import EventBusyIcon from "@mui/icons-material/EventBusy";
 import GridViewIcon from "@mui/icons-material/GridView";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import BusinessIcon from "@mui/icons-material/Business";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import BadgeIcon from "@mui/icons-material/Badge";
+import PersonIcon from "@mui/icons-material/Person";
+import BusinessIcon from "@mui/icons-material/Business";
 
 // Styled Components for Monthly Table (Individual View)
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -592,11 +593,11 @@ export default function AttendanceCard({
                     {/* Left: Avatar, Name, Service No & Division */}
                     <Box sx={{ display: "flex", alignItems: "center", gap: 1.2, flex: 1, minWidth: 0 }}>
                       <Avatar
+                        src={item.raw?.Image || item.raw?.image || item.raw?.Photo || item.raw?.photo || undefined}
                         sx={{
                           background: "linear-gradient(135deg, #1A5D28 0%, #2e7d32 100%)",
                           color: "#ffffff",
                           fontWeight: 700,
-                          fontSize: 13,
                           width: 36,
                           height: 36,
                           boxShadow: "0 2px 6px rgba(26, 93, 40, 0.2)",
@@ -604,7 +605,7 @@ export default function AttendanceCard({
                           flexShrink: 0,
                         }}
                       >
-                        {initials}
+                        <PersonIcon sx={{ fontSize: 20 }} />
                       </Avatar>
 
                       <Box sx={{ minWidth: 0 }}>

@@ -238,7 +238,7 @@ const Attendance = () => {
           {/* Real-time Quick Filter */}
           <TextField
             size="small"
-            placeholder="Quick search (Service No / Name)..."
+            placeholder="Quick search (Service No / Name)"
             value={quickSearch}
             onChange={(e) => setQuickSearch(e.target.value)}
             InputProps={{
