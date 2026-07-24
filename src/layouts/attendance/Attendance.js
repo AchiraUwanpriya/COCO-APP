@@ -154,7 +154,9 @@ const Attendance = () => {
         <Tabs
           value={tabValue}
           onChange={(e, newValue) => setTabValue(newValue)}
+          variant="fullWidth"
           sx={{
+            width: "100%",
             minHeight: 40,
             backgroundColor: "#f4f6f8",
             borderRadius: "12px",
@@ -169,6 +171,7 @@ const Attendance = () => {
             iconPosition="start"
             label="Today's Attendance"
             sx={{
+              flex: 1,
               minHeight: 36,
               py: 0.5,
               px: 2,
@@ -190,9 +193,10 @@ const Attendance = () => {
             iconPosition="start"
             label="Individual"
             sx={{
+              flex: 1,
               minHeight: 36,
               py: 0.5,
-              px: 4,
+              px: 2,
               fontSize: "13px",
               fontWeight: 600,
               borderRadius: "8px",

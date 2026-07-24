@@ -135,7 +135,18 @@ const calculateDuration = (rawIn, rawOut) => {
 const parseRecord = (item) => {
   if (!item) return {};
 
-  const serviceNo = String(
+  const name = String(
+    item.Name ||
+      item.name ||
+      item.EmpName ||
+      item.empName ||
+      item.EmployeeName ||
+      item.employeeName ||
+      item.NAME ||
+      ""
+  );
+
+  const rawServiceNo = String(
     item.ServiceNo ||
       item.serviceNo ||
       item.Service_No ||
@@ -152,19 +163,10 @@ const parseRecord = (item) => {
       item.empNo ||
       item.Emp_No ||
       item.EMP_NO ||
-      "-"
-  );
-
-  const name = String(
-    item.Name ||
-      item.name ||
-      item.EmpName ||
-      item.empName ||
-      item.EmployeeName ||
-      item.employeeName ||
-      item.NAME ||
       ""
   );
+
+  const serviceNo = name || rawServiceNo || "-";
 
   const division = String(
     item.Division ||
