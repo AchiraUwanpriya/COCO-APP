@@ -38,9 +38,9 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   "&.MuiTableCell-head": {
     backgroundColor: "#1A5D28",
     color: "#ffffff",
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: 700,
-    padding: "4px 4px",
+    padding: "3px 4px",
     lineHeight: "1.2",
     textAlign: "center",
     borderRight: "1px solid rgba(255, 255, 255, 0.2)",
@@ -50,9 +50,9 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     },
   },
   "&.MuiTableCell-body": {
-    fontSize: 13,
+    fontSize: 12,
     color: "#1e293b",
-    padding: "8px 6px",
+    padding: "3px 4px",
     lineHeight: "1.2",
     textAlign: "center",
     borderRight: "1px solid #e2e8f0",
@@ -435,9 +435,6 @@ export default function AttendanceCard({
     return <Loader />;
   }
 
-  // ==========================================
-  // RENDER: TODAY'S ATTENDANCE MODERN VIEW (Tab 0)
-  // ==========================================
   if (isTodayView) {
     if (!listData || listData.length === 0) {
       return <NotFound text={msg || "No attendance records found for today"} />;
@@ -548,7 +545,6 @@ export default function AttendanceCard({
           </Typography>
         </Paper>
 
-        {/* Display Content: Modern Attractive List View Only */}
         {displayedTodayRecords.length === 0 ? (
           <NotFound text="No matching attendance records found for selected filter" />
         ) : (
@@ -794,9 +790,9 @@ export default function AttendanceCard({
     );
   }
 
-  // ==========================================
-  // RENDER: INDIVIDUAL MONTHLY TABLE VIEW (Tab 1)
-  // ==========================================
+  
+  
+  
   if (!monthRows || monthRows.length === 0) {
     return <NotFound text={msg || (searchQuery ? "No matching records found" : undefined)} />;
   }
@@ -808,7 +804,7 @@ export default function AttendanceCard({
         elevation={0}
         sx={{
           width: "100%",
-          maxHeight: 450,
+          maxHeight: 535,
           overflowY: "auto",
           overflowX: "auto",
           borderRadius: "12px",
@@ -873,16 +869,16 @@ export default function AttendanceCard({
                         justifyContent: "center",
                         backgroundColor: isToday ? "#1A5D28" : "#e8f5e9",
                         border: isToday ? "1px solid #1A5D28" : "1px solid #c8e6c9",
-                        borderRadius: "8px",
-                        py: 0.4,
-                        px: 0.8,
+                        borderRadius: "6px",
+                        py: 0.2,
+                        px: 0.6,
                         mx: "auto",
-                        maxWidth: "54px",
-                        boxShadow: isToday ? "0 2px 6px rgba(26, 93, 40, 0.35)" : "none",
+                        maxWidth: "46px",
+                        boxShadow: isToday ? "0 2px 4px rgba(26, 93, 40, 0.3)" : "none",
                       }}
                     >
                       <Typography
-                        fontSize={13}
+                        fontSize={12}
                         fontWeight={700}
                         sx={{ color: isToday ? "#ffffff" : "#1A5D28", lineHeight: 1 }}
                       >
@@ -890,9 +886,9 @@ export default function AttendanceCard({
                       </Typography>
                       {dayName && (
                         <Typography
-                          fontSize={8}
+                          fontSize={7.5}
                           fontWeight={700}
-                          sx={{ color: isToday ? "#ffffff" : "#2e7d32", lineHeight: 1, mt: "2px" }}
+                          sx={{ color: isToday ? "#ffffff" : "#2e7d32", lineHeight: 1, mt: "1px" }}
                         >
                           {isToday ? "TODAY" : dayName}
                         </Typography>
@@ -902,7 +898,7 @@ export default function AttendanceCard({
 
                   {/* Service No */}
                   <StyledTableCell align="center">
-                    <Typography fontSize={13} fontWeight={isToday ? 700 : 600} color="#1e293b">
+                    <Typography fontSize={12} fontWeight={isToday ? 700 : 600} color="#1e293b">
                       {serviceNo}
                     </Typography>
                   </StyledTableCell>
@@ -914,7 +910,7 @@ export default function AttendanceCard({
                       colSpan={2}
                       sx={{
                         fontWeight: 700,
-                        fontSize: 13,
+                        fontSize: 11,
                         color: "#c62828",
                       }}
                     >
@@ -923,11 +919,11 @@ export default function AttendanceCard({
                           backgroundColor: "#ffebee",
                           color: "#c62828",
                           fontWeight: 700,
-                          py: 0.3,
-                          px: 1,
-                          borderRadius: "6px",
+                          py: 0.15,
+                          px: 0.8,
+                          borderRadius: "4px",
                           display: "inline-block",
-                          fontSize: 12,
+                          fontSize: 11,
                         }}
                       >
                         {leaveReason}
@@ -943,11 +939,11 @@ export default function AttendanceCard({
                               backgroundColor: "#e8f5e9",
                               color: "#1b5e20",
                               fontWeight: 700,
-                              py: 0.3,
-                              px: 1,
-                              borderRadius: "6px",
+                              py: 0.15,
+                              px: 0.8,
+                              borderRadius: "4px",
                               display: "inline-block",
-                              fontSize: 12,
+                              fontSize: 11,
                             }}
                           >
                             {inTime}
@@ -965,11 +961,11 @@ export default function AttendanceCard({
                               backgroundColor: "#e3f2fd",
                               color: "#0d47a1",
                               fontWeight: 700,
-                              py: 0.3,
-                              px: 1,
-                              borderRadius: "6px",
+                              py: 0.15,
+                              px: 0.8,
+                              borderRadius: "4px",
                               display: "inline-block",
-                              fontSize: 12,
+                              fontSize: 11,
                             }}
                           >
                             {outTime}

@@ -270,17 +270,22 @@ const Attendance = () => {
           sx={{
             display: "flex",
             alignItems: "center",
-            flexWrap: "wrap",
-            gap: 1.5,
+            flexWrap: "nowrap",
+            gap: 1,
             mt: 2,
             mx: 1,
-            p: 1.5,
+            p: 1.2,
             backgroundColor: "#ffffff",
             borderRadius: "12px",
             border: "1px solid #e2e8f0",
             boxShadow: "0 2px 6px rgba(0,0,0,0.03)",
+            overflowX: "auto",
+            "&::-webkit-scrollbar": { display: "none" },
+            msOverflowStyle: "none",
+            scrollbarWidth: "none",
           }}
         >
+         
           <TextField
             label="Year"
             size="small"
@@ -288,7 +293,8 @@ const Attendance = () => {
             value={year}
             onChange={(e) => setYear(e.target.value)}
             sx={{
-              width: 100,
+              width: 75,
+              flexShrink: 0,
               backgroundColor: "#fff",
               borderRadius: 1,
               "& .MuiInputBase-root": {
@@ -304,7 +310,8 @@ const Attendance = () => {
             value={month}
             onChange={(e) => setMonth(e.target.value)}
             sx={{
-              minWidth: 130,
+              width: 105,
+              flexShrink: 0,
               backgroundColor: "#fff",
               borderRadius: 1,
               "& .MuiInputBase-root": {
@@ -319,15 +326,15 @@ const Attendance = () => {
               </MenuItem>
             ))}
           </TextField>
-
-          <TextField
+           <TextField
             label="Service No *"
             size="small"
             placeholder="e.g. 700026"
             value={sno}
             onChange={handleSnoChange}
             sx={{
-              width: 200,
+              flex: 1,
+              minWidth: 110,
               backgroundColor: "#fff",
               borderRadius: 1,
               "& .MuiInputBase-root": {
