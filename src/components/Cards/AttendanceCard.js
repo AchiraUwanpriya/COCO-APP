@@ -60,7 +60,7 @@ const StyledTableRow = styled(TableRow)(({ issat, issun }) => {
   };
 });
 
-export default function AttendanceCard() {
+export default function AttendanceCard({ searchQuery = "" }) {
   const { attendenceDetails, responseBody, loading, msg } = useSelector(
     (state) => state.attendanceCard
   );
@@ -75,8 +75,44 @@ export default function AttendanceCard() {
     return [];
   }, [attendenceDetails, responseBody]);
 
+  const filteredData = useMemo(() => {
+    if (!searchQuery || !searchQuery.trim()) return listData;
+    const q = searchQuery.trim().toLowerCase();
+    return listData.filter((item) => {
+      const sno = String(
+        item.ServiceNo ||
+        item.serviceNo ||
+        item.Service_No ||
+        item.Service_no ||
+        item.SERVICE_NO ||
+        item.ServiceNumber ||
+        item.serviceNumber ||
+        item.ServNo ||
+        item.servNo ||
+        item.Sno ||
+        item.sno ||
+        item.SNO ||
+        item.EmpNo ||
+        item.empNo ||
+        ""
+      ).toLowerCase();
+      const name = String(
+        item.Name ||
+        item.name ||
+        item.EmpName ||
+        item.empName ||
+        item.EmployeeName ||
+        item.employeeName ||
+        item.NAME ||
+        ""
+      ).toLowerCase();
+      const div = String(item.Division || item.div || item.Department || item.dep || "").toLowerCase();
+      return sno.includes(q) || name.includes(q) || div.includes(q);
+    });
+  }, [listData, searchQuery]);
+
   const tableContent = useMemo(() => {
-    if (!listData || listData.length === 0) return null;
+    if (!filteredData || filteredData.length === 0) return null;
 
     return (
       <TableContainer
@@ -113,7 +149,7 @@ export default function AttendanceCard() {
           </TableHead>
 
           <TableBody>
-            {listData.map((row, index) => {
+            {filteredData.map((row, index) => {
               const rawDate =
                 row.Date ||
                 row.AttDate ||
@@ -273,13 +309,17 @@ export default function AttendanceCard() {
         </Table>
       </TableContainer>
     );
-  }, [listData]);
+  }, [filteredData]);
 
   return loading ? (
     <Loader />
   ) : (
     <Box sx={{ width: "100%", mt: 1 }}>
-      {listData && listData.length > 0 ? tableContent : <NotFound text={msg} />}
+      {filteredData && filteredData.length > 0 ? (
+        tableContent
+      ) : (
+        <NotFound text={msg || (searchQuery ? "No matching records found" : undefined)} />
+      )}
     </Box>
   );
 }
