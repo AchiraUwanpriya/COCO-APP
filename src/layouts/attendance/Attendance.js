@@ -106,7 +106,7 @@ const Attendance = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        mt: 1,
+        mt: 0.5,
         px: 1,
       }}
     >
@@ -346,10 +346,11 @@ const Attendance = () => {
           flexGrow: 1,
           mx: 1,
           mt: 2,
-          marginBottom: "70px",
+          marginBottom: "10px",
+          overflow: "hidden",
         }}
       >
-        <Box sx={{ flexGrow: 1, overflow: "auto" }}>
+        <Box sx={{ flexGrow: 1, overflow: "hidden" }}>
           {tabValue === 1 && !sno.trim() ? (
             <Paper
               elevation={0}
@@ -371,7 +372,7 @@ const Attendance = () => {
               </Typography>
             </Paper>
           ) : (
-            <AttendanceCard searchQuery={tabValue === 0 ? quickSearch : ""} />
+            <AttendanceCard year={year} month={month} searchQuery={tabValue === 0 ? quickSearch : ""} />
           )}
         </Box>
       </Box>

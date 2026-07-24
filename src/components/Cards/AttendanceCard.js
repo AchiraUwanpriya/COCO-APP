@@ -15,44 +15,49 @@ import NotFound from "../Utility/NotFound";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   "&.MuiTableCell-head": {
-    backgroundColor: theme.palette.primary.main || "#1976d2",
-    color: theme.palette.common.white,
+    backgroundColor: "#1A5D28",
+    color: "#ffffff",
     fontSize: 13,
     fontWeight: 700,
-    padding: "6px 4px",
+    padding: "4px 4px",
     lineHeight: "1.2",
     textAlign: "center",
-    borderRight: "1px solid rgba(255, 255, 255, 0.3)",
+    borderRight: "1px solid rgba(255, 255, 255, 0.2)",
+    boxSizing: "border-box",
     "&:last-child": {
       borderRight: "none",
     },
   },
   "&.MuiTableCell-body": {
     fontSize: 13,
-    color: "#000000",
-    padding: "6px 4px",
+    color: "#1e293b",
+    padding: "8px 6px",
     lineHeight: "1.2",
     textAlign: "center",
-    borderRight: "1px solid #e0e0e0",
-    borderBottom: "1px solid #e0e0e0",
+    borderRight: "1px solid #e2e8f0",
+    borderBottom: "1px solid #e2e8f0",
     "&:last-child": {
       borderRight: "none",
     },
   },
 }));
 
-const StyledTableRow = styled(TableRow)(({ issat, issun }) => {
+const StyledTableRow = styled(TableRow)(({ issat, issun, istoday }) => {
   let bgColor = "#ffffff";
-  if (issun === "true") {
-    bgColor = "#dce4f7";
+  if (istoday === "true") {
+    bgColor = "#e8f5e9";
+  } else if (issun === "true") {
+    bgColor = "#e8f2e8";
   } else if (issat === "true") {
-    bgColor = "#ebf2fc";
+    bgColor = "#f4f9f4";
   }
 
   return {
     backgroundColor: bgColor,
+    borderLeft: istoday === "true" ? "4px solid #1A5D28" : "none",
+    transition: "background-color 0.15s ease",
     "&:hover": {
-      backgroundColor: issun === "true" ? "#d0dbf5" : issat === "true" ? "#e1ebfa" : "#f5f5f5",
+      backgroundColor: istoday === "true" ? "#c8e6c9" : issun === "true" ? "#dceddc" : issat === "true" ? "#e4f2e4" : "#f8fafc",
     },
     "& td, & th": {
       backgroundColor: "inherit",
@@ -60,7 +65,7 @@ const StyledTableRow = styled(TableRow)(({ issat, issun }) => {
   };
 });
 
-export default function AttendanceCard({ searchQuery = "" }) {
+export default function AttendanceCard({ searchQuery = "", year, month }) {
   const { attendenceDetails, responseBody, loading, msg } = useSelector(
     (state) => state.attendanceCard
   );
@@ -111,132 +116,231 @@ export default function AttendanceCard({ searchQuery = "" }) {
     });
   }, [listData, searchQuery]);
 
+  // Helper to parse date info from an API item
+  const getItemDateInfo = (row) => {
+    if (!row) return null;
+    const rawDate =
+      row.Date ||
+      row.AttDate ||
+      row.attDate ||
+      row.date ||
+      row.ATT_DATE ||
+      row.Att_Date ||
+      row.Adate ||
+      row.adate;
+
+    if (!rawDate) return null;
+    const parsed = dayjs(rawDate);
+    if (parsed.isValid()) {
+      return {
+        dayNum: parsed.date(),
+        monthNum: parsed.month() + 1,
+        yearNum: parsed.year(),
+        dayName: parsed.format("ddd").toUpperCase(),
+      };
+    }
+    const num = Number(rawDate);
+    if (!isNaN(num) && num >= 1 && num <= 31) {
+      return {
+        dayNum: num,
+        monthNum: null,
+        yearNum: null,
+        dayName: (row.Day || row.day || "").toString().substring(0, 3).toUpperCase(),
+      };
+    }
+    return null;
+  };
+
+  // Generate rows for all dates of the month (1 to 28..31), identifying Today's date
+  const monthRows = useMemo(() => {
+    let targetYear = year;
+    let targetMonth = month;
+
+    if (!targetYear || !targetMonth) {
+      for (const item of listData) {
+        const info = getItemDateInfo(item);
+        if (info && info.yearNum && info.monthNum) {
+          targetYear = String(info.yearNum);
+          targetMonth = String(info.monthNum).padStart(2, "0");
+          break;
+        }
+      }
+    }
+
+    if (!targetYear) targetYear = dayjs().format("YYYY");
+    if (!targetMonth) targetMonth = dayjs().format("MM");
+
+    const formattedMonth = String(targetMonth).padStart(2, "0");
+    const totalDays = dayjs(`${targetYear}-${formattedMonth}-01`).daysInMonth() || 31;
+
+    const today = dayjs();
+    const todayDayNum = today.date();
+    const todayMonthNum = today.month() + 1;
+    const todayYearNum = today.year();
+
+    const isCurrentMonthYear =
+      Number(targetYear) === todayYearNum &&
+      Number(targetMonth) === todayMonthNum;
+
+    // Group filtered items by day number (1..totalDays)
+    const itemsByDay = {};
+    filteredData.forEach((item) => {
+      const info = getItemDateInfo(item);
+      const dNum = info ? info.dayNum : null;
+      if (dNum && dNum >= 1 && dNum <= totalDays) {
+        if (!itemsByDay[dNum]) itemsByDay[dNum] = [];
+        itemsByDay[dNum].push(item);
+      }
+    });
+
+    const resultRows = [];
+
+    for (let d = 1; d <= totalDays; d++) {
+      const currentDate = dayjs(`${targetYear}-${formattedMonth}-${String(d).padStart(2, "0")}`);
+      const isValidDate = currentDate.isValid();
+      const dayName = isValidDate
+        ? currentDate.format("ddd").toUpperCase()
+        : "";
+      const isSat = isValidDate ? currentDate.day() === 6 : false;
+      const isSun = isValidDate ? currentDate.day() === 0 : false;
+      const isToday = isCurrentMonthYear && d === todayDayNum;
+
+      const dayItems = itemsByDay[d];
+
+      if (dayItems && dayItems.length > 0) {
+        dayItems.forEach((item) => {
+          resultRows.push({
+            dateNum: d,
+            dayName,
+            isSat,
+            isSun,
+            isToday,
+            apiRecord: item,
+            hasData: true,
+          });
+        });
+      } else {
+        resultRows.push({
+          dateNum: d,
+          dayName,
+          isSat,
+          isSun,
+          isToday,
+          apiRecord: null,
+          hasData: false,
+        });
+      }
+    }
+
+    return resultRows;
+  }, [filteredData, listData, year, month]);
+
   const tableContent = useMemo(() => {
-    if (!filteredData || filteredData.length === 0) return null;
+    if (!monthRows || monthRows.length === 0) return null;
 
     return (
       <TableContainer
         component={Paper}
+        elevation={0}
         sx={{
           width: "100%",
+          maxHeight: 420,
+          overflowY: "auto",
           overflowX: "auto",
-          borderRadius: 2,
-          boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
-          border: "1px solid #e0e0e0",
+          borderRadius: "12px",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
+          border: "1px solid #e2e8f0",
         }}
       >
-        <Table sx={{ width: "100%", minWidth: 320, tableLayout: "fixed" }} aria-label="attendance table">
+        <Table stickyHeader sx={{ width: "100%", minWidth: 320, tableLayout: "fixed" }} aria-label="attendance table">
           <TableHead>
-            <TableRow>
-              <StyledTableCell align="center" rowSpan={2} sx={{ width: "20%" }}>
+            <TableRow sx={{ height: "28px" }}>
+              <StyledTableCell align="center" rowSpan={2} sx={{ width: "20%", top: 0, zIndex: 4, height: "56px" }}>
                 Day
               </StyledTableCell>
-              <StyledTableCell align="center" rowSpan={2} sx={{ width: "30%" }}>
+              <StyledTableCell align="center" rowSpan={2} sx={{ width: "30%", top: 0, zIndex: 4, height: "56px" }}>
                 Service No
               </StyledTableCell>
-              <StyledTableCell align="center" colSpan={2} sx={{ width: "50%" }}>
+              <StyledTableCell align="center" colSpan={2} sx={{ width: "50%", top: 0, zIndex: 4, height: "28px" }}>
                 Attendance
               </StyledTableCell>
             </TableRow>
-            <TableRow>
-              <StyledTableCell align="center" sx={{ width: "25%" }}>
+            <TableRow sx={{ height: "28px" }}>
+              <StyledTableCell align="center" sx={{ width: "25%", top: "28px", zIndex: 3, height: "28px" }}>
                 IN
               </StyledTableCell>
-              <StyledTableCell align="center" sx={{ width: "25%" }}>
+              <StyledTableCell align="center" sx={{ width: "25%", top: "28px", zIndex: 3, height: "28px" }}>
                 OUT
               </StyledTableCell>
             </TableRow>
           </TableHead>
 
           <TableBody>
-            {filteredData.map((row, index) => {
-              const rawDate =
-                row.Date ||
-                row.AttDate ||
-                row.attDate ||
-                row.date ||
-                row.ATT_DATE ||
-                row.Att_Date ||
-                row.Adate ||
-                row.adate;
+            {monthRows.map((rowItem, index) => {
+              const { dateNum, dayName, isSat, isSun, isToday, apiRecord, hasData } = rowItem;
 
-              const attDate = rawDate ? dayjs(rawDate) : null;
-              const isValidDate = attDate && attDate.isValid();
+              let serviceNo = "-";
+              let inTime = "";
+              let outTime = "";
+              let leaveReason = null;
 
-              const dateNum = isValidDate
-                ? attDate.format("D")
-                : rawDate
-                ? String(rawDate)
-                : "-";
+              if (hasData && apiRecord) {
+                serviceNo =
+                  apiRecord.ServiceNo ||
+                  apiRecord.serviceNo ||
+                  apiRecord.Service_No ||
+                  apiRecord.Service_no ||
+                  apiRecord.SERVICE_NO ||
+                  apiRecord.ServiceNumber ||
+                  apiRecord.serviceNumber ||
+                  apiRecord.ServNo ||
+                  apiRecord.servNo ||
+                  apiRecord.Sno ||
+                  apiRecord.sno ||
+                  apiRecord.SNO ||
+                  apiRecord.EmpNo ||
+                  apiRecord.empNo ||
+                  apiRecord.Emp_No ||
+                  apiRecord.EMP_NO ||
+                  apiRecord.Name ||
+                  apiRecord.name ||
+                  apiRecord.EmpName ||
+                  apiRecord.empName ||
+                  apiRecord.EmployeeName ||
+                  apiRecord.employeeName ||
+                  apiRecord.NAME ||
+                  "-";
 
-              const dayName = isValidDate
-                ? attDate.format("ddd").toUpperCase()
-                : row.Day || row.day
-                ? String(row.Day || row.day).substring(0, 3).toUpperCase()
-                : "";
+                const formatTime = (t) => {
+                  if (!t || t === "—" || t === null) return "";
+                  const str = String(t).trim();
+                  if (!str || str === "—") return "";
+                  const parsed = dayjs(str, ["hh:mm A", "HH:mm", "HH:mm:ss", "YYYY-MM-DDTHH:mm:ss"]);
+                  return parsed.isValid() ? parsed.format("HH:mm") : str;
+                };
 
-              const isSat = isValidDate
-                ? attDate.day() === 6
-                : dayName.includes("SAT");
+                inTime = formatTime(
+                  apiRecord.InTime || apiRecord.inTime || apiRecord.In_Time || apiRecord.IN_TIME || apiRecord.intime || apiRecord.In || apiRecord.in
+                );
 
-              const isSun = isValidDate
-                ? attDate.day() === 0
-                : dayName.includes("SUN");
+                outTime = formatTime(
+                  apiRecord.OutTime || apiRecord.outTime || apiRecord.Out_Time || apiRecord.OUT_TIME || apiRecord.outtime || apiRecord.Out || apiRecord.out
+                );
 
-              const serviceNo =
-                row.ServiceNo ||
-                row.serviceNo ||
-                row.Service_No ||
-                row.Service_no ||
-                row.SERVICE_NO ||
-                row.ServiceNumber ||
-                row.serviceNumber ||
-                row.ServNo ||
-                row.servNo ||
-                row.Sno ||
-                row.sno ||
-                row.SNO ||
-                row.EmpNo ||
-                row.empNo ||
-                row.Emp_No ||
-                row.EMP_NO ||
-                row.Name ||
-                row.name ||
-                row.EmpName ||
-                row.empName ||
-                row.EmployeeName ||
-                row.employeeName ||
-                row.NAME ||
-                "-";
-
-              const formatTime = (t) => {
-                if (!t || t === "—" || t === null) return "";
-                const str = String(t).trim();
-                if (!str || str === "—") return "";
-                const parsed = dayjs(str, ["hh:mm A", "HH:mm", "HH:mm:ss", "YYYY-MM-DDTHH:mm:ss"]);
-                return parsed.isValid() ? parsed.format("HH:mm") : str;
-              };
-
-              const inTime = formatTime(
-                row.InTime || row.inTime || row.In_Time || row.IN_TIME || row.intime || row.In || row.in
-              );
-
-              const outTime = formatTime(
-                row.OutTime || row.outTime || row.Out_Time || row.OUT_TIME || row.outtime || row.Out || row.out
-              );
-
-              const leaveReason =
-                row.LeaveReason ||
-                row.leaveReason ||
-                row.LeaveType ||
-                row.leaveType ||
-                row.Leave_Reason;
+                leaveReason =
+                  apiRecord.LeaveReason ||
+                  apiRecord.leaveReason ||
+                  apiRecord.LeaveType ||
+                  apiRecord.leaveType ||
+                  apiRecord.Leave_Reason;
+              }
 
               return (
                 <StyledTableRow
                   key={index}
                   issat={isSat.toString()}
                   issun={isSun.toString()}
+                  istoday={isToday.toString()}
                 >
                   {/* Day Column */}
                   <StyledTableCell component="th" scope="row" align="center">
@@ -246,28 +350,30 @@ export default function AttendanceCard({ searchQuery = "" }) {
                         flexDirection: "column",
                         alignItems: "center",
                         justifyContent: "center",
-                        backgroundColor: "#B5E8FF",
+                        backgroundColor: isToday ? "#1A5D28" : "#e8f5e9",
+                        border: isToday ? "1px solid #1A5D28" : "1px solid #c8e6c9",
                         borderRadius: "8px",
                         py: 0.4,
                         px: 0.8,
                         mx: "auto",
                         maxWidth: "54px",
+                        boxShadow: isToday ? "0 2px 6px rgba(26, 93, 40, 0.35)" : "none",
                       }}
                     >
                       <Typography
                         fontSize={13}
                         fontWeight={700}
-                        sx={{ color: "#000000", lineHeight: 1 }}
+                        sx={{ color: isToday ? "#ffffff" : "#1A5D28", lineHeight: 1 }}
                       >
                         {dateNum}
                       </Typography>
                       {dayName && (
                         <Typography
-                          fontSize={9}
+                          fontSize={8}
                           fontWeight={700}
-                          sx={{ color: "#000000", lineHeight: 1, mt: "2px" }}
+                          sx={{ color: isToday ? "#ffffff" : "#2e7d32", lineHeight: 1, mt: "2px" }}
                         >
-                          {dayName}
+                          {isToday ? "TODAY" : dayName}
                         </Typography>
                       )}
                     </Box>
@@ -275,7 +381,7 @@ export default function AttendanceCard({ searchQuery = "" }) {
 
                   {/* Service No */}
                   <StyledTableCell align="center">
-                    <Typography fontSize={12} fontWeight={600} color="#000000">
+                    <Typography fontSize={13} fontWeight={isToday ? 700 : 600} color="#1e293b">
                       {serviceNo}
                     </Typography>
                   </StyledTableCell>
@@ -288,18 +394,69 @@ export default function AttendanceCard({ searchQuery = "" }) {
                       sx={{
                         fontWeight: 700,
                         fontSize: 13,
-                        color: "#000000",
+                        color: "#c62828",
                       }}
                     >
-                      {leaveReason}
+                      <Box
+                        sx={{
+                          backgroundColor: "#ffebee",
+                          color: "#c62828",
+                          fontWeight: 700,
+                          py: 0.3,
+                          px: 1,
+                          borderRadius: "6px",
+                          display: "inline-block",
+                          fontSize: 12,
+                        }}
+                      >
+                        {leaveReason}
+                      </Box>
                     </StyledTableCell>
                   ) : (
                     <>
                       {/* Attendance IN */}
-                      <StyledTableCell align="center">{inTime}</StyledTableCell>
+                      <StyledTableCell align="center">
+                        {inTime ? (
+                          <Box
+                            sx={{
+                              backgroundColor: "#e8f5e9",
+                              color: "#1b5e20",
+                              fontWeight: 700,
+                              py: 0.3,
+                              px: 1,
+                              borderRadius: "6px",
+                              display: "inline-block",
+                              fontSize: 12,
+                            }}
+                          >
+                            {inTime}
+                          </Box>
+                        ) : (
+                          "—"
+                        )}
+                      </StyledTableCell>
 
                       {/* Attendance OUT */}
-                      <StyledTableCell align="center">{outTime}</StyledTableCell>
+                      <StyledTableCell align="center">
+                        {outTime ? (
+                          <Box
+                            sx={{
+                              backgroundColor: "#e3f2fd",
+                              color: "#0d47a1",
+                              fontWeight: 700,
+                              py: 0.3,
+                              px: 1,
+                              borderRadius: "6px",
+                              display: "inline-block",
+                              fontSize: 12,
+                            }}
+                          >
+                            {outTime}
+                          </Box>
+                        ) : (
+                          "—"
+                        )}
+                      </StyledTableCell>
                     </>
                   )}
                 </StyledTableRow>
@@ -309,13 +466,13 @@ export default function AttendanceCard({ searchQuery = "" }) {
         </Table>
       </TableContainer>
     );
-  }, [filteredData]);
+  }, [monthRows]);
 
   return loading ? (
     <Loader />
   ) : (
     <Box sx={{ width: "100%", mt: 1 }}>
-      {filteredData && filteredData.length > 0 ? (
+      {monthRows && monthRows.length > 0 ? (
         tableContent
       ) : (
         <NotFound text={msg || (searchQuery ? "No matching records found" : undefined)} />
