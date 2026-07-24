@@ -12,12 +12,12 @@ import { useNavigate } from "react-router-dom";
 const Approvals = () => {
   const navigate = useNavigate();
   const categories = [
-    {
-      id: "EMOBCI0002",
-      label: "Attendance",
-      path: "/Attendance",
-      icon: "attendance.png",
-    },
+    // {
+    //   id: "EMOBCI0002",
+    //   label: "Attendance",
+    //   path: "/Attendance",
+    //   icon: "attendance.png",
+    // },
 
     // {
     //   id: "EMOBCI0002",

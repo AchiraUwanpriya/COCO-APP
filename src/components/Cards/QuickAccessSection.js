@@ -14,13 +14,13 @@ import {
 
 const QuickAccessSection = () => {
   const quickAccessItems = [
-    {
-      icon: User,
-      label: "Personal",
-      route: "/personal",
-      color: "#0ea5e9",
-      backgroundColor: "#cffafe",
-    },
+    // {
+    //   icon: User,
+    //   label: "Personal",
+    //   route: "/personal",
+    //   color: "#0ea5e9",
+    //   backgroundColor: "#cffafe",
+    // },
     {
       icon: Phone,
       label: "Telephone",
