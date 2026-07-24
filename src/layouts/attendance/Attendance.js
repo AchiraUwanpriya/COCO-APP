@@ -68,10 +68,10 @@ const Attendance = () => {
     };
   };
 
-  // Fetch for Tab 0: Automatically load today's attendance for all employees
+  // Fetch for Tab 0: Load attendance for date 23 of current month to review UI
   const fetchTodayAttendance = () => {
-    const todayDate = dayjs().format("YYYY-MM-DD");
-    dispatch(GetAttendenceDetails({ fromDate: todayDate, sno: "" }));
+    const activeDate = dayjs().set("date", 23).format("YYYY-MM-DD");
+    dispatch(GetAttendenceDetails({ fromDate: activeDate, sno: "" }));
   };
 
   // Fetch for Tab 1: Filter individual employee
@@ -128,8 +128,8 @@ const Attendance = () => {
           border: "1px solid rgba(0,0,0,0.06)",
         }}
       >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-          {/* Back Arrow Button */}
+        {/* <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+          
           <IconButton
             onClick={() => navigate(-1)}
             sx={{
@@ -148,7 +148,7 @@ const Attendance = () => {
           <Typography fontSize={18} fontWeight={700} color="#1A5D28">
             Attendance
           </Typography>
-        </Box>
+        </Box> */}
 
         {/* Modern Styled Pill Tabs */}
         <Tabs
@@ -228,7 +228,7 @@ const Attendance = () => {
           }}
         >
           <Typography fontSize={14} fontWeight={600} color="#1A5D28">
-            Today's Attendance Records ({dayjs().format("DD MMM YYYY")})
+            Today's Attendance Records ({dayjs().set("date", 23).format("DD MMM YYYY")})
           </Typography>
 
           {/* Real-time Quick Filter */}
@@ -282,22 +282,6 @@ const Attendance = () => {
           }}
         >
           <TextField
-            label="Service No *"
-            size="small"
-            placeholder="e.g. 700026"
-            value={sno}
-            onChange={handleSnoChange}
-            sx={{
-              width: 200,
-              backgroundColor: "#fff",
-              borderRadius: 1,
-              "& .MuiInputBase-root": {
-                height: "36px",
-                fontSize: "13px",
-              },
-            }}
-          />
-          <TextField
             label="Year"
             size="small"
             type="number"
@@ -335,6 +319,23 @@ const Attendance = () => {
               </MenuItem>
             ))}
           </TextField>
+
+          <TextField
+            label="Service No *"
+            size="small"
+            placeholder="e.g. 700026"
+            value={sno}
+            onChange={handleSnoChange}
+            sx={{
+              width: 200,
+              backgroundColor: "#fff",
+              borderRadius: 1,
+              "& .MuiInputBase-root": {
+                height: "36px",
+                fontSize: "13px",
+              },
+            }}
+          />
         </Box>
       )}
 
@@ -372,7 +373,12 @@ const Attendance = () => {
               </Typography>
             </Paper>
           ) : (
-            <AttendanceCard year={year} month={month} searchQuery={tabValue === 0 ? quickSearch : ""} />
+            <AttendanceCard
+              isTodayView={tabValue === 0}
+              year={year}
+              month={month}
+              searchQuery={tabValue === 0 ? quickSearch : ""}
+            />
           )}
         </Box>
       </Box>
