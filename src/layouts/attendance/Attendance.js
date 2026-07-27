@@ -68,9 +68,9 @@ const Attendance = () => {
     };
   };
 
-  // Fetch for Tab 0: Load attendance for date 23 of current month to review UI
+  // Fetch for Tab 0: Load attendance for the current date
   const fetchTodayAttendance = () => {
-    const activeDate = dayjs().set("date", 23).format("YYYY-MM-DD");
+    const activeDate = dayjs().format("YYYY-MM-DD");
     dispatch(GetAttendenceDetails({ fromDate: activeDate, sno: "" }));
   };
 
@@ -232,7 +232,7 @@ const Attendance = () => {
           }}
         >
           <Typography fontSize={14} fontWeight={600} color="#1A5D28">
-            Today's Attendance Records ({dayjs().set("date", 23).format("DD MMM YYYY")})
+            Today's Attendance Records ({dayjs().format("DD MMM YYYY")})
           </Typography>
 
           {/* Real-time Quick Filter */}
