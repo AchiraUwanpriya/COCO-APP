@@ -769,7 +769,6 @@ const Dashboard = () => {
         dispatch(GetCdlBasedDivison(today, today));
         dispatch(GetTraineeDivisionAttendance(today, today));
         dispatch(GetCDLWeekAttendance(today));
-        dispatch(GetCDLCategoryAtt(today));
       } catch (error) {
         console.error("Error dispatching actions:", error);
       }

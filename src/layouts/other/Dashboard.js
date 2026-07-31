@@ -1482,7 +1482,6 @@ const Dashboard = () => {
     dispatch(GetCDLWeekAttendance(date));
     dispatch(GetCDLMonthlyAttendance());
     dispatch(GetCDLYearlyAttendance());
-    dispatch(GetCDLCategoryAtt(date));
   };
 
   // ─── Handle Date Change ─────────────────────────────────────────────────────

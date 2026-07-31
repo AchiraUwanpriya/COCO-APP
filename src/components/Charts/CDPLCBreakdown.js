@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
 import {
   ResponsiveContainer,
   BarChart,
@@ -345,7 +346,7 @@ export function CDPLCBreakdown({
     return Number(value).toLocaleString();
   };
 
-  if (isFetching && (!apiData || apiData.length === 0)) {
+  if (isFetching) {
     return (
       <Box
         sx={{
@@ -355,13 +356,16 @@ export function CDPLCBreakdown({
           border: `1px solid ${GREEN_THEME.cardBorder}`,
           boxShadow: GREEN_THEME.cardShadow,
           display: "flex",
+          flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
           minHeight: "350px",
+          gap: 2,
         }}
       >
-        <Typography sx={{ color: GREEN_THEME.subtitleColor }}>
-          Loading chart data...
+        <CircularProgress size={38} sx={{ color: GREEN_THEME.strength }} />
+        <Typography sx={{ color: GREEN_THEME.titleColor, fontWeight: 600, fontSize: "13px" }}>
+          Loading overview data...
         </Typography>
       </Box>
     );
