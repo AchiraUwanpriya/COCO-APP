@@ -1679,18 +1679,15 @@ const Dashboard = () => {
               /> */}
 
               {/* ── CDPLC Breakdown ── */}
-              {/* <Box ref={cdplcChartRef} sx={{ mb: "24px" }}>
+              <Box ref={cdplcChartRef} sx={{ mb: "24px" }}>
                 {loadingStates.divisionData ? (
                   <ChartSkeleton height={300} />
                 ) : (
                   <CDPLCBreakdown hadDate={selectedDate} />
                 )}
-              </Box> */}
-
-              {/* ── Employee Strength & Attendance Chart ── */}
-              <Box sx={{ mb: "24px" }}>
-                <EmployeeStrengthAttendanceChart allAttendance={attendanceData} />
               </Box>
+
+             
 
               {/* ── CDL Location Attendance Based on Division ── */}
               <Box sx={{ mb: "24px" }}>

@@ -1,471 +1,131 @@
-// import React, { useEffect } from "react";
-// import { Box, Typography } from "@mui/material";
-// import { useMediaQuery, useTheme } from "@mui/material";
-// import {
-//   ResponsiveContainer,
-//   BarChart,
-//   Bar,
-//   XAxis,
-//   YAxis,
-//   Tooltip,
-//   CartesianGrid,
-//   LabelList,
-// } from "recharts";
-// import { useDispatch, useSelector } from "react-redux";
-// import { GetCDLCategoryAtt } from "../../action/Attendance";
-// import { CDPLCCustomTooltip } from "./ChartUtils";
-
-// const seriesColors = {
-//   strength: "#e07b39",
-//   attendance: "#4472c4",
-// };
-
-// export function CDPLCBreakdown({
-//   cdplcData: propCdplcData,
-//   radialData: propRadialData,
-//   hadDate,
-// }) {
-//   const theme = useTheme();
-//   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-//   const categorySpacing = 12; 
-//   const dispatch = useDispatch();
-//   const {
-//     cdplcData: reduxCdplcData,
-//     loading,
-//     msg,
-//   } = useSelector((state) => state.attendanceCard);
- 
-//   const apiData =
-//     reduxCdplcData && reduxCdplcData.length > 0
-//       ? reduxCdplcData
-//       : propCdplcData;
-
-//   useEffect(() => { 
-//     const dateToFetch = hadDate || new Date().toISOString().split("T")[0];
-//     console.log("CDPLCBreakdown: Fetching data for date:", dateToFetch);
-//     dispatch(GetCDLCategoryAtt(dateToFetch));
-//   }, [dispatch, hadDate]);
- 
-
-// const transformedCdplc = apiData
-//   ? apiData
-//       .filter((item) => item.Type && item.Type.toUpperCase() !== "TOTAL")
-//       .map((item) => {
-//         const typeName = item.Type.toUpperCase();
-//         const attendance = item.Attendance || 0;
-//         const strength = item.EligibleStrength || item.Strength || 0;
-//         return {
-//           name: typeName,
-//           attendance,
-//           absent: Math.max(0, strength - attendance),   
-//           strength,
-//           actualPct: item.ActualPercentage,
-//           eligiblePct: item.EligiblePercentage
-//         };
-//       })
-//   : [];
-
-//   const totalItem = apiData?.find(
-//     (item) => item.Type && item.Type.toUpperCase() === "TOTAL",
-//   );
-//   const overallPercentage = totalItem ? totalItem.ActualPercentage : "N/A";
- 
-//   const totalStrength =
-//     totalItem?.EligibleStrength ||
-//     transformedCdplc.reduce((acc, cur) => acc + (Number(cur.strength) || 0), 0);
-//   const totalAttendance =
-//     totalItem?.Attendance ||
-//     transformedCdplc.reduce((acc, cur) => acc + (Number(cur.attendance) || 0), 0);
-//   const totalPercentage =
-//     totalStrength > 0 ? Math.round((totalAttendance / totalStrength) * 100) : "N/A";
- 
-//     const formatNumber = (value) => {
-//       if (value === null || value === undefined || value === "") return "-";
-//       return Number(value).toLocaleString();
-//     };
-
-
-//   console.log("CDPLCBreakdown: loaded data", {
-//     apiData,
-//     transformedCdplc,
-//     overallPercentage,
-//     loading,
-//     msg,
-//     reduxCdplcData,
-//   });
-
- 
-//   if (loading && !apiData) {
-//     return (
-//       <Box
-//         sx={{
-//           animation: `fadeInUp 0.5s ease-out 0.2s forwards`,
-//           opacity: 0,
-//           "@keyframes fadeInUp": {
-//             "0%": { opacity: 0, transform: "translateY(24px)" },
-//             "100%": { opacity: 1, transform: "translateY(0)" },
-//           }
-//         }}
-//       >
-//         <Box
-//           sx={{
-//             overflow: "hidden",
-//             backgroundColor: "#ffffff",
-//             borderRadius: "12px",
-//             padding: "24px",
-//             boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)",
-//             border: "1px solid #e2e8f0",
-//             display: "flex",
-//             alignItems: "center",
-//             justifyContent: "center",
-//             minHeight: "400px",
-//           }}
-//         >
-//           <Typography sx={{ color: "#64748b" }}>
-//             Loading chart data...
-//           </Typography>
-//         </Box>
-//       </Box>
-//     );
-//   }
-
-//   // Show error state
-//   if (msg && !apiData) {
-//     return (
-//       <Box
-//         sx={{
-//           animation: `fadeInUp 0.5s ease-out 0.2s forwards`,
-//           opacity: 0,
-//           "@keyframes fadeInUp": {
-//             "0%": { opacity: 0, transform: "translateY(24px)" },
-//             "100%": { opacity: 1, transform: "translateY(0)" },
-//           },
-//         }}
-//       >
-//         <Box
-//           sx={{
-//             overflow: "hidden",
-//             backgroundColor: "#ffffff",
-//             borderRadius: "12px",
-//             padding: "24px",
-//             boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)",
-//             border: "1px solid #e2e8f0",
-//             display: "flex",
-//             alignItems: "center",
-//             justifyContent: "center",
-//             minHeight: "400px",
-//           }}
-//         >
-//           <Typography sx={{ color: "#ef4444" }}>
-//             Error loading chart data: {msg}
-//           </Typography>
-//         </Box>
-//       </Box>
-//     );
-//   }
-
-//   // Show empty state
-//   if (!apiData || (transformedCdplc && transformedCdplc.length === 0)) {
-//     return (
-//       <Box
-//         sx={{
-//           animation: `fadeInUp 0.5s ease-out 0.2s forwards`,
-//           opacity: 0,
-//           "@keyframes fadeInUp": {
-//             "0%": { opacity: 0, transform: "translateY(24px)" },
-//             "100%": { opacity: 1, transform: "translateY(0)" },
-//           },
-//         }}
-//       >
-//         <Box
-//           sx={{
-//             overflow: "hidden",
-//             backgroundColor: "#ffffff",
-//             borderRadius: "12px",
-//             padding: "24px",
-//             boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)",
-//             border: "1px solid #e2e8f0",
-//             display: "flex",
-//             alignItems: "center",
-//             justifyContent: "center",
-//             minHeight: "400px",
-//           }}
-//         >
-//           <Typography sx={{ color: "#64748b" }}>
-//             No data available for the selected date
-//           </Typography>
-//         </Box>
-//       </Box>
-//     );
-//   }
-
-//   return (
-//     <Box
-//       sx={{
-//         animation: `fadeInUp 0.5s ease-out 0.2s forwards`,
-//         opacity: 0,
-//         "@keyframes fadeInUp": {
-//           "0%": { opacity: 0, transform: "translateY(24px)" },
-//           "100%": { opacity: 1, transform: "translateY(0)" },
-//         },
-//       }}
-//     >
-//       <Box
-//         sx={{
-//           overflow: "hidden",
-//           backgroundColor: "#ffffff",
-//           borderRadius: "12px",
-//           padding: "24px",
-//           boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)",
-//           border: "1px solid #e2e8f0",
-//         }}
-//       >
-//         {/* Header */}
-//         <Box
-//           sx={{
-//             display: "flex",
-//             alignItems: "flex-start",
-//             justifyContent: "space-between",
-//             marginBottom: "24px",
-//           }}
-//         >
-//           <Box>
-//             <Typography
-//               sx={{
-//                 fontSize: "18px",
-//                 fontWeight: 600,
-//                 color: "#1a2d4d",
-//               }}
-//             >
-//               CDPLC Employee Strength 
-//             </Typography>
-            
-//           </Box>
-//         </Box>
-
-//         {/* Chart */}
-//         <Box sx={{ height: "200px", width: "100%", marginBottom: "16px" }}>
-//           <ResponsiveContainer width="100%" height="100%">
-//             {/* Previous chart (radial) */}
-//             {/*
-//             <RadialBarChart
-//               cx="50%"
-//               cy="50%"
-//               innerRadius="20%"
-//               outerRadius="90%"
-//               data={radialData}
-//               startAngle={90}
-//               endAngle={-270}
-//             >
-//               <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-//               <RadialBar
-//                 dataKey="value"
-//                 cornerRadius={6}
-//                 background={{
-//                   fill: "rgba(0, 0, 0, 0.04)",
-//                 }}
-//                 label={false}
-//               />
-//               <Tooltip
-//                 content={(props) => (
-//                   <CDPLCCustomTooltip {...props} cdplcData={transformedCdplc} />
-//                 )}
-//               />
-//             </RadialBarChart>
-//             */}
-
-//             {/* Current chart (bar) */}
-//             <BarChart
-//   data={transformedCdplc}
-//   layout="vertical"
-//   margin={{ top: 5, right: isMobile ? 20 : 100, left: 0, bottom: 10 }}
-//   barCategoryGap={categorySpacing}
-//   barGap={2}
-// >
-//   <CartesianGrid
-//     strokeDasharray="3 3"
-//     stroke="rgba(0,0,0,0.08)"
-//     horizontal={false}
-//   />
-//   <XAxis
-//     type="number"
-//     axisLine={false}
-//     tickLine={false}
-//     tick={{ fill: "#64748b", fontSize: 11 }}
-//     tickFormatter={(value) => Number(value).toLocaleString()}
-//   />
-//   <YAxis
-//     type="category"
-//     dataKey="name"
-//     width={isMobile ? 70 : 90}
-//     axisLine={false}
-//     tickLine={false}
-//     tick={{ fill: "#475569", fontSize: 10 }}
-//   />
-//   <Tooltip
-//     content={(props) => (
-//       <CDPLCCustomTooltip {...props} cdplcData={transformedCdplc} />
-//     )}
-//   />
-
-//   {/* ── STACKED: Attendance (present) ── */}
-//   <Bar
-//     dataKey="attendance"
-//     name="Attendance"
-//     fill={seriesColors.attendance}     
-//     stackId="stack"                     
-//     radius={[0, 0, 0, 0]}               
-//     barSize={isMobile ? 14 : 18}
-//   >
-//     <LabelList
-//       dataKey="attendance"
-//       position="insideRight"            
-//       style={{ fill: "#ffffff" }}
-//       fontSize={11}
-//       fontWeight={600}
-//       formatter={formatNumber}
-//     />
-//   </Bar>
-
-//   {/* ── STACKED: Absent (remaining strength) ── */}
-//   <Bar
-//     dataKey="absent"
-//     name="Absent"
-//     fill={seriesColors.strength}     
-//     stackId="stack"                      
-//     radius={[0, 8, 8, 0]}              
-//     barSize={isMobile ? 14 : 18}
-//   >
-//     <LabelList
-//       dataKey="strength"                
-//       position="right"
-//       style={{ fill: "#0f0f0f" }}
-//       fontSize={11}
-//       fontWeight={700}
-//       formatter={formatNumber}
-//     />
-//   </Bar>
-// </BarChart>
-//           </ResponsiveContainer>
-//         </Box>
-
-//         {/* Legend */}
-//         <Box
-//           sx={{
-//             display: "flex",
-//             flexWrap: "wrap",
-//             justifyContent: "center",
-//             gap: "16px",
-//             marginTop: "8px",
-//           }}
-//         >
-//           {[
-//             { label: "Eligible Strength", color: seriesColors.strength },
-//             { label: "Attendance", color: seriesColors.attendance },
-//           ].map((item) => (
-//             <Box
-//               key={item.label}
-//               sx={{ display: "flex", alignItems: "center", gap: "6px" }}
-//             >
-//               <Box
-//                 sx={{
-//                   width: "10px",
-//                   height: "10px",
-//                   borderRadius: "3px",
-//                   backgroundColor: item.color,
-//                 }}
-//               />
-//               <Typography sx={{ fontSize: "12px", color: "#64748b" }}>
-//                 {item.label}
-//               </Typography>
-//             </Box>
-//           ))}
-//         </Box>
-
-//         {/* Summary row (totals) */}
-//         {/* <Box
-//           sx={{
-//             display: "flex",
-//             justifyContent: "space-between",
-//             gap: 2,
-//             mt: 2,
-//             pt: 2,
-//             borderTop: "1px solid #eef2f6",
-//             alignItems: "center",
-//             flexWrap: "wrap",
-//           }}
-//         >
-//           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-//             <Box sx={{ width: 8, height: 8, borderRadius: 2, bgcolor: seriesColors.strength }} />
-//             <Box>
-//               <Typography sx={{ fontSize: 12, color: "#64748b" }}>Total Strength</Typography>
-//               <Typography sx={{ fontSize: 16, fontWeight: 700, color: "#1a2d4d" }}>
-//                 {totalStrength.toLocaleString()}
-//               </Typography>
-//             </Box>
-//           </Box>
-
-//           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-//             <Box sx={{ width: 8, height: 8, borderRadius: 2, bgcolor: seriesColors.attendance }} />
-//             <Box>
-//               <Typography sx={{ fontSize: 12, color: "#64748b" }}>Total Attendance</Typography>
-//               <Typography sx={{ fontSize: 16, fontWeight: 700, color: "#1a2d4d" }}>
-//                 {totalAttendance.toLocaleString()}
-//               </Typography>
-//             </Box>
-//           </Box>
-
-//           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-//             <Box sx={{ width: 8, height: 8, borderRadius: 2, bgcolor: "#f59e0b" }} />
-//             <Box>
-//               <Typography sx={{ fontSize: 12, color: "#64748b" }}>Percentage</Typography>
-//               <Typography sx={{ fontSize: 16, fontWeight: 700, color: "#1a2d4d" }}>
-//                 {typeof totalPercentage === "number" ? `${totalPercentage}%` : totalPercentage}
-//               </Typography>
-//             </Box>
-//           </Box>
-//         </Box> */}
-//       </Box>
-//     </Box>
-//   );
-// }
-
-
-
 import React, { useEffect } from "react";
-import { Box, Typography } from "@mui/material";
-import { useMediaQuery, useTheme } from "@mui/material";
+import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import {
   ResponsiveContainer,
   BarChart,
   Bar,
   XAxis,
   YAxis,
+  Tooltip,
   CartesianGrid,
   LabelList,
 } from "recharts";
 import { useDispatch, useSelector } from "react-redux";
 import { GetCDLCategoryAtt } from "../../action/Attendance";
 
-const seriesColors = {
-  strength: "#e07b39",
-  attendance: "#4472c4",
+// Green Theme Color Palette
+const GREEN_THEME = {
+  strength:       "#13461E",   // Dark Forest Green (Actual Strength)
+  attendance:     "#4C8C58",   // Medium Sage Green (Attendance)
+  accent:         "#82C491",   // Light Green Accent
+  cardBg:         "#f8faf9",   // Soft Light Green/White Tint
+  cardBorder:     "#C2E2C9",   // Mint Green Border
+  cardShadow:     "0 4px 24px rgba(26,93,40,0.07)",
+  titleColor:     "#13461E",   // Deep Green Title
+  subtitleColor:  "#475569",   // Slate Subtitle Text
+  axisColor:      "#64748b",   // Muted Axis Label
+  gridColor:      "#E2F0E5",   // Light Green Grid Line
+};
+
+const CATEGORY_ORDER = [
+  "INDUSTRIAL",
+  "TRAINEE",
+  "CLERICAL",
+  "SUPERVISORY",
+  "EXECUTIVE",
+];
+
+const CDPLCCustomTooltip = ({ active, payload }) => {
+  if (active && payload && payload.length) {
+    const data = payload[0]?.payload;
+    if (!data) return null;
+    return (
+      <Box
+        sx={{
+          backgroundColor: "#ffffff",
+          border: `1px solid ${GREEN_THEME.cardBorder}`,
+          padding: "12px 16px",
+          borderRadius: "12px",
+          boxShadow: "0 4px 16px rgba(19, 70, 30, 0.12)",
+          minWidth: 180,
+        }}
+      >
+        <Typography
+          sx={{
+            color: GREEN_THEME.titleColor,
+            fontWeight: 700,
+            marginBottom: "8px",
+            fontSize: "13px",
+            borderBottom: `1px solid ${GREEN_THEME.cardBorder}`,
+            pb: 0.8,
+          }}
+        >
+          {data.name}
+        </Typography>
+        <Box sx={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", gap: "16px" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Box sx={{ width: 9, height: 9, borderRadius: "3px", backgroundColor: GREEN_THEME.strength }} />
+              <Typography sx={{ color: "#334155", fontSize: "12px" }}>Actual Strength:</Typography>
+            </Box>
+            <Typography sx={{ color: GREEN_THEME.strength, fontWeight: 700, fontSize: "12px" }}>
+              {Number(data.strength || 0).toLocaleString()}
+            </Typography>
+          </Box>
+          <Box sx={{ display: "flex", justifyContent: "space-between", gap: "16px" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <Box sx={{ width: 9, height: 9, borderRadius: "3px", backgroundColor: GREEN_THEME.attendance }} />
+              <Typography sx={{ color: "#334155", fontSize: "12px" }}>Attendance:</Typography>
+            </Box>
+            <Typography sx={{ color: GREEN_THEME.attendance, fontWeight: 700, fontSize: "12px" }}>
+              {Number(data.attendance || 0).toLocaleString()}
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: "16px",
+              pt: "6px",
+              mt: "2px",
+              borderTop: `1px solid ${GREEN_THEME.cardBorder}`,
+            }}
+          >
+            <Typography sx={{ color: "#475569", fontSize: "12px" }}>Rate:</Typography>
+            <Typography
+              sx={{
+                color: GREEN_THEME.titleColor,
+                fontWeight: 700,
+                fontSize: "12px",
+                backgroundColor: "rgba(26,93,40,0.1)",
+                px: "6px",
+                py: "1px",
+                borderRadius: "4px",
+              }}
+            >
+              {data.pct}%
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+    );
+  }
+  return null;
 };
 
 export function CDPLCBreakdown({
   cdplcData: propCdplcData,
-  radialData: propRadialData,
   hadDate,
 }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const categorySpacing = 12;
   const dispatch = useDispatch();
+
   const {
     cdplcData: reduxCdplcData,
     loading,
     msg,
-  } = useSelector((state) => state.attendanceCard);
+  } = useSelector((state) => state.attendanceCard || {});
 
   const apiData =
     reduxCdplcData && reduxCdplcData.length > 0
@@ -474,7 +134,6 @@ export function CDPLCBreakdown({
 
   useEffect(() => {
     const dateToFetch = hadDate || new Date().toISOString().split("T")[0];
-    console.log("CDPLCBreakdown: Fetching data for date:", dateToFetch);
     dispatch(GetCDLCategoryAtt(dateToFetch));
   }, [dispatch, hadDate]);
 
@@ -482,153 +141,62 @@ export function CDPLCBreakdown({
     ? apiData
         .filter((item) => item.Type && item.Type.toUpperCase() !== "TOTAL")
         .map((item) => {
-          const typeName = item.Type.toUpperCase();
-          const attendance = item.Attendance || 0;
-          const strength = item.EligibleStrength || item.Strength || 0;
-          return {
-            name: typeName,
-            attendance,
-            absent: Math.max(0, strength - attendance),
-            strength,
-            actualPct: item.ActualPercentage,
-            eligiblePct: item.EligiblePercentage,
-          };
+          const rawType = (item.Type || "").trim();
+          const typeUpper = rawType.toUpperCase();
+          const formattedName =
+            rawType.charAt(0).toUpperCase() + rawType.slice(1).toLowerCase();
+
+          const attendance = parseInt(item.Attendance || 0) || 0;
+          const strength =
+            parseInt(
+              item.EligibleStrength || item.Strength || item.ActualStrength || 0
+            ) || 0;
+          const absent = Math.max(0, strength - attendance);
+
+          let pct = 0;
+          if (item.ActualPercentage != null && item.ActualPercentage !== "") {
+            pct = Math.round(parseFloat(item.ActualPercentage));
+          } else if (
+            item.EligiblePercentage != null &&
+            item.EligiblePercentage !== ""
+          ) {
+            pct = Math.round(parseFloat(item.EligiblePercentage));
+          } else if (strength > 0) {
+            pct = Math.round((attendance / strength) * 100);
+          }
+
+          return { name: formattedName, typeUpper, attendance, absent, strength, pct };
+        })
+        .sort((a, b) => {
+          const idxA = CATEGORY_ORDER.indexOf(a.typeUpper);
+          const idxB = CATEGORY_ORDER.indexOf(b.typeUpper);
+          return (idxA !== -1 ? idxA : 99) - (idxB !== -1 ? idxB : 99);
         })
     : [];
 
-  const totalItem = apiData?.find(
-    (item) => item.Type && item.Type.toUpperCase() === "TOTAL"
-  );
-  const overallPercentage = totalItem ? totalItem.ActualPercentage : "N/A";
-
-  const totalStrength =
-    totalItem?.EligibleStrength ||
-    transformedCdplc.reduce((acc, cur) => acc + (Number(cur.strength) || 0), 0);
-  const totalAttendance =
-    totalItem?.Attendance ||
-    transformedCdplc.reduce(
-      (acc, cur) => acc + (Number(cur.attendance) || 0),
-      0
-    );
-  const totalPercentage =
-    totalStrength > 0
-      ? Math.round((totalAttendance / totalStrength) * 100)
-      : "N/A";
-
   const formatNumber = (value) => {
-    if (value === null || value === undefined || value === "") return "-";
+    if (!value || value === 0) return "";
     return Number(value).toLocaleString();
   };
 
-  console.log("CDPLCBreakdown: loaded data", {
-    apiData,
-    transformedCdplc,
-    overallPercentage,
-    loading,
-    msg,
-    reduxCdplcData,
-  });
-
-  // Show loading state
-  if (loading && !apiData) {
+  if (loading && (!apiData || apiData.length === 0)) {
     return (
       <Box
         sx={{
-          animation: `fadeInUp 0.5s ease-out 0.2s forwards`,
-          opacity: 0,
-          "@keyframes fadeInUp": {
-            "0%": { opacity: 0, transform: "translateY(24px)" },
-            "100%": { opacity: 1, transform: "translateY(0)" },
-          },
+          backgroundColor: GREEN_THEME.cardBg,
+          borderRadius: "20px",
+          padding: "24px",
+          border: `1px solid ${GREEN_THEME.cardBorder}`,
+          boxShadow: GREEN_THEME.cardShadow,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "350px",
         }}
       >
-        <Box
-          sx={{
-            overflow: "hidden",
-            backgroundColor: "#ffffff",
-            borderRadius: "12px",
-            padding: "24px",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)",
-            border: "1px solid #e2e8f0",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "400px",
-          }}
-        >
-          <Typography sx={{ color: "#64748b" }}>
-            Loading chart data...
-          </Typography>
-        </Box>
-      </Box>
-    );
-  }
-
-  if (msg && !apiData) {
-    return (
-      <Box
-        sx={{
-          animation: `fadeInUp 0.5s ease-out 0.2s forwards`,
-          opacity: 0,
-          "@keyframes fadeInUp": {
-            "0%": { opacity: 0, transform: "translateY(24px)" },
-            "100%": { opacity: 1, transform: "translateY(0)" },
-          },
-        }}
-      >
-        <Box
-          sx={{
-            overflow: "hidden",
-            backgroundColor: "#ffffff",
-            borderRadius: "12px",
-            padding: "24px",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)",
-            border: "1px solid #e2e8f0",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "400px",
-          }}
-        >
-          <Typography sx={{ color: "#ef4444" }}>
-            Error loading chart data: {msg}
-          </Typography>
-        </Box>
-      </Box>
-    );
-  }
-
-  // Show empty state
-  if (!apiData || (transformedCdplc && transformedCdplc.length === 0)) {
-    return (
-      <Box
-        sx={{
-          animation: `fadeInUp 0.5s ease-out 0.2s forwards`,
-          opacity: 0,
-          "@keyframes fadeInUp": {
-            "0%": { opacity: 0, transform: "translateY(24px)" },
-            "100%": { opacity: 1, transform: "translateY(0)" },
-          },
-        }}
-      >
-        <Box
-          sx={{
-            overflow: "hidden",
-            backgroundColor: "#ffffff",
-            borderRadius: "12px",
-            padding: "24px",
-            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)",
-            border: "1px solid #e2e8f0",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "400px",
-          }}
-        >
-          <Typography sx={{ color: "#64748b" }}>
-            No data available for the selected date
-          </Typography>
-        </Box>
+        <Typography sx={{ color: GREEN_THEME.subtitleColor }}>
+          Loading chart data...
+        </Typography>
       </Box>
     );
   }
@@ -636,7 +204,7 @@ export function CDPLCBreakdown({
   return (
     <Box
       sx={{
-        animation: `fadeInUp 0.5s ease-out 0.2s forwards`,
+        animation: "fadeInUp 0.5s ease-out 0.2s forwards",
         opacity: 0,
         "@keyframes fadeInUp": {
           "0%": { opacity: 0, transform: "translateY(24px)" },
@@ -647,121 +215,136 @@ export function CDPLCBreakdown({
       <Box
         sx={{
           overflow: "hidden",
-          backgroundColor: "#ffffff",
-          borderRadius: "12px",
-          padding: "24px",
-          boxShadow: "0 4px 6px rgba(0, 0, 0, 0.05)",
-          border: "1px solid #e2e8f0",
+          backgroundColor: GREEN_THEME.cardBg,
+          borderRadius: "20px",
+          padding: { xs: "16px", sm: "20px", md: "24px" },
+          boxShadow: GREEN_THEME.cardShadow,
+          border: `1px solid ${GREEN_THEME.cardBorder}`,
         }}
       >
         {/* Header */}
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "flex-start",
-            justifyContent: "space-between",
-            marginBottom: "24px",
-          }}
-        >
-          <Box>
-            <Typography
-              sx={{
-                fontSize: "16px",
-                fontWeight: 600,
-                color: "#1a2d4d",
-              }}
-            >
-              CDPLC Attendance Based on Category
-            </Typography>
-          </Box>
+        <Box sx={{ marginBottom: { xs: "14px", sm: "20px" } }}>
+          <Typography
+            sx={{
+              fontSize: { xs: "17px", sm: "19px", md: "21px" },
+              fontWeight: 700,
+              color: GREEN_THEME.titleColor,
+              letterSpacing: "-0.01em",
+              marginBottom: "2px",
+            }}
+          >
+            Employee Strength &amp; Attendance Overview
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: { xs: "11px", sm: "12px" },
+              color: GREEN_THEME.subtitleColor,
+            }}
+          >
+            Stacked view — actual strength vs attendance per employee type
+          </Typography>
         </Box>
 
         {/* Chart */}
-        <Box sx={{ height: "250px", width: "100%", marginBottom: "16px" }}>
+        <Box
+          sx={{
+            height: { xs: "260px", sm: "300px" },
+            width: "100%",
+            marginBottom: "14px",
+          }}
+        >
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={transformedCdplc}
               layout="vertical"
-              margin={{ top: 5, right: isMobile ? 20 : 100, left: 0, bottom: 10 }}
-              barCategoryGap={categorySpacing}
-              barGap={2}
+              margin={{
+                top: 5,
+                right: isMobile ? 40 : 60,
+                left: isMobile ? 0 : 8,
+                bottom: 10,
+              }}
+              barCategoryGap={isMobile ? "18%" : "25%"}
             >
               <CartesianGrid
                 strokeDasharray="3 3"
-                stroke="rgba(0,0,0,0.08)"
+                stroke={GREEN_THEME.gridColor}
                 horizontal={false}
+                vertical={true}
               />
               <XAxis
                 type="number"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#64748b", fontSize: 11 }}
+                tick={{ fill: GREEN_THEME.axisColor, fontSize: 11 }}
                 tickFormatter={(value) => Number(value).toLocaleString()}
               />
               <YAxis
                 type="category"
                 dataKey="name"
-                width={isMobile ? 70 : 90}
+                width={isMobile ? 80 : 100}
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#475569", fontSize: 10 }}
+                tick={{
+                  fill: GREEN_THEME.titleColor,
+                  fontSize: isMobile ? 11 : 13,
+                  fontWeight: 600,
+                }}
               />
+              <Tooltip content={<CDPLCCustomTooltip />} />
 
-              {/* ── STACKED: Attendance (present) ── */}
+              {/* STACKED 1: Dark Forest Green — Actual Strength */}
               <Bar
-                dataKey="attendance"
-                name="Attendance"
-                fill={seriesColors.attendance}
+                dataKey="absent"
+                name="Actual Strength"
+                fill={GREEN_THEME.strength}
                 stackId="stack"
-                radius={[0, 0, 0, 0]}
-                barSize={isMobile ? 14 : 18}
+                radius={[4, 0, 0, 4]}
+                barSize={isMobile ? 16 : 22}
               >
-                {/* Attendance count shown ABOVE the bar */}
                 <LabelList
-                  dataKey="attendance"
-                  position="top"
-                  style={{ fill: "#4472c4" }}
+                  dataKey="absent"
+                  position="center"
+                  style={{ fill: "#ffffff" }}
                   fontSize={11}
-                  fontWeight={600}
-                  formatter={formatNumber}
+                  fontWeight={700}
+                  formatter={(v) => (v > 30 ? formatNumber(v) : "")}
                 />
               </Bar>
 
-              {/* ── STACKED: Absent (remaining strength) ── */}
+              {/* STACKED 2: Medium Sage Green — Attendance */}
               <Bar
-                dataKey="absent"
-                name="Absent"
-                fill={seriesColors.strength}
+                dataKey="attendance"
+                name="Attendance"
+                fill={GREEN_THEME.attendance}
                 stackId="stack"
-                radius={[0, 8, 8, 0]}
-                barSize={isMobile ? 14 : 18}
+                radius={[0, 6, 6, 0]}
+                barSize={isMobile ? 16 : 22}
               >
-                {/* Eligible Strength + rounded % OUTSIDE right — strength in orange, % in dark */}
                 <LabelList
-                  dataKey="strength"
+                  dataKey="attendance"
+                  position="center"
+                  style={{ fill: "#ffffff" }}
+                  fontSize={11}
+                  fontWeight={700}
+                  formatter={(v) => (v > 30 ? formatNumber(v) : "")}
+                />
+                {/* Percentage label right of bar */}
+                <LabelList
+                  dataKey="pct"
                   position="right"
                   content={(props) => {
                     const { x, y, width, height, index } = props;
                     const item = transformedCdplc[index];
                     if (!item) return null;
-                    const strengthLabel = formatNumber(item.strength);
-                    const rawPct = item.actualPct;
-                    const rounded =
-                      rawPct != null && rawPct !== ""
-                        ? Math.round(parseFloat(rawPct))
-                        : null;
-                    const startX = x + width + 6;
-                    const midY = y + height / 2;
                     return (
-                      <text dominantBaseline="middle" fontSize={11} fontWeight={700}>
-                        <tspan x={startX} y={midY} fill={seriesColors.strength}>
-                          {strengthLabel}
-                        </tspan>
-                        {rounded != null && (
-                          <tspan fill="#1a2d4d" dx={3}>
-                            {` (${rounded}%)`}
-                          </tspan>
-                        )}
+                      <text
+                        x={x + width + 8}
+                        y={y + height / 2 + 4}
+                        fill={GREEN_THEME.titleColor}
+                        fontSize={isMobile ? 11 : 12}
+                        fontWeight={700}
+                      >
+                        {`${item.pct}%`}
                       </text>
                     );
                   }}
@@ -777,27 +360,29 @@ export function CDPLCBreakdown({
             display: "flex",
             flexWrap: "wrap",
             justifyContent: "center",
-            gap: "16px",
-            marginTop: "8px",
+            alignItems: "center",
+            gap: "24px",
+            paddingTop: "14px",
+            borderTop: `1px solid ${GREEN_THEME.cardBorder}`,
           }}
         >
           {[
-            { label: "Eligible Strength", color: seriesColors.strength },
-            { label: "Attendance", color: seriesColors.attendance },
+            { label: "Actual Strength", color: GREEN_THEME.strength },
+            { label: "Attendance", color: GREEN_THEME.attendance },
           ].map((item) => (
             <Box
               key={item.label}
-              sx={{ display: "flex", alignItems: "center", gap: "6px" }}
+              sx={{ display: "flex", alignItems: "center", gap: "8px" }}
             >
               <Box
                 sx={{
-                  width: "10px",
-                  height: "10px",
+                  width: "12px",
+                  height: "12px",
                   borderRadius: "3px",
                   backgroundColor: item.color,
                 }}
               />
-              <Typography sx={{ fontSize: "12px", color: "#64748b" }}>
+              <Typography sx={{ fontSize: "12px", color: GREEN_THEME.subtitleColor, fontWeight: 600 }}>
                 {item.label}
               </Typography>
             </Box>
@@ -807,3 +392,5 @@ export function CDPLCBreakdown({
     </Box>
   );
 }
+
+export default CDPLCBreakdown;
