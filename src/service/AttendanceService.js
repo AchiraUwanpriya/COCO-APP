@@ -202,6 +202,23 @@ const GetCDLCategoryAtt = async (hadDate) => {
   };
   return axios.request(config);
 };
+const GetCDLDepartmentAtt = async (hadDate) => {
+  let dateStr = dayjs().format("YYYY-MM-DD");
+  if (hadDate) {
+    if (typeof hadDate === "string") {
+      dateStr = hadDate.split("T")[0];
+    } else if (dayjs.isDayjs(hadDate) || hadDate instanceof Date) {
+      dateStr = dayjs(hadDate).format("YYYY-MM-DD");
+    }
+  }
+
+  const config = {
+    method: "get",
+    url: "/AttendanceDashbaordController/GetbasedonDepartment",
+    params: { Date: dateStr },
+  };
+  return axios.request(config);
+};
 const GetOTEntered = async () => mockRes(mockOTEntered);
 const GetCDLOTEmployee = async () => mockRes(mockOTEmployees);
 const GetCDLDutyoffEmployee = async () => mockRes(mockDutyOffEmployees);
@@ -218,6 +235,7 @@ export default {
   GetCDLYearlyAttendance,
   GetCDLMonthlyAttendance,
   GetCDLCategoryAtt,
+  GetCDLDepartmentAtt,
   GetOTEntered,
   GetCDLOTEmployee,
   GetCDLDutyoffEmployee,

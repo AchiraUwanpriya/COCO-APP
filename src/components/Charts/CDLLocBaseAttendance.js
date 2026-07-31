@@ -1287,14 +1287,73 @@ import {
 const isPresent = (emp) => emp.inn && emp.inn !== "NR" && emp.inn !== "";
 
 const normalizeRow = (item) => ({
-  division: (item?.Division || item?.division || "").trim() || "Unknown",
-  loc:      (item?.Location || item?.location || "").trim() || "Unknown",
-  sno:      item?.Sno  || item?.sno  || "",
-  repname:  item?.Name || item?.name || "",
-  des:      item?.Desc || item?.des  || "",
-  inn:      item?.CIN  || item?.inn  || "",
-  pout:     item?.COUT || item?.pout || "",
-  cno:      item?.CNO  || item?.cno  || "",
+  division: (
+    item?.Division ||
+    item?.division ||
+    item?.Department ||
+    item?.department ||
+    item?.DepartmentName ||
+    item?.departmentName ||
+    item?.HLD_DIV_CODE ||
+    item?.hld_div_code ||
+    ""
+  ).trim() || "Unknown",
+  loc: (
+    item?.Location ||
+    item?.location ||
+    item?.Loc ||
+    item?.loc ||
+    item?.Department ||
+    item?.department ||
+    ""
+  ).trim() || "Unknown",
+  sno:
+    item?.Sno ||
+    item?.sno ||
+    item?.ServiceNo ||
+    item?.serviceNo ||
+    item?.service_no ||
+    item?.servidce_no ||
+    item?.Service_No ||
+    "",
+  repname:
+    item?.Name ||
+    item?.name ||
+    item?.ReportName ||
+    item?.reportName ||
+    item?.EmpName ||
+    item?.empName ||
+    item?.EmployeeName ||
+    "",
+  des:
+    item?.Desc ||
+    item?.des ||
+    item?.Designation ||
+    item?.designation ||
+    "",
+  inn:
+    item?.CIN ||
+    item?.inn ||
+    item?.InTime ||
+    item?.inTime ||
+    item?.Cin ||
+    item?.cin ||
+    "",
+  pout:
+    item?.COUT ||
+    item?.pout ||
+    item?.OutTime ||
+    item?.outTime ||
+    item?.Cout ||
+    item?.cout ||
+    "",
+  cno:
+    item?.CNO ||
+    item?.cno ||
+    item?.CardNo ||
+    item?.cardNo ||
+    item?.barcode_no ||
+    "",
 });
 
 /* ─── Chart color helpers ─────────────────────────────────────────────────── */
@@ -2487,8 +2546,21 @@ export const CDLLocBaseAttendance = ({ hadDate } ) => {
         setLoading(true);
         setError(null);
         const response  = await CommonService.GetCdllocbaseAttendance(hadDate);
-        const resultSet = response?.data?.ResultSet || [];
-        const normalized = resultSet.map(normalizeRow);
+        const resData   = response?.data;
+        let resultSet   = [];
+        if (Array.isArray(resData)) {
+          resultSet = resData;
+        } else if (resData && typeof resData === "object") {
+          resultSet =
+            resData.ResultSet ||
+            resData.resultSet ||
+            resData.Data ||
+            resData.data ||
+            resData.Result ||
+            resData.result ||
+            [];
+        }
+        const normalized = (Array.isArray(resultSet) ? resultSet : []).map(normalizeRow);
         if (active) setData(normalized);
       } catch (err) {
         if (active) setError("Failed to load CDPLC location attendance.");
@@ -2498,7 +2570,7 @@ export const CDLLocBaseAttendance = ({ hadDate } ) => {
     };
     fetchData();
     return () => { active = false; };
-  },[hadDate]);
+  }, [hadDate]);
 
   if (error) {
     return (

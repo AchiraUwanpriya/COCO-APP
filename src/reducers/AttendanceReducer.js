@@ -17,6 +17,7 @@ const initialState = {
   traineeDivision: [],
   allAttendance: [],
   cdplcData: [],
+  departmentAttendance: [],
   error: null,
   otData: null,
   otEmployees: [],
@@ -59,6 +60,8 @@ export const GetAttendanceCard = (state = initialState, action) => {
           action.payload.traineeDivision || state.traineeDivision,
         allAttendance: action.payload.allAttendance || state.allAttendance,
         cdplcData: action.payload.cdplcData || state.cdplcData,
+        departmentAttendance:
+          action.payload.departmentAttendance || state.departmentAttendance,
         otData: action.payload.otData || state.otData,
         otEmployees: action.payload.otEmployees || state.otEmployees,
         dutyOffEmployees: action.payload.dutyOffEmployees || state.dutyOffEmployees,

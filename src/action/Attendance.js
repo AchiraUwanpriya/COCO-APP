@@ -181,6 +181,72 @@ export const GetCDLCategoryAtt = (hadDate) => async (dispatch) => {
     });
   }
 };
+export const GetCDLDepartmentAtt = (hadDate) => async (dispatch) => {
+  dispatch({
+    type: ATTENDANCE_REQUEST,
+  });
+
+  try {
+    const data = await AttendanceService.GetCDLDepartmentAtt(hadDate);
+    const resData = data?.data;
+    const isSuccess =
+      data?.status === 200 ||
+      resData?.StatusCode == 200 ||
+      resData?.statusCode == 200 ||
+      resData?.Status == 200 ||
+      resData?.status == 200 ||
+      Array.isArray(resData);
+
+    if (isSuccess) {
+      let list = [];
+      if (Array.isArray(resData)) {
+        list = resData;
+      } else if (resData && typeof resData === "object") {
+        list =
+          resData.ResultSet ||
+          resData.resultSet ||
+          resData.Data ||
+          resData.data ||
+          resData.Result ||
+          resData.result ||
+          resData;
+      }
+
+      if (!Array.isArray(list) && typeof list === "object" && list !== null) {
+        list = Object.values(list).filter((x) => x && typeof x === "object");
+      }
+
+      dispatch({
+        type: ATTENDANCE_SUCCESS,
+        payload: {
+          departmentAttendance: list,
+        },
+      });
+      return list;
+    } else {
+      dispatch({
+        type: ATTENDANCE_FAIL,
+        payload: {
+          msg:
+            resData?.message ||
+            resData?.Message ||
+            "Failed to fetch department attendance data",
+        },
+      });
+    }
+  } catch (error) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    dispatch({
+      type: ATTENDANCE_FAIL,
+      payload: {
+        msg: message,
+      },
+    });
+  }
+};
 export const GetAttendanceCard =
   (year, month, sno) => async (dispatch) => {
     dispatch({
