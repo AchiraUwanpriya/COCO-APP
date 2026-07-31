@@ -16,8 +16,8 @@ import { GetCDLCategoryAtt } from "../../action/Attendance";
 
 // Green Theme Color Palette
 const GREEN_THEME = {
-  strength:       "#13461E",   // Dark Forest Green (Actual Strength)
-  attendance:     "#4C8C58",   // Medium Sage Green (Attendance)
+  strength:       "#2C5F7C",   // Deep Teal-Blue (was Dark Forest Green - Actual Strength)
+  attendance:     "#E8A33D",   // Warm Amber Gold (was Medium Sage Green - Attendance)
   accent:         "#82C491",   // Light Green Accent
   cardBg:         "#f8faf9",   // Soft Light Green/White Tint
   cardBorder:     "#C2E2C9",   // Mint Green Border
@@ -25,7 +25,7 @@ const GREEN_THEME = {
   titleColor:     "#13461E",   // Deep Green Title
   subtitleColor:  "#475569",   // Slate Subtitle Text
   axisColor:      "#64748b",   // Muted Axis Label
-  gridColor:      "#E2F0E5",   // Light Green Grid Line
+  gridColor:      "#E2F0E5",  // Light Green Grid Line
 };
 
 const CATEGORY_ORDER = [

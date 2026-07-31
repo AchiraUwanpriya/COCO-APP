@@ -1887,13 +1887,13 @@ const DivisionLevelChart = ({ data, onDivisionClick }) => {
         borderRadius: "16px",
         background: "#fff",
         border: "1.5px solid #e2e8f0",
-        boxShadow: "0 2px 12px rgba(26,93,40,0.06)",
+        boxShadow: "0 2px 12px rgba(0,74,173,0.06)",
       }}
     >
       {/* Header */}
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1.5 }}>
         <Box>
-          <Typography sx={{ fontSize: "0.75rem", fontWeight: 700, color: "#1A5D28", letterSpacing: "0.03em" }}>
+          <Typography sx={{ fontSize: "0.75rem", fontWeight: 700, color: "#004AAD", letterSpacing: "0.03em" }}>
             Division Overview
           </Typography>
           <Typography sx={{ fontSize: "12px", color: "#94a3b8", mt: "1px" }}>
@@ -1922,12 +1922,12 @@ const DivisionLevelChart = ({ data, onDivisionClick }) => {
                 p: "8px 10px",
                 mx: "-8px",
                 transition: "all 0.18s ease",
-                "&:hover": { bgcolor: "#EAF4EC", transform: "translateX(4px)" },
+                "&:hover": { bgcolor: "#f0f5ff", transform: "translateX(4px)" },
               }}
             >
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: "4px" }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: "5px", minWidth: 0, flex: 1 }}>
-                  <AccountTree sx={{ fontSize: 12, color: "#1A5D28", flexShrink: 0 }} />
+                  <AccountTree sx={{ fontSize: 12, color: "#004AAD", flexShrink: 0 }} />
                   <Typography sx={{ fontSize: "12px", fontWeight: 600, color: "#1e293b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {row.division}
                   </Typography>
@@ -2008,13 +2008,13 @@ const InlineLocationChart = ({ data, division, onEmployeeClick }) => {
         borderRadius: "16px",
         background: "#fff",
         border: "1.5px solid #e2e8f0",
-        boxShadow: "0 2px 12px rgba(26,93,40,0.06)",
+        boxShadow: "0 2px 12px rgba(0,74,173,0.06)",
       }}
     >
       {/* Header */}
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1.5 }}>
         <Box>
-          <Typography sx={{ fontSize: "0.75rem", fontWeight: 700, color: "#1A5D28", letterSpacing: "0.03em" }}>
+          <Typography sx={{ fontSize: "0.75rem", fontWeight: 700, color: "#004AAD", letterSpacing: "0.03em" }}>
             Location Overview - {division}
           </Typography>
           <Typography sx={{ fontSize: "12px", color: "#94a3b8", mt: "1px" }}>
@@ -2044,12 +2044,12 @@ const InlineLocationChart = ({ data, division, onEmployeeClick }) => {
                 borderBottom: isOpen ? "none" : undefined,
                 bgcolor: isOpen ? `${barColor}0d` : "transparent",
                 transition: "background 0.15s ease, border-color 0.15s ease",
-                "&:hover": { bgcolor: isOpen ? `${barColor}0d` : "#EAF4EC" },
+                "&:hover": { bgcolor: isOpen ? `${barColor}0d` : "#f0f5ff" },
               }}
             >
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: "4px" }}>
                 <Box sx={{ display: "flex", alignItems: "center", gap: "5px", minWidth: 0, flex: 1 }}>
-                  <LocationOn sx={{ fontSize: 12, color: isOpen ? barColor : "#1A5D28", flexShrink: 0 }} />
+                  <LocationOn sx={{ fontSize: 12, color: isOpen ? barColor : "#004AAD", flexShrink: 0 }} />
                   <Typography sx={{ fontSize: "0.72rem", fontWeight: 600, color: "#1e293b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {row.location}
                   </Typography>
@@ -2086,7 +2086,7 @@ const InlineLocationChart = ({ data, division, onEmployeeClick }) => {
                 {/* Stats strip */}
                 <Box sx={{ display: "flex", bgcolor: "#fff", borderBottom: "1px solid #f1f5f9" }}>
                   {[
-                    { label: "Strength", value: row.total,               color: "#1A5D28" },
+                    { label: "Strength", value: row.total,               color: "#004AAD" },
                     { label: "Present",  value: row.present,             color: "#16a34a" },
                     { label: "Absent",   value: row.total - row.present, color: "#dc2626" },
                   ].map((s) => (
@@ -2098,9 +2098,9 @@ const InlineLocationChart = ({ data, division, onEmployeeClick }) => {
                 </Box>
 
                 {/* Column headers */}
-                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1.6fr 1.4fr 0.7fr 0.5fr", gap: 0.5, px: 1.5, py: 0.7, bgcolor: "#EAF4EC" }}>
+                <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1.6fr 1.4fr 0.7fr 0.5fr", gap: 0.5, px: 1.5, py: 0.7, bgcolor: "#e8f0fe" }}>
                   {["Svc No", "Name", "Designation", "IN ", "OUT "].map((h) => (
-                    <Typography key={h} sx={{ fontSize: "0.6rem", fontWeight: 700, color: "#1A5D28" }}>{h}</Typography>
+                    <Typography key={h} sx={{ fontSize: "0.6rem", fontWeight: 700, color: "#004AAD" }}>{h}</Typography>
                   ))}
                 </Box>
 
@@ -2114,12 +2114,12 @@ const InlineLocationChart = ({ data, division, onEmployeeClick }) => {
                       sx={{
                         display: "grid", gridTemplateColumns: "1fr 1.6fr 1.4fr 0.7fr 0.5fr", gap: 0.5,
                         px: 1.5, py: 0.85,
-                        bgcolor: idx % 2 === 0 ? "#fff" : "#f8faf9",
+                        bgcolor: idx % 2 === 0 ? "#fff" : "#f8faff",
                         borderTop: "0.5px solid #f1f5f9",
                         alignItems: "center",
                         cursor: "pointer",
                         transition: "all 0.18s ease",
-                        "&:hover": { bgcolor: "#EAF4EC", transform: "translateX(3px)" },
+                        "&:hover": { bgcolor: "#e8f0fe", transform: "translateX(3px)" },
                       }}
                     >
                       <Typography sx={{ fontSize: "0.65rem", color: "#475569" }}>{emp.sno || "-"}</Typography>
