@@ -825,7 +825,8 @@ import {
   GetAllAttendance,
   GetCDLWeekAttendance,
   GetCDLYearlyAttendance,
-  GetCDLMonthlyAttendance
+  GetCDLMonthlyAttendance,
+  GetCDLCategoryAtt
 } from "../../action/Attendance";
 import { Person } from "@material-ui/icons";
 
@@ -1278,7 +1279,6 @@ const DateFilter = ({ selectedDate, onDateChange, onApply, onClear, loading }) =
           variant="outlined"
           onClick={handleOpen}
           startIcon={<DateRangeIcon />}
-          disabled={loading}
           sx={{
             borderRadius: "12px",
             borderColor: "#1A5D2830",
@@ -1292,7 +1292,7 @@ const DateFilter = ({ selectedDate, onDateChange, onApply, onClear, loading }) =
             },
           }}
         >
-          {loading ? "Loading..." : formatDateDisplay(selectedDate)}
+          {formatDateDisplay(selectedDate)}
         </Button>
       </Badge>
 
@@ -1482,6 +1482,7 @@ const Dashboard = () => {
     dispatch(GetCDLWeekAttendance(date));
     dispatch(GetCDLMonthlyAttendance());
     dispatch(GetCDLYearlyAttendance());
+    dispatch(GetCDLCategoryAtt(date));
   };
 
   // ─── Handle Date Change ─────────────────────────────────────────────────────
@@ -1514,33 +1515,37 @@ const Dashboard = () => {
 
   // ─── Update loading states when data arrives ──────────────────────────────
   useEffect(() => {
-    if (divisionData?.length > 0) {
+    if (divisionData != null) {
       setLoadingStates((p) => ({ ...p, divisionData: false }));
     }
   }, [divisionData]);
 
   useEffect(() => {
-    if (traineeTypes?.length > 0) {
+    if (traineeTypes != null) {
       setLoadingStates((p) => ({ ...p, traineeTypes: false }));
-      localStorage.setItem("dashboard_traineeTypes", JSON.stringify(traineeTypes));
+      if (traineeTypes.length > 0) {
+        localStorage.setItem("dashboard_traineeTypes", JSON.stringify(traineeTypes));
+      }
     }
   }, [traineeTypes]);
 
   useEffect(() => {
-    if (traineeDivision?.length > 0) {
+    if (traineeDivision != null) {
       setLoadingStates((p) => ({ ...p, traineeDivision: false }));
     }
   }, [traineeDivision]);
 
   useEffect(() => {
-    if (allAttendance?.length > 0) {
+    if (allAttendance != null) {
       setLoadingStates((p) => ({ ...p, allAttendance: false }));
-      localStorage.setItem("dashboard_allAttendance", JSON.stringify(allAttendance));
+      if (allAttendance.length > 0) {
+        localStorage.setItem("dashboard_allAttendance", JSON.stringify(allAttendance));
+      }
     }
   }, [allAttendance]);
 
   useEffect(() => {
-    if (weeklyAttendance?.length > 0) {
+    if (weeklyAttendance != null) {
       setLoadingStates((p) => ({ ...p, weeklyAttendance: false }));
     }
   }, [weeklyAttendance]);
@@ -1680,11 +1685,7 @@ const Dashboard = () => {
 
               {/* ── CDPLC Breakdown ── */}
               <Box ref={cdplcChartRef} sx={{ mb: "24px" }}>
-                {loadingStates.divisionData ? (
-                  <ChartSkeleton height={300} />
-                ) : (
-                  <CDPLCBreakdown hadDate={selectedDate} />
-                )}
+                <CDPLCBreakdown hadDate={selectedDate} />
               </Box>
 
              

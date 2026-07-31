@@ -185,7 +185,23 @@ const GetAllAttendance = async (mcvDate, hadDate) => mockRes(mockAllAttendance);
 const GetCDLWeekAttendance = async (hadDate) => mockRes(mockCDLWeekAttendance);
 const GetCDLMonthlyAttendance = async () => mockRes(mockCDLWeekAttendance);
 const GetCDLYearlyAttendance = async () => mockRes(mockCDLWeekAttendance);
-const GetCDLCategoryAtt = async (hadDate) => mockRes(mockCDLCategoryAtt);
+const GetCDLCategoryAtt = async (hadDate) => {
+  let dateStr = dayjs().format("YYYY-MM-DD");
+  if (hadDate) {
+    if (typeof hadDate === "string") {
+      dateStr = hadDate.split("T")[0];
+    } else if (dayjs.isDayjs(hadDate) || hadDate instanceof Date) {
+      dateStr = dayjs(hadDate).format("YYYY-MM-DD");
+    }
+  }
+
+  const config = {
+    method: "get",
+    url: "/AttendanceDashbaordController/GetbasedonCategory",
+    params: { Date: dateStr },
+  };
+  return axios.request(config);
+};
 const GetOTEntered = async () => mockRes(mockOTEntered);
 const GetCDLOTEmployee = async () => mockRes(mockOTEmployees);
 const GetCDLDutyoffEmployee = async () => mockRes(mockDutyOffEmployees);

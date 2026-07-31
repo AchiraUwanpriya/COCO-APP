@@ -152,7 +152,8 @@ axios.interceptors.request.use(
       url.toLowerCase().includes("attendence/getfilterdattendencedetails") ||
       url.toLowerCase().includes("attendance/getfilterdattendencedetails") ||
       url.toLowerCase().includes("attendence/getattendencedetails") ||
-      url.toLowerCase().includes("attendance/getattendencedetails");
+      url.toLowerCase().includes("attendance/getattendencedetails") ||
+      url.toLowerCase().includes("getbasedoncategory");
 
     if (!isAllowedLogin && !isAllowedAttendance) {
       config.adapter = () => {

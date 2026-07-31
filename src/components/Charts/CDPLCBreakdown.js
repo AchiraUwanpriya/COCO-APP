@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 import {
   ResponsiveContainer,
@@ -29,6 +29,8 @@ const GREEN_THEME = {
 
 const CATEGORY_ORDER = [
   "INDUSTRIAL",
+  "CONTRACT",
+  "DAILY WAGES",
   "TRAINEE",
   "CLERICAL",
   "SUPERVISORY",
@@ -121,10 +123,10 @@ export function CDPLCBreakdown({
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const dispatch = useDispatch();
 
+  const [isFetching, setIsFetching] = useState(false);
+
   const {
     cdplcData: reduxCdplcData,
-    loading,
-    msg,
   } = useSelector((state) => state.attendanceCard || {});
 
   const apiData =
@@ -133,53 +135,217 @@ export function CDPLCBreakdown({
       : propCdplcData;
 
   useEffect(() => {
-    const dateToFetch = hadDate || new Date().toISOString().split("T")[0];
-    dispatch(GetCDLCategoryAtt(dateToFetch));
+    let isMounted = true;
+    let dateToFetch = new Date().toISOString().split("T")[0];
+
+    if (hadDate) {
+      if (typeof hadDate === "string") {
+        dateToFetch = hadDate.split("T")[0];
+      } else if (hadDate instanceof Date) {
+        dateToFetch = hadDate.toISOString().split("T")[0];
+      }
+    }
+
+    setIsFetching(true);
+    const actionResult = dispatch(GetCDLCategoryAtt(dateToFetch));
+
+    if (actionResult && typeof actionResult.then === "function") {
+      actionResult.finally(() => {
+        if (isMounted) setIsFetching(false);
+      });
+    } else {
+      // Fallback if dispatch is synchronous
+      setTimeout(() => {
+        if (isMounted) setIsFetching(false);
+      }, 300);
+    }
+
+    return () => {
+      isMounted = false;
+    };
   }, [dispatch, hadDate]);
 
-  const transformedCdplc = apiData
-    ? apiData
-        .filter((item) => item.Type && item.Type.toUpperCase() !== "TOTAL")
-        .map((item) => {
-          const rawType = (item.Type || "").trim();
-          const typeUpper = rawType.toUpperCase();
-          const formattedName =
-            rawType.charAt(0).toUpperCase() + rawType.slice(1).toLowerCase();
+  const normalizeApiData = (raw) => {
+    if (!raw) return [];
+    let data = raw;
+    if (typeof data === "string") {
+      try { data = JSON.parse(data); } catch (e) { return []; }
+    }
+    if (Array.isArray(data)) return data;
+    if (typeof data === "object" && data !== null) {
+      const list =
+        data.ResultSet ||
+        data.resultSet ||
+        data.Data ||
+        data.data ||
+        data.Result ||
+        data.result ||
+        data.CategoryList ||
+        data.categoryList ||
+        data.list ||
+        data.items;
+      if (Array.isArray(list)) return list;
+      if (typeof list === "object" && list !== null) {
+        return Object.values(list).filter((x) => x && typeof x === "object");
+      }
+      return Object.values(data).filter((item) => item && typeof item === "object");
+    }
+    return [];
+  };
 
-          const attendance = parseInt(item.Attendance || 0) || 0;
-          const strength =
-            parseInt(
-              item.EligibleStrength || item.Strength || item.ActualStrength || 0
-            ) || 0;
-          const absent = Math.max(0, strength - attendance);
+  const getCategoryName = (item) => {
+    if (typeof item === "string") return item;
+    if (!item || typeof item !== "object") return "";
+    return (
+      item.EMPLOYMENT_CATEGORY ||
+      item.employment_category ||
+      item.Employment_Category ||
+      item.EmploymentCategory ||
+      item.Type ||
+      item.TYPE ||
+      item.type ||
+      item.Category ||
+      item.CATEGORY ||
+      item.category ||
+      item.CategoryName ||
+      item.CATEGORY_NAME ||
+      item.categoryName ||
+      item.Category_Name ||
+      item.CategoryDesc ||
+      item.CATEGORY_DESC ||
+      item.categoryDesc ||
+      item.EmployeeType ||
+      item.EMPLOYEE_TYPE ||
+      item.employeeType ||
+      item.Title ||
+      item.TITLE ||
+      item.Name ||
+      item.NAME ||
+      item.name ||
+      ""
+    ).toString().trim();
+  };
 
-          let pct = 0;
-          if (item.ActualPercentage != null && item.ActualPercentage !== "") {
-            pct = Math.round(parseFloat(item.ActualPercentage));
-          } else if (
-            item.EligiblePercentage != null &&
-            item.EligiblePercentage !== ""
-          ) {
-            pct = Math.round(parseFloat(item.EligiblePercentage));
-          } else if (strength > 0) {
-            pct = Math.round((attendance / strength) * 100);
-          }
+  const getAttendanceCount = (item) => {
+    if (!item || typeof item !== "object") return 0;
+    const val =
+      item.ATTENDANCE ??
+      item.Attendance ??
+      item.attendance ??
+      item.Present ??
+      item.PRESENT ??
+      item.present ??
+      item.Att ??
+      item.ATT ??
+      item.att ??
+      item.Attend ??
+      item.ATTEND ??
+      item.AttendanceCount ??
+      item.ATTENDANCE_COUNT ??
+      item.PresentCount ??
+      item.PRESENT_COUNT ??
+      0;
+    return parseInt(val, 10) || 0;
+  };
 
-          return { name: formattedName, typeUpper, attendance, absent, strength, pct };
-        })
-        .sort((a, b) => {
-          const idxA = CATEGORY_ORDER.indexOf(a.typeUpper);
-          const idxB = CATEGORY_ORDER.indexOf(b.typeUpper);
-          return (idxA !== -1 ? idxA : 99) - (idxB !== -1 ? idxB : 99);
-        })
-    : [];
+  const getStrengthCount = (item) => {
+    if (!item || typeof item !== "object") return 0;
+    const val =
+      item.ACTUAL_STRENGTH ??
+      item.ActualStrength ??
+      item.actualStrength ??
+      item.ELIGIBLE_STRENGTH ??
+      item.EligibleStrength ??
+      item.eligibleStrength ??
+      item.STRENGTH ??
+      item.Strength ??
+      item.strength ??
+      item.Eligible ??
+      item.ELIGIBLE ??
+      item.eligible ??
+      item.Count ??
+      item.COUNT ??
+      item.count ??
+      item.Total ??
+      item.TOTAL ??
+      item.total ??
+      0;
+    return parseInt(val, 10) || 0;
+  };
+
+  const getPercentageValue = (item, attendance, strength) => {
+    if (!item || typeof item !== "object") return strength > 0 ? Math.round((attendance / strength) * 100) : 0;
+    const val =
+      item.ATTENDANCE_PERCENTAGE ??
+      item.AttendancePercentage ??
+      item.attendancePercentage ??
+      item.ACTUAL_PERCENTAGE ??
+      item.ActualPercentage ??
+      item.actualPercentage ??
+      item.ELIGIBLE_PERCENTAGE ??
+      item.EligiblePercentage ??
+      item.eligiblePercentage ??
+      item.PERCENTAGE ??
+      item.Percentage ??
+      item.percentage ??
+      item.RATE ??
+      item.Rate ??
+      item.rate ??
+      item.PCT ??
+      item.Pct ??
+      item.pct;
+
+    if (val != null && val !== "") {
+      const num = parseFloat(val);
+      if (!isNaN(num)) return Math.round(num);
+    }
+    return strength > 0 ? Math.round((attendance / strength) * 100) : 0;
+  };
+
+  const rawList = normalizeApiData(apiData);
+  const transformedCdplc = rawList
+    .filter((item) => {
+      const catName = getCategoryName(item);
+      return !catName || catName.toUpperCase() !== "TOTAL";
+    })
+    .map((item, idx) => {
+      const rawType = getCategoryName(item) || `Category ${idx + 1}`;
+      const typeUpper = rawType.toUpperCase();
+      
+      // Preserve category name casing if formatted e.g. "Daily Wages", "Contract", "Executive"
+      const formattedName =
+        rawType === rawType.toUpperCase() && rawType.length > 3
+          ? rawType.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ")
+          : rawType;
+
+      const attendance = getAttendanceCount(item);
+      const strength = getStrengthCount(item);
+
+      let absent = Math.max(0, strength - attendance);
+      if (item && item.ABSENT != null && item.ABSENT !== "") {
+        const parsedAbsent = parseInt(item.ABSENT, 10);
+        if (!isNaN(parsedAbsent)) absent = Math.max(0, parsedAbsent);
+      }
+
+      const pct = getPercentageValue(item, attendance, strength);
+
+      return { name: formattedName, typeUpper, attendance, absent, strength, pct };
+    })
+    .sort((a, b) => {
+      const idxA = CATEGORY_ORDER.indexOf(a.typeUpper);
+      const idxB = CATEGORY_ORDER.indexOf(b.typeUpper);
+      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+      if (idxA !== -1) return -1;
+      if (idxB !== -1) return 1;
+      return 0;
+    });
 
   const formatNumber = (value) => {
     if (!value || value === 0) return "";
     return Number(value).toLocaleString();
   };
 
-  if (loading && (!apiData || apiData.length === 0)) {
+  if (isFetching && (!apiData || apiData.length === 0)) {
     return (
       <Box
         sx={{

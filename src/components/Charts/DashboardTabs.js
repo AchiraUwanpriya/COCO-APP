@@ -40,6 +40,7 @@ import {
   GetTraineeDivisionAttendance,
   GetAllAttendance,
   GetCDLWeekAttendance,
+  GetCDLCategoryAtt
 } from "../../action/Attendance";
 import { EmployeeStrengthAttendanceChart } from "../../components/Charts/EmployeeStrengthAttendanceChart";
 
@@ -768,6 +769,7 @@ const Dashboard = () => {
         dispatch(GetCdlBasedDivison(today, today));
         dispatch(GetTraineeDivisionAttendance(today, today));
         dispatch(GetCDLWeekAttendance(today));
+        dispatch(GetCDLCategoryAtt(today));
       } catch (error) {
         console.error("Error dispatching actions:", error);
       }
@@ -1117,11 +1119,7 @@ const Dashboard = () => {
                 md: '24px'
               } 
             }}>
-              {loadingStates.divisionData ? (
-                <ChartSkeleton height={isMobile ? 250 : 300} />
-              ) : (
-                <CDPLCBreakdown hadDate={today} />
-              )}
+              <CDPLCBreakdown hadDate={today} />
             </Box>
 
             {/* ── Division Breakdown ── */}

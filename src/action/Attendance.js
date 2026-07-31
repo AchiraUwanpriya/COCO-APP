@@ -119,18 +119,52 @@ export const GetCDLCategoryAtt = (hadDate) => async (dispatch) => {
 
   try {
     const data = await AttendanceService.GetCDLCategoryAtt(hadDate);
-    if (data.data.StatusCode === 200) {
+    const resData = data?.data;
+    const isSuccess =
+      data?.status === 200 ||
+      resData?.StatusCode == 200 ||
+      resData?.statusCode == 200 ||
+      resData?.Status == 200 ||
+      resData?.status == 200 ||
+      Array.isArray(resData);
+
+    if (isSuccess) {
+      let list = [];
+      if (Array.isArray(resData)) {
+        list = resData;
+      } else if (resData && typeof resData === "object") {
+        list =
+          resData.ResultSet ||
+          resData.resultSet ||
+          resData.Data ||
+          resData.data ||
+          resData.Result ||
+          resData.result ||
+          resData.CategoryList ||
+          resData.categoryList ||
+          resData.list ||
+          resData.items ||
+          resData;
+      }
+
+      if (!Array.isArray(list) && typeof list === "object" && list !== null) {
+        list = Object.values(list).filter((x) => x && typeof x === "object");
+      }
+
       dispatch({
         type: ATTENDANCE_SUCCESS,
         payload: {
-          cdplcData: data.data.ResultSet,
+          cdplcData: list,
         },
       });
     } else {
       dispatch({
         type: ATTENDANCE_FAIL,
         payload: {
-          msg: "Failed to fetch CDPLC category attendance data",
+          msg:
+            resData?.message ||
+            resData?.Message ||
+            "Failed to fetch CDPLC category attendance data",
         },
       });
     }
