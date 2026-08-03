@@ -16,8 +16,8 @@ import { GetCDLCategoryAtt } from "../../action/Attendance";
 
 // Green Theme Color Palette
 const GREEN_THEME = {
-  strength:       "#2C5F7C",   // Deep Teal-Blue (was Dark Forest Green - Actual Strength)
-  attendance:     "#E8A33D",   // Warm Amber Gold (was Medium Sage Green - Attendance)
+  strength:       "#e07b39",   // Deep Teal-Blue (was Dark Forest Green - Actual Strength)
+  attendance:     "#4472c4",   // Warm Amber Gold (was Medium Sage Green - Attendance)
   accent:         "#82C491",   // Light Green Accent
   cardBg:         "#f8faf9",   // Soft Light Green/White Tint
   cardBorder:     "#C2E2C9",   // Mint Green Border
