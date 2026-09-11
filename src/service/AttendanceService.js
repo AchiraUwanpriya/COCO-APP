@@ -12,22 +12,35 @@ const GetAttendenceDetails = async (
   let month = monthParam;
   let fromDate = undefined;
 
+
+  let filterParamKey = "sno";
+  let filterParamValue = "";
+
   if (
     adate &&
     typeof adate === "object" &&
     !dayjs.isDayjs(adate) &&
     !(adate instanceof Date)
   ) {
-    sno =
-      adate.sno !== undefined
-        ? adate.sno
-        : adate.Sno !== undefined
-        ? adate.Sno
-        : adate.serviceNo !== undefined
-        ? adate.serviceNo
-        : adate.ServiceNo !== undefined
-        ? adate.ServiceNo
-        : sno;
+    if (adate.searchServiceNo !== undefined && adate.searchServiceNo !== "") {
+      filterParamKey = "Name";
+      filterParamValue = adate.searchServiceNo;
+    } else if (adate.searchName !== undefined && adate.searchName !== "") {
+      filterParamKey = "ServiceNo";
+      filterParamValue = adate.searchName;
+    } else {
+      filterParamKey = "sno";
+      filterParamValue =
+        adate.sno !== undefined
+          ? adate.sno
+          : adate.Sno !== undefined
+          ? adate.Sno
+          : adate.serviceNo !== undefined
+          ? adate.serviceNo
+          : adate.ServiceNo !== undefined
+          ? adate.ServiceNo
+          : sno;
+    }
 
     // If a specific day was selected, fromDate is provided (YYYY-MM-DD)
     if (adate.fromDate) {
@@ -41,24 +54,27 @@ const GetAttendenceDetails = async (
     if (formatted) {
       fromDate = formatted.format("YYYY-MM-DD");
     }
+    filterParamValue = sno;
+  } else {
+    filterParamValue = sno;
   }
 
   const today = dayjs();
 
-  sno = sno ? String(sno).trim() : "";
+  filterParamValue = filterParamValue ? String(filterParamValue).trim() : "";
 
   let params;
   if (fromDate) {
-    // Single-day query → ?fromDate=2026-07-22
-    params = { sno, fromDate };
+    // Single-day query → ?sno=&fromDate=2026-07-22 (or ?Name=...&fromDate=...)
+    params = { [filterParamKey]: filterParamValue, fromDate };
   } else {
-    // Month-range query → ?year=2026&month=07
+    // Month-range query → ?year=2026&month=07&sno=... (or &Name=... / &ServiceNo=...)
     if (!year) year = today.format("YYYY");
     if (!month) month = today.format("MM");
     if (month && String(month).length === 1) {
       month = `0${month}`;
     }
-    params = { sno, year, month };
+    params = { [filterParamKey]: filterParamValue, year, month };
   }
 
   const config = {
