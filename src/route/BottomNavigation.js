@@ -222,7 +222,6 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import HouseIcon from "@mui/icons-material/House";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonIcon from "@mui/icons-material/Person";
-import QrCodeScannerIcon from "@mui/icons-material/QrCodeScanner";
 import SmsIcon from "@mui/icons-material/Sms";
 import { Link, useLocation } from "react-router-dom";
 import { Box, Badge, Paper } from "@mui/material";
@@ -395,13 +394,6 @@ export default function Footer() {
 
 
             
-
-          {/* QR */}
-          <BottomNavigationAction
-            label="Scan"
-            // value="QR"
-            icon={<QrCodeScannerIcon />}
-          />
 
           {/* Notifications */}
           <BottomNavigationAction

@@ -1,6 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Popover,
+  IconButton,
+  Divider,
+  Chip,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
+import CalendarTodayRoundedIcon from "@mui/icons-material/CalendarTodayRounded";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   ResponsiveContainer,
   BarChart,
@@ -126,6 +139,46 @@ export function CDPLCBreakdown({
 
   const [isFetching, setIsFetching] = useState(false);
 
+  const todayStr = new Date().toISOString().split("T")[0];
+  const initialDate = (() => {
+    if (!hadDate) return todayStr;
+    if (typeof hadDate === "string") return hadDate.split("T")[0];
+    if (hadDate instanceof Date) return hadDate.toISOString().split("T")[0];
+    return todayStr;
+  })();
+
+  // This card owns its own date filter now — it no longer depends on a
+  // dashboard-wide date picker, since the date only ever affected this chart.
+  const [selectedDate, setSelectedDate] = useState(initialDate);
+
+  // Date-picker popover (pill button + panel, rather than a raw native
+  // date input sitting in the card header)
+  const [dateAnchorEl, setDateAnchorEl] = useState(null);
+  const [tempDate, setTempDate] = useState(initialDate);
+  const dateMenuOpen = Boolean(dateAnchorEl);
+
+  const openDateMenu = (e) => {
+    setTempDate(selectedDate);
+    setDateAnchorEl(e.currentTarget);
+  };
+  const closeDateMenu = () => setDateAnchorEl(null);
+  const applyDate = () => {
+    setSelectedDate(tempDate || todayStr);
+    closeDateMenu();
+  };
+  const quickPick = (dateStr) => {
+    setTempDate(dateStr);
+    setSelectedDate(dateStr);
+    closeDateMenu();
+  };
+
+  const formatDateDisplay = (dateStr) => {
+    if (!dateStr) return "Select date";
+    const d = new Date(`${dateStr}T00:00:00`);
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+  };
+
   const {
     cdplcData: reduxCdplcData,
   } = useSelector((state) => state.attendanceCard || {});
@@ -137,18 +190,9 @@ export function CDPLCBreakdown({
 
   useEffect(() => {
     let isMounted = true;
-    let dateToFetch = new Date().toISOString().split("T")[0];
-
-    if (hadDate) {
-      if (typeof hadDate === "string") {
-        dateToFetch = hadDate.split("T")[0];
-      } else if (hadDate instanceof Date) {
-        dateToFetch = hadDate.toISOString().split("T")[0];
-      }
-    }
 
     setIsFetching(true);
-    const actionResult = dispatch(GetCDLCategoryAtt(dateToFetch));
+    const actionResult = dispatch(GetCDLCategoryAtt(selectedDate));
 
     if (actionResult && typeof actionResult.then === "function") {
       actionResult.finally(() => {
@@ -164,7 +208,7 @@ export function CDPLCBreakdown({
     return () => {
       isMounted = false;
     };
-  }, [dispatch, hadDate]);
+  }, [dispatch, selectedDate]);
 
   const normalizeApiData = (raw) => {
     if (!raw) return [];
@@ -346,6 +390,15 @@ export function CDPLCBreakdown({
     return Number(value).toLocaleString();
   };
 
+  // Shared X-axis domain for both the background (strength) and overlay
+  // (attendance) charts — they must match exactly or the overlay bar won't
+  // line up with the background bar underneath it.
+  const maxStrengthValue = Math.max(
+    1,
+    ...transformedCdplc.map((d) => d.strength || 0)
+  );
+  const xDomain = [0, Math.ceil(maxStrengthValue * 1.15)];
+
   if (isFetching) {
     return (
       <Box
@@ -387,49 +440,181 @@ export function CDPLCBreakdown({
           overflow: "hidden",
           backgroundColor: GREEN_THEME.cardBg,
           borderRadius: "20px",
-          padding: { xs: "16px", sm: "20px", md: "24px" },
+          padding: { xs: "14px", sm: "20px", md: "24px" },
           boxShadow: GREEN_THEME.cardShadow,
           border: `1px solid ${GREEN_THEME.cardBorder}`,
         }}
       >
         {/* Header */}
-        <Box sx={{ marginBottom: { xs: "14px", sm: "20px" } }}>
-          <Typography
-            sx={{
-              fontSize: { xs: "17px", sm: "19px", md: "21px" },
-              fontWeight: 700,
-              color: GREEN_THEME.titleColor,
-              letterSpacing: "-0.01em",
-              marginBottom: "2px",
-            }}
-          >
-            Employee Strength &amp; Attendance Overview
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: { xs: "11px", sm: "12px" },
-              color: GREEN_THEME.subtitleColor,
-            }}
-          >
-            Stacked view — actual strength vs attendance per employee type
-          </Typography>
-        </Box>
-
-        {/* Chart */}
         <Box
           sx={{
-            height: { xs: "260px", sm: "300px" },
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { xs: "stretch", sm: "flex-start" },
+            justifyContent: "space-between",
+            gap: 1.25,
+            marginBottom: { xs: "14px", sm: "20px" },
+          }}
+        >
+          <Box>
+            <Typography
+              sx={{
+                fontSize: { xs: "15.5px", sm: "19px", md: "21px" },
+                fontWeight: 700,
+                color: GREEN_THEME.titleColor,
+                letterSpacing: "-0.01em",
+                marginBottom: "2px",
+              }}
+            >
+              Employee Strength &amp; Attendance Overview
+            </Typography>
+            <Typography
+              sx={{
+                fontSize: { xs: "10.5px", sm: "12px" },
+                color: GREEN_THEME.subtitleColor,
+              }}
+            >
+              Actual strength (orange) with attendance (blue) overlaid inside it
+            </Typography>
+          </Box>
+
+          {/* This chart is the only thing that's date-specific, so the date
+              picker lives here instead of in the dashboard's global header. */}
+          <Button
+            onClick={openDateMenu}
+            startIcon={<CalendarTodayRoundedIcon sx={{ fontSize: 15 }} />}
+            sx={{
+              alignSelf: { xs: "stretch", sm: "flex-start" },
+              justifyContent: "flex-start",
+              textTransform: "none",
+              fontSize: "12.5px",
+              fontWeight: 700,
+              color: GREEN_THEME.titleColor,
+              backgroundColor: "#ffffff",
+              border: `1px solid ${GREEN_THEME.cardBorder}`,
+              borderRadius: "10px",
+              px: 1.5,
+              height: 36,
+              minWidth: { xs: "100%", sm: 165 },
+              "&:hover": {
+                backgroundColor: "#fdf3ec",
+                borderColor: GREEN_THEME.strength,
+              },
+            }}
+          >
+            {formatDateDisplay(selectedDate)}
+          </Button>
+
+          <Popover
+            open={dateMenuOpen}
+            anchorEl={dateAnchorEl}
+            onClose={closeDateMenu}
+            anchorOrigin={{ vertical: "bottom", horizontal: isMobile ? "center" : "right" }}
+            transformOrigin={{ vertical: "top", horizontal: isMobile ? "center" : "right" }}
+            PaperProps={{
+              sx: {
+                p: 2.25,
+                mt: 0.75,
+                borderRadius: "16px",
+                minWidth: 270,
+                boxShadow: "0 8px 32px rgba(19,70,30,0.16)",
+                border: `1px solid ${GREEN_THEME.cardBorder}`,
+              },
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 1.5 }}>
+              <Typography sx={{ fontWeight: 700, fontSize: "13.5px", color: GREEN_THEME.titleColor }}>
+                Filter by date
+              </Typography>
+              <IconButton size="small" onClick={closeDateMenu}>
+                <CloseIcon sx={{ fontSize: 16 }} />
+              </IconButton>
+            </Box>
+
+            <Divider sx={{ mb: 1.5, borderColor: GREEN_THEME.cardBorder }} />
+
+            <TextField
+              type="date"
+              size="small"
+              fullWidth
+              value={tempDate}
+              onChange={(e) => setTempDate(e.target.value)}
+              InputLabelProps={{ shrink: true }}
+              sx={{
+                mb: 1.5,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "10px",
+                  fontSize: "13px",
+                  "& fieldset": { borderColor: GREEN_THEME.cardBorder },
+                  "&:hover fieldset": { borderColor: GREEN_THEME.strength },
+                  "&.Mui-focused fieldset": { borderColor: GREEN_THEME.titleColor },
+                },
+              }}
+            />
+
+            <Box sx={{ display: "flex", gap: 0.75, mb: 1.75 }}>
+              {[
+                { label: "Today", value: todayStr },
+                {
+                  label: "Yesterday",
+                  value: new Date(Date.now() - 86400000).toISOString().split("T")[0],
+                },
+              ].map((opt) => (
+                <Chip
+                  key={opt.label}
+                  label={opt.label}
+                  size="small"
+                  onClick={() => quickPick(opt.value)}
+                  sx={{
+                    fontSize: "11.5px",
+                    fontWeight: 600,
+                    borderRadius: "8px",
+                    backgroundColor: selectedDate === opt.value ? "#fdf3ec" : "#f7f9f7",
+                    color: selectedDate === opt.value ? GREEN_THEME.strength : GREEN_THEME.subtitleColor,
+                    border: `1px solid ${selectedDate === opt.value ? GREEN_THEME.strength : GREEN_THEME.cardBorder}`,
+                  }}
+                />
+              ))}
+            </Box>
+
+            <Button
+              fullWidth
+              onClick={applyDate}
+              sx={{
+                textTransform: "none",
+                fontWeight: 700,
+                fontSize: "13px",
+                color: "#ffffff",
+                backgroundColor: GREEN_THEME.titleColor,
+                borderRadius: "10px",
+                height: 38,
+                "&:hover": { backgroundColor: "#0e3618" },
+              }}
+            >
+              Apply
+            </Button>
+          </Popover>
+        </Box>
+
+        {/* Chart — orange bar is the full Actual Strength; the blue bar is
+            overlaid on top of it (same scale) so its length shows what
+            portion of that strength actually attended. */}
+        <Box
+          sx={{
+            position: "relative",
+            height: { xs: "230px", sm: "300px" },
             width: "100%",
             marginBottom: "14px",
           }}
         >
+          {/* Background layer — Actual Strength (full length, orange) */}
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={transformedCdplc}
               layout="vertical"
               margin={{
                 top: 5,
-                right: isMobile ? 40 : 60,
+                right: isMobile ? 30 : 60,
                 left: isMobile ? 0 : 8,
                 bottom: 10,
               }}
@@ -443,6 +628,7 @@ export function CDPLCBreakdown({
               />
               <XAxis
                 type="number"
+                domain={xDomain}
                 axisLine={false}
                 tickLine={false}
                 tick={{ fill: GREEN_THEME.axisColor, fontSize: 11 }}
@@ -451,7 +637,7 @@ export function CDPLCBreakdown({
               <YAxis
                 type="category"
                 dataKey="name"
-                width={isMobile ? 80 : 100}
+                width={isMobile ? 72 : 100}
                 axisLine={false}
                 tickLine={false}
                 tick={{
@@ -460,45 +646,24 @@ export function CDPLCBreakdown({
                   fontWeight: 600,
                 }}
               />
-              <Tooltip content={<CDPLCCustomTooltip />} />
+              <Tooltip content={<CDPLCCustomTooltip />} cursor={{ fill: "rgba(224,123,57,0.06)" }} />
 
-              {/* STACKED 1: Dark Forest Green — Actual Strength */}
               <Bar
-                dataKey="absent"
+                dataKey="strength"
                 name="Actual Strength"
                 fill={GREEN_THEME.strength}
-                stackId="stack"
-                radius={[4, 0, 0, 4]}
-                barSize={isMobile ? 16 : 22}
+                radius={[6, 6, 6, 6]}
+                barSize={isMobile ? 18 : 24}
               >
                 <LabelList
-                  dataKey="absent"
-                  position="center"
+                  dataKey="strength"
+                  position="insideRight"
                   style={{ fill: "#ffffff" }}
                   fontSize={11}
                   fontWeight={700}
-                  formatter={(v) => (v > 30 ? formatNumber(v) : "")}
+                  formatter={(v) => formatNumber(v)}
                 />
-              </Bar>
-
-              {/* STACKED 2: Medium Sage Green — Attendance */}
-              <Bar
-                dataKey="attendance"
-                name="Attendance"
-                fill={GREEN_THEME.attendance}
-                stackId="stack"
-                radius={[0, 6, 6, 0]}
-                barSize={isMobile ? 16 : 22}
-              >
-                <LabelList
-                  dataKey="attendance"
-                  position="center"
-                  style={{ fill: "#ffffff" }}
-                  fontSize={11}
-                  fontWeight={700}
-                  formatter={(v) => (v > 30 ? formatNumber(v) : "")}
-                />
-                {/* Percentage label right of bar */}
+                {/* Percentage label at the row's right edge (end of the full strength bar) */}
                 <LabelList
                   dataKey="pct"
                   position="right"
@@ -522,6 +687,61 @@ export function CDPLCBreakdown({
               </Bar>
             </BarChart>
           </ResponsiveContainer>
+
+          {/* Overlay layer — Attendance (blue), nested inside the strength bar */}
+          <Box
+            sx={{
+              position: "absolute",
+              inset: 0,
+              pointerEvents: "none",
+            }}
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={transformedCdplc}
+                layout="vertical"
+                margin={{
+                  top: 5,
+                  right: isMobile ? 30 : 60,
+                  left: isMobile ? 0 : 8,
+                  bottom: 10,
+                }}
+                barCategoryGap={isMobile ? "18%" : "25%"}
+              >
+                <XAxis
+                  type="number"
+                  domain={xDomain}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={false}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="name"
+                  width={isMobile ? 72 : 100}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={false}
+                />
+                <Bar
+                  dataKey="attendance"
+                  name="Attendance"
+                  fill={GREEN_THEME.attendance}
+                  radius={[5, 5, 5, 5]}
+                  barSize={isMobile ? 9 : 12}
+                >
+                  <LabelList
+                    dataKey="attendance"
+                    position="insideRight"
+                    style={{ fill: "#ffffff" }}
+                    fontSize={9.5}
+                    fontWeight={700}
+                    formatter={(v) => (v > 30 ? formatNumber(v) : "")}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </Box>
         </Box>
 
         {/* Legend */}

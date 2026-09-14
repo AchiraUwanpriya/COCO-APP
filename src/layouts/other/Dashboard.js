@@ -1,4 +1,3 @@
-
 // import React, { useEffect, useRef, useState } from "react";
 // import {
 //   Box,
@@ -813,7 +812,7 @@ import { TraineesDivisionBreakdown } from "../../components/Charts/TraineesDivis
 import WeeklyAttendanceTrend from "../../components/Charts/WeeklyAttendanceTrend";
 import { EmployeeTypeChart } from "../../components/Charts/EmployeeTypeChart";
 import { CDPLCBreakdown } from "../../components/Charts/CDPLCBreakdown";
-import { CDLLocBaseAttendance } from "../../components/Charts/CDLLocBaseAttendance";
+import { MonthlyAttendanceTrend } from "../../components/Charts/MonthlyAttendanceTrend";
 import EmployeeTypeKpiGrid from "../../components/Charts/EmployeeTypeKpiGrid";
 import { EmployeeStrengthAttendanceChart } from "../../components/Charts/EmployeeStrengthAttendanceChart";
 import { CDLLocationAttendanceChart } from "../../components/Charts/CDLLocationAttendanceChart";
@@ -1609,49 +1608,23 @@ const Dashboard = () => {
       }}
     >
       {/* ── Header ── */}
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 3, flexShrink: 0 }}>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          {/* <IconButton
-            onClick={() => setDrawerOpen(true)}
-            sx={{
-              backgroundColor: "#ffffff",
-              boxShadow: "0 2px 8px rgba(26,93,40,0.12)",
-              borderRadius: "12px",
-              padding: "10px",
-              "&:hover": { backgroundColor: "#f5f5f5", transform: "scale(1.05)" },
-              transition: "all 0.2s ease",
-            }}
-          >
-            <MenuIcon sx={{ color: "#1A5D28" }} />
-          </IconButton> */}
-          <Typography
-            variant="h5"
-            sx={{
-              fontWeight: 700,
-              background: "linear-gradient(135deg, #1A5D28 0%, #4C8C58 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              fontSize: { xs: "1.2rem", sm: "1.5rem" },
-            }}
-          >
-            {activeTab === 0 ? " Dashboard"
-              : activeTab === 1 ? "Financial Dashboard"
-              : activeTab === 4 ? "Company Overview"
-              : activeTab === 5 ? "Own Overview"
-              : "Dashboard"}
-          </Typography>
-        </Box>
-
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          {/* ── Date Filter ── */}
-          <DateFilter
-            selectedDate={selectedDate}
-            onDateChange={setSelectedDate}
-            onApply={handleDateApply}
-            onClear={handleDateClear}
-            loading={isDataLoading}
-          />
-        </Box>
+      <Box sx={{ display: "flex", alignItems: "center", mb: 3, flexShrink: 0 }}>
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 700,
+            background: "linear-gradient(135deg, #1A5D28 0%, #4C8C58 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            fontSize: { xs: "1.2rem", sm: "1.5rem" },
+          }}
+        >
+          {activeTab === 0 ? " Dashboard"
+            : activeTab === 1 ? "Financial Dashboard"
+            : activeTab === 4 ? "Company Overview"
+            : activeTab === 5 ? "Own Overview"
+            : "Dashboard"}
+        </Typography>
       </Box>
 
       <NavigationDrawer
@@ -1684,14 +1657,14 @@ const Dashboard = () => {
 
               {/* ── CDPLC Breakdown ── */}
               <Box ref={cdplcChartRef} sx={{ mb: "24px" }}>
-                <CDPLCBreakdown hadDate={selectedDate} />
+                <CDPLCBreakdown />
               </Box>
 
              
 
-              {/* ── CDL Location Attendance Based on Division ── */}
+              {/* ── Monthly / Yearly Attendance Trend ── */}
               <Box sx={{ mb: "24px" }}>
-                <CDLLocBaseAttendance hadDate={selectedDate} />
+                <MonthlyAttendanceTrend />
               </Box>
 
 
