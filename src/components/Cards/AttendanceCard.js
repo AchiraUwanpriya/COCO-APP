@@ -1001,6 +1001,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Box, Typography, Avatar } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import dayjs from "dayjs";
 import Loader from "../Utility/Loader";
 import NotFound from "../Utility/NotFound";
@@ -1036,8 +1037,8 @@ const BodyCell = styled(TableCell)(() => ({
   "&.MuiTableCell-body": {
     fontSize: 12,
     color: TEXT,
-    padding: "8px 6px",
-    lineHeight: "1.25",
+    padding: "5px 6px",
+    lineHeight: "1.2",
     textAlign: "center",
     borderBottom: `1px solid ${BORDER}`,
   },
@@ -1280,6 +1281,8 @@ export default function AttendanceCard({
   year,
   month,
   isTodayView = false,
+  directoryFilter = "",
+  onSelectEmployee,
 }) {
   const { attendenceDetails, responseBody, loading, msg } = useSelector(
     (state) => state.attendanceCard
@@ -1309,6 +1312,41 @@ export default function AttendanceCard({
       );
     });
   }, [listData, searchQuery]);
+
+  // Directory of DISTINCT employees (name + service no only) for the
+  // Individual tab's default view — one entry per employee, no attendance.
+  const employeeDirectory = useMemo(() => {
+    const seen = new Map(); // key: serviceNo (real number) -> { serviceNo, name }
+    listData.forEach((item) => {
+      const rec = parseRecord(item);
+      const key = (rec.serviceNo && rec.serviceNo !== "-" ? rec.serviceNo : rec.name) || "";
+      if (!key) return;
+      const existing = seen.get(key);
+      // Keep the entry that has a real name if we later find one
+      if (!existing || (!existing.name && rec.name)) {
+        seen.set(key, { serviceNo: rec.serviceNo, name: rec.name });
+      }
+    });
+    let list = Array.from(seen.values());
+
+    // Live filter as the user types (does not change the search/fetch function)
+    const f = (directoryFilter || "").trim().toLowerCase();
+    if (f) {
+      list = list.filter(
+        (e) =>
+          (e.name || "").toLowerCase().includes(f) ||
+          (e.serviceNo || "").toLowerCase().includes(f)
+      );
+    }
+
+    // Sort by name, falling back to service no
+    list.sort((a, b) =>
+      (a.name || a.serviceNo || "").localeCompare(b.name || b.serviceNo || "", undefined, {
+        numeric: true,
+      })
+    );
+    return list;
+  }, [listData, directoryFilter]);
 
   const parsedRecords = useMemo(() => {
     return filteredData.map(parseRecord);
@@ -1571,6 +1609,85 @@ export default function AttendanceCard({
   }
 
   // -------------------------------------------------------------------------
+  // INDIVIDUAL TAB — DEFAULT DIRECTORY VIEW
+  // Before any employee is searched, just list every employee (name +
+  // service no). No attendance data here.
+  // -------------------------------------------------------------------------
+  if (!isTodayView && (!searchQuery || !searchQuery.trim())) {
+    if (!listData || listData.length === 0) {
+      return <NotFound text={msg || "No employees found for this month"} />;
+    }
+
+    if (employeeDirectory.length === 0) {
+      return <NotFound text="No employees match your search" />;
+    }
+
+    return (
+      <Box sx={{ width: "100%" }}>
+        <Typography fontSize={11.5} fontWeight={600} color={MUTED} sx={{ mb: 1, px: 0.5 }}>
+          {employeeDirectory.length} employee{employeeDirectory.length !== 1 ? "s" : ""}
+        </Typography>
+
+        <Paper
+          elevation={0}
+          sx={{ borderRadius: "14px", border: `1px solid ${BORDER}`, overflow: "hidden" }}
+        >
+          {employeeDirectory.map((emp, index) => {
+            const isLast = index === employeeDirectory.length - 1;
+            return (
+              <Box
+                key={`${emp.serviceNo}-${index}`}
+                onClick={() => onSelectEmployee && onSelectEmployee(emp)}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 1,
+                  py: 1.1,
+                  px: 1.4,
+                  cursor: onSelectEmployee ? "pointer" : "default",
+                  borderBottom: isLast ? "none" : `1px solid ${BORDER}`,
+                  transition: "background-color 0.12s ease",
+                  "&:active": { backgroundColor: "#f2f8f3" },
+                  "&:hover": { backgroundColor: onSelectEmployee ? "#f7faf8" : "transparent" },
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.1, minWidth: 0 }}>
+                  <Avatar
+                    sx={{
+                      backgroundColor: "#eef3ef",
+                      color: BRAND,
+                      fontWeight: 700,
+                      fontSize: 12,
+                      width: 34,
+                      height: 34,
+                      flexShrink: 0,
+                    }}
+                  >
+                    {getInitials(emp.name, emp.serviceNo)}
+                  </Avatar>
+                  <Box sx={{ minWidth: 0 }}>
+                    <Typography fontSize={13} fontWeight={600} color={TEXT} noWrap>
+                      {emp.name || `Employee ${emp.serviceNo}`}
+                    </Typography>
+                    <Typography fontSize={11.5} fontWeight={500} color={SUBTEXT} noWrap>
+                      Service No {emp.serviceNo}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                {onSelectEmployee && (
+                  <ChevronRightIcon sx={{ fontSize: 20, color: MUTED, flexShrink: 0 }} />
+                )}
+              </Box>
+            );
+          })}
+        </Paper>
+      </Box>
+    );
+  }
+
+  // -------------------------------------------------------------------------
   // MONTHLY / INDIVIDUAL VIEW — employee header + mobile list
   // -------------------------------------------------------------------------
   if (!monthRows || monthRows.length === 0) {
@@ -1579,7 +1696,10 @@ export default function AttendanceCard({
 
   return (
     <Box sx={{ width: "100%" }}>
-      {employeeHeader && (
+      {/* Only show the single-employee header card when a specific employee
+          is being searched; hide it when the whole month (all employees) is
+          loaded, since the table then lists many people. */}
+      {searchQuery && searchQuery.trim() && employeeHeader && (
         <Paper
           elevation={0}
           sx={{
@@ -1629,7 +1749,7 @@ export default function AttendanceCard({
         <Table stickyHeader sx={{ width: "100%", minWidth: 320, tableLayout: "fixed" }} aria-label="monthly attendance table">
           <TableHead>
             <TableRow>
-              <HeadCell sx={{ width: "22%", top: 0 }}>Date</HeadCell>
+              <HeadCell align="left" sx={{ width: "22%", top: 0, pl: "14px" }}>Date</HeadCell>
               <HeadCell sx={{ width: "34%", top: 0 }}>Service No</HeadCell>
               <HeadCell sx={{ width: "22%", top: 0 }}>In</HeadCell>
               <HeadCell sx={{ width: "22%", top: 0 }}>Out</HeadCell>
@@ -1655,15 +1775,17 @@ export default function AttendanceCard({
 
               return (
                 <TableBodyRow key={index} istoday={isToday.toString()}>
-                  <BodyCell>
-                    <Typography fontSize={12} fontWeight={isToday ? 700 : 600} sx={{ color: isToday ? BRAND : TEXT }}>
-                      {dateNum}
-                    </Typography>
-                    {dayName && (
-                      <Typography fontSize={9.5} fontWeight={500} sx={{ color: isToday ? BRAND : isSun ? "#c1121f" : MUTED }}>
-                        {isToday ? "TODAY" : dayName}
+                  <BodyCell align="left" sx={{ pl: "14px" }}>
+                    <Box sx={{ display: "flex", alignItems: "baseline", justifyContent: "flex-start", gap: 0.6 }}>
+                      <Typography component="span" fontSize={12.5} fontWeight={isToday ? 700 : 600} sx={{ color: isToday ? BRAND : TEXT, lineHeight: 1, minWidth: 16, textAlign: "right", flexShrink: 0 }}>
+                        {dateNum}
                       </Typography>
-                    )}
+                      {dayName && (
+                        <Typography component="span" fontSize={9.5} fontWeight={500} sx={{ color: isToday ? BRAND : isSun ? "#c1121f" : MUTED, lineHeight: 1 }}>
+                          {isToday ? "TODAY" : dayName}
+                        </Typography>
+                      )}
+                    </Box>
                   </BodyCell>
 
                   <BodyCell>

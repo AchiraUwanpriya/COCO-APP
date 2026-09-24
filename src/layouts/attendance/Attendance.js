@@ -452,6 +452,9 @@ const Attendance = () => {
   const [year, setYear] = useState(dayjs().format("YYYY"));
   const [month, setMonth] = useState(dayjs().format("MM"));
 
+  // Today tab: which date's attendance to show — defaults to today.
+  const [todayDate, setTodayDate] = useState(dayjs().format("YYYY-MM-DD"));
+
   // Individual tab: queryInput is what's typed live, activeQuery is what
   // was actually submitted (Search button / Enter) — the API call only
   // fires on submit, never on every keystroke.
@@ -484,14 +487,25 @@ const Attendance = () => {
   };
 
   const fetchTodayAttendance = () => {
-    const activeDate = dayjs().format("YYYY-MM-DD");
+    const activeDate = todayDate || dayjs().format("YYYY-MM-DD");
     dispatch(GetAttendenceDetails({ fromDate: activeDate, sno: "" }));
   };
 
   const fetchIndividualAttendance = (rawQuery) => {
-    const params = buildIndividualParams(rawQuery !== undefined ? rawQuery : activeQuery);
+    const query = rawQuery !== undefined ? rawQuery : activeQuery;
+    const params = buildIndividualParams(query);
     if (params) {
+      // A specific employee was searched → server-side filter
       dispatch(GetAttendenceDetails(params));
+    } else {
+      // No search term → load the whole month for ALL employees
+      dispatch(
+        GetAttendenceDetails({
+          year: year ? String(year).trim() : dayjs().format("YYYY"),
+          month: month ? String(month).trim() : dayjs().format("MM"),
+          sno: "",
+        })
+      );
     }
   };
 
@@ -510,14 +524,26 @@ const Attendance = () => {
     setActiveQuery("");
   };
 
+  // Tapping an employee in the directory list → search that person by their
+  // real service number (numeric → sent as searchServiceNo) and show their
+  // monthly attendance.
+  const handleSelectEmployee = (emp) => {
+    if (!emp) return;
+    const key = emp.serviceNo && emp.serviceNo !== "-" ? emp.serviceNo : emp.name || "";
+    setQueryInput(key);
+    setActiveQuery(String(key).trim());
+  };
+
   useEffect(() => {
     if (tabValue === 0) {
       fetchTodayAttendance();
-    } else if (activeQuery) {
+    } else {
+      // Individual tab: load all employees for the month by default;
+      // fetchIndividualAttendance narrows to one employee when activeQuery is set.
       fetchIndividualAttendance(activeQuery);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tabValue, year, month, activeQuery]);
+  }, [tabValue, year, month, activeQuery, todayDate]);
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", backgroundColor: PAGE_BG, minHeight: "100%" }}>
@@ -570,28 +596,64 @@ const Attendance = () => {
       {/* Filter row */}
       <Box sx={{ px: 2, mb: 1.5 }}>
         {tabValue === 0 ? (
-          <TextField
-            size="small"
-            fullWidth
-            placeholder="Search by name or service no."
-            value={quickSearch}
-            onChange={(e) => setQuickSearch(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon sx={{ fontSize: 18, color: SUBTEXT }} />
-                </InputAdornment>
-              ),
-              endAdornment: quickSearch && (
-                <InputAdornment position="end">
-                  <IconButton size="small" onClick={() => setQuickSearch("")}>
-                    <ClearIcon sx={{ fontSize: 15 }} />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-            sx={fieldSx}
-          />
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            {/* Date picker for Today tab — defaults to today */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <TextField
+                type="date"
+                size="small"
+                label="Date"
+                value={todayDate}
+                onChange={(e) => setTodayDate(e.target.value || dayjs().format("YYYY-MM-DD"))}
+                InputLabelProps={{ shrink: true }}
+                sx={{ flex: 1, ...fieldSx }}
+              />
+              {todayDate !== dayjs().format("YYYY-MM-DD") && (
+                <Button
+                  onClick={() => setTodayDate(dayjs().format("YYYY-MM-DD"))}
+                  variant="outlined"
+                  size="small"
+                  sx={{
+                    height: 42,
+                    px: 1.5,
+                    textTransform: "none",
+                    fontWeight: 600,
+                    fontSize: "12.5px",
+                    color: BRAND,
+                    borderColor: BORDER,
+                    borderRadius: "10px",
+                    whiteSpace: "nowrap",
+                    "&:hover": { borderColor: BRAND, backgroundColor: "#f2f8f3" },
+                  }}
+                >
+                  Today
+                </Button>
+              )}
+            </Box>
+
+            <TextField
+              size="small"
+              fullWidth
+              placeholder="Search by name or service no."
+              value={quickSearch}
+              onChange={(e) => setQuickSearch(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ fontSize: 18, color: SUBTEXT }} />
+                  </InputAdornment>
+                ),
+                endAdornment: quickSearch && (
+                  <InputAdornment position="end">
+                    <IconButton size="small" onClick={() => setQuickSearch("")}>
+                      <ClearIcon sx={{ fontSize: 15 }} />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={fieldSx}
+            />
+          </Box>
         ) : (
           <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             <Box sx={{ display: "flex", gap: 1 }}>
@@ -662,31 +724,14 @@ const Attendance = () => {
 
       {/* Content */}
       <Box sx={{ px: 2, pb: 3, flexGrow: 1 }}>
-        {tabValue === 1 && !activeQuery ? (
-          <Box
-            sx={{
-              py: 7,
-              textAlign: "center",
-              backgroundColor: SURFACE,
-              borderRadius: "14px",
-              border: `1px dashed ${BORDER}`,
-            }}
-          >
-            <Typography fontSize={14} fontWeight={600} color={TEXT} mb={0.5}>
-              Search for an employee
-            </Typography>
-            <Typography fontSize={12.5} color={SUBTEXT} sx={{ px: 3 }}>
-              Enter a service number or name above and tap search to view their monthly attendance record.
-            </Typography>
-          </Box>
-        ) : (
-          <AttendanceCard
-            isTodayView={tabValue === 0}
-            year={year}
-            month={month}
-            searchQuery={tabValue === 0 ? quickSearch : activeQuery}
-          />
-        )}
+        <AttendanceCard
+          isTodayView={tabValue === 0}
+          year={year}
+          month={month}
+          searchQuery={tabValue === 0 ? quickSearch : activeQuery}
+          directoryFilter={tabValue === 1 ? queryInput : ""}
+          onSelectEmployee={tabValue === 1 ? handleSelectEmployee : undefined}
+        />
       </Box>
     </Box>
   );

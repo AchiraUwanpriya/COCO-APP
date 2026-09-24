@@ -1,35 +1,63 @@
 import {
-  GET_EMPLOYEE_DETAILS_REQUEST,
-  GET_EMPLOYEE_DETAILS_SUCCESS,
-  GET_EMPLOYEE_DETAILS_FAIL,
-} from "../constants/qrConstants";
+  EMPLOYEE_REQUEST,
+  EMPLOYEE_SUCCESS,
+  EMPLOYEE_FAIL,
+  EMPLOYEE_BY_ID_REQUEST,
+  EMPLOYEE_BY_ID_SUCCESS,
+  EMPLOYEE_BY_ID_FAIL,
+} from "../constants/EmployeeConstants";
 
 const initialState = {
-  employees: [],
-  employeeLoading: false,
-  employeeError: null,
+  responseBody: [],
+  loading: false,
+  msg: null,
+  selectedEmployee: null,
+  detailLoading: false,
+  detailMsg: null,
 };
 
-export const employeeReducer = (state = initialState, action) => {
+export const GetEmployees = (state = initialState, action) => {
   switch (action.type) {
-    case GET_EMPLOYEE_DETAILS_REQUEST:
+    case EMPLOYEE_REQUEST:
       return {
         ...state,
-        employeeLoading: true,
-        employeeError: null,
+        loading: true,
+        msg: null,
       };
-    case GET_EMPLOYEE_DETAILS_SUCCESS:
+    case EMPLOYEE_SUCCESS:
       return {
         ...state,
-        employeeLoading: false,
-        employees: action.payload.employees,
-        employeeError: null,
+        loading: false,
+        responseBody: action.payload.responseBody,
+        msg: null,
       };
-    case GET_EMPLOYEE_DETAILS_FAIL:
+    case EMPLOYEE_FAIL:
       return {
         ...state,
-        employeeLoading: false,
-        employeeError: action.payload?.error || "Failed to fetch employees",
+        loading: false,
+        msg: action.payload.msg,
+        responseBody: [],
+      };
+    case EMPLOYEE_BY_ID_REQUEST:
+      return {
+        ...state,
+        detailLoading: true,
+        detailMsg: null,
+        selectedEmployee: null,
+      };
+    case EMPLOYEE_BY_ID_SUCCESS:
+      return {
+        ...state,
+        detailLoading: false,
+        selectedEmployee: action.payload.selectedEmployee,
+        detailMsg: null,
+      };
+    case EMPLOYEE_BY_ID_FAIL:
+      return {
+        ...state,
+        detailLoading: false,
+        detailMsg: action.payload.detailMsg,
+        selectedEmployee: null,
       };
     default:
       return state;

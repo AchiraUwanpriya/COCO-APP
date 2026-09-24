@@ -1,5 +1,3 @@
- 
-
 // // 2026/02/25
 
 // import React, { useState, useEffect } from "react";
@@ -1044,6 +1042,57 @@ export default function HeaderComponent() {
           ) : (
             <></>
           )}
+          {/* Employees Tile */}
+          <Grow in style={{ transformOrigin: "0 0 0" }} timeout={1800}>
+            <Grid
+              item
+              xs={4}
+              sx={{
+                padding: 1,
+              }}
+            >
+              <Card
+                sx={{
+                  padding: 2,
+                  boxShadow: 0,
+                  borderRadius: 2,
+                  height: 100,
+                }}
+              >
+                <CardActionArea
+                  onClick={() => {
+                    navigate("/employees");
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexDirection: "column",
+                      height: 90,
+                    }}
+                  >
+                    <img
+                      className="d-block w-50"
+                      src={require("../../assets/icons/user.png")}
+                      alt="Employees"
+                      style={{ opacity: "70%", maxHeight: 70, maxWidth: 70 }}
+                    />
+                    <Typography
+                      gutterBottom
+                      fontSize={14}
+                      fontWeight={600}
+                      component="div"
+                      style={{ opacity: "40%", marginTop: "8px" }}
+                    >
+                      Employees
+                    </Typography>
+                  </div>
+                </CardActionArea>
+              </Card>
+            </Grid>
+          </Grow>
           {/* 
           {isComponentIdAvailable("EMOBCI0011") ? (
             <Grow
@@ -1626,9 +1675,3 @@ export default function HeaderComponent() {
     </>
   );
 }
-
-
-
-
-
-

@@ -508,6 +508,7 @@ import NewQR_Scan from "./layouts/qrscan/NewQR_Scan";
 import BudgetShop from "./layouts/budget_shop/BudgetShop";
 import Outstanding_Tools from "./layouts/outstanding_tools/Outstanding_Tools";
 import Attendance from "./layouts/attendance/Attendance";
+import Employees from "./layouts/employees/Employees";
 import Leave from "./layouts/leave";
 import Extra_Hours from "./layouts/extra_hours/Extra_Hours";
 import Time_Endoresement from "./layouts/time_endoresement/Time_Endoresement";
@@ -670,6 +671,7 @@ function App() {
                         path="/time_endoresement"
                       />
                       <Route element={<Attendance />} path="/attendance" />
+                      <Route element={<Employees />} path="/employees" />
                       <Route element={<Medical />} path="/medical" />
                       <Route element={<Telephone />} path="/telephone" />
                       <Route element={<Jobs />} path="/jobs" />

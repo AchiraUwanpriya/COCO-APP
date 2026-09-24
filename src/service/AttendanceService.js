@@ -74,7 +74,7 @@ const GetAttendenceDetails = async (
     if (month && String(month).length === 1) {
       month = `0${month}`;
     }
-    params = { [filterParamKey]: filterParamValue, year, month };
+    params = { sno: filterParamValue, year, month };
   }
 
   const config = {

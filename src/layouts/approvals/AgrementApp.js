@@ -33,7 +33,7 @@ function AgrementApp({ message = "No leave records found" }) {
 
         {/* NOT Found Alert */}
         <Box sx={{ textAlign: "center", marginTop: 4 }}>
-          <img src={require("../../assets/icons/404-error.png")} alt="No data" style={{ maxWidth: "200px" }} />
+          {/* <img src={require("../../assets/icons/404-error.png")} alt="No data" style={{ maxWidth: "200px" }} /> */}
           <Typography variant="h6" color="text.secondary" sx={{ marginTop: 2 }}>
             {message}
           </Typography>

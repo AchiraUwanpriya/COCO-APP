@@ -36,7 +36,7 @@ import {
 import { GetOutstandingToolsDetails } from "./reducers/Outstanding_ToolsReducer";
 import { GetJobCard , GetUnAssignedList } from "./reducers/JobAllocationReducer";
 import {resDetailsHistoryReducer , loadResDetailsReducer ,logReservationReducer,cancelReservationReducer} from "./reducers/ReservationReducer";
-import { employeeReducer } from "./reducers/EmployeeReducer";
+import { GetEmployees } from "./reducers/EmployeeReducer";
 import caregiverReducer from './reducers/caregiverReducer';
 import kpiReducer from './reducers/CompanyOverviewReducer';
 
@@ -56,7 +56,6 @@ const reducer = combineReducers({
   budgetItem: getGetBudgetShopPriceList,
   // budgetItemSearch: SearchBudgetShop,
   attendanceCard: GetAttendanceCard,
-  employee: employeeReducer,
   telephoneCard: GetTelephoneCard,
   leaveBalance: GetLeaveBalance,
   notEnteredLeave: GetNotEnteredLeave,
@@ -72,6 +71,7 @@ const reducer = combineReducers({
   UnAssignedList: GetUnAssignedList,
   caregiver: caregiverReducer,
   kpi: kpiReducer,
+  employees: GetEmployees,
 });
 
 const middlware = [thunk];

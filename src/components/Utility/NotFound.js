@@ -11,11 +11,11 @@ function NotFound({ text }) {
         marginTop: "50%",
       }}
     >
-      <img
+      {/* <img
         className="d-block w-50"
         src={require("../../assets/icons/404-error.png")}
         alt="First slide"
-      />
+      /> */}
 
      <div
         style={{

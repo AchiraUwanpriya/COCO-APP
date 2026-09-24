@@ -25,7 +25,8 @@ import {
   LabelList,
 } from "recharts";
 import { useDispatch, useSelector } from "react-redux";
-import { GetCDLCategoryAtt } from "../../action/Attendance";
+import { GetAttendenceDetails } from "../../action/Attendance";
+import { GetEmployees } from "../../action/EmployeeAction";
 
 // Green Theme Color Palette
 const GREEN_THEME = {
@@ -179,211 +180,134 @@ export function CDPLCBreakdown({
     return d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
   };
 
-  const {
-    cdplcData: reduxCdplcData,
-  } = useSelector((state) => state.attendanceCard || {});
-
-  const apiData =
-    reduxCdplcData && reduxCdplcData.length > 0
-      ? reduxCdplcData
-      : propCdplcData;
+  // ---------------------------------------------------------------------------
+  // Data source: the pre-aggregated /GetbasedonCategory endpoint is
+  // unavailable, so this chart is now computed on the client by joining two
+  // working endpoints:
+  //   • GetEmployees                 → each employee's category + total headcount
+  //   • GetFilterdAttendenceDetails  → who actually punched in on the date
+  // strength  = employees per category (from the master list)
+  // attendance = those who punched in that day, grouped by their category
+  // ---------------------------------------------------------------------------
+  const employeeList = useSelector(
+    (state) => state.employees?.responseBody || []
+  );
+  const attendanceList = useSelector(
+    (state) =>
+      state.attendanceCard?.responseBody ||
+      state.attendanceCard?.attendenceDetails ||
+      []
+  );
 
   useEffect(() => {
     let isMounted = true;
-
     setIsFetching(true);
-    const actionResult = dispatch(GetCDLCategoryAtt(selectedDate));
 
-    if (actionResult && typeof actionResult.then === "function") {
-      actionResult.finally(() => {
-        if (isMounted) setIsFetching(false);
-      });
-    } else {
-      // Fallback if dispatch is synchronous
-      setTimeout(() => {
-        if (isMounted) setIsFetching(false);
-      }, 300);
-    }
+    // Load the employee master (once) and the selected date's punches together.
+    const empPromise = dispatch(GetEmployees());
+    const attPromise = dispatch(
+      GetAttendenceDetails({ fromDate: selectedDate, sno: "" })
+    );
+
+    Promise.all([
+      empPromise && empPromise.then ? empPromise : Promise.resolve(),
+      attPromise && attPromise.then ? attPromise : Promise.resolve(),
+    ]).finally(() => {
+      if (isMounted) setIsFetching(false);
+    });
 
     return () => {
       isMounted = false;
     };
   }, [dispatch, selectedDate]);
 
-  const normalizeApiData = (raw) => {
-    if (!raw) return [];
-    let data = raw;
-    if (typeof data === "string") {
-      try { data = JSON.parse(data); } catch (e) { return []; }
+  // --- Client-side join: strength (employees per category) + attendance ---
+
+  // Title-case a possibly ALL-CAPS category name ("DAILY WAGES" -> "Daily Wages")
+  const formatCategoryName = (raw) => {
+    const s = (raw || "").toString().trim();
+    if (!s) return s;
+    if (s === s.toUpperCase() && s.length > 3) {
+      return s
+        .split(" ")
+        .map((w) => (w ? w.charAt(0).toUpperCase() + w.slice(1).toLowerCase() : w))
+        .join(" ");
     }
-    if (Array.isArray(data)) return data;
-    if (typeof data === "object" && data !== null) {
-      const list =
-        data.ResultSet ||
-        data.resultSet ||
-        data.Data ||
-        data.data ||
-        data.Result ||
-        data.result ||
-        data.CategoryList ||
-        data.categoryList ||
-        data.list ||
-        data.items;
-      if (Array.isArray(list)) return list;
-      if (typeof list === "object" && list !== null) {
-        return Object.values(list).filter((x) => x && typeof x === "object");
-      }
-      return Object.values(data).filter((item) => item && typeof item === "object");
-    }
-    return [];
+    return s;
   };
 
-  const getCategoryName = (item) => {
-    if (typeof item === "string") return item;
-    if (!item || typeof item !== "object") return "";
-    return (
-      item.EMPLOYMENT_CATEGORY ||
-      item.employment_category ||
-      item.Employment_Category ||
-      item.EmploymentCategory ||
-      item.Type ||
-      item.TYPE ||
-      item.type ||
-      item.Category ||
-      item.CATEGORY ||
-      item.category ||
-      item.CategoryName ||
-      item.CATEGORY_NAME ||
-      item.categoryName ||
-      item.Category_Name ||
-      item.CategoryDesc ||
-      item.CATEGORY_DESC ||
-      item.categoryDesc ||
-      item.EmployeeType ||
-      item.EMPLOYEE_TYPE ||
-      item.employeeType ||
-      item.Title ||
-      item.TITLE ||
-      item.Name ||
-      item.NAME ||
-      item.name ||
-      ""
-    ).toString().trim();
-  };
+  const empCategory = (e) =>
+    (e.HEC_CATEGORY_NAME ||
+      e.HEC_Category_Name ||
+      e.hec_category_name ||
+      "").toString().trim();
 
-  const getAttendanceCount = (item) => {
-    if (!item || typeof item !== "object") return 0;
-    const val =
-      item.ATTENDANCE ??
-      item.Attendance ??
-      item.attendance ??
-      item.Present ??
-      item.PRESENT ??
-      item.present ??
-      item.Att ??
-      item.ATT ??
-      item.att ??
-      item.Attend ??
-      item.ATTEND ??
-      item.AttendanceCount ??
-      item.ATTENDANCE_COUNT ??
-      item.PresentCount ??
-      item.PRESENT_COUNT ??
-      0;
-    return parseInt(val, 10) || 0;
-  };
+  const empServiceNo = (e) =>
+    (e.HED_SERVICE_NO || e.HED_Service_No || e.hed_service_no || "")
+      .toString()
+      .trim();
 
-  const getStrengthCount = (item) => {
-    if (!item || typeof item !== "object") return 0;
-    const val =
-      item.ACTUAL_STRENGTH ??
-      item.ActualStrength ??
-      item.actualStrength ??
-      item.ELIGIBLE_STRENGTH ??
-      item.EligibleStrength ??
-      item.eligibleStrength ??
-      item.STRENGTH ??
-      item.Strength ??
-      item.strength ??
-      item.Eligible ??
-      item.ELIGIBLE ??
-      item.eligible ??
-      item.Count ??
-      item.COUNT ??
-      item.count ??
-      item.Total ??
-      item.TOTAL ??
-      item.total ??
-      0;
-    return parseInt(val, 10) || 0;
-  };
-
-  const getPercentageValue = (item, attendance, strength) => {
-    if (!item || typeof item !== "object") return strength > 0 ? Math.round((attendance / strength) * 100) : 0;
-    const val =
-      item.ATTENDANCE_PERCENTAGE ??
-      item.AttendancePercentage ??
-      item.attendancePercentage ??
-      item.ACTUAL_PERCENTAGE ??
-      item.ActualPercentage ??
-      item.actualPercentage ??
-      item.ELIGIBLE_PERCENTAGE ??
-      item.EligiblePercentage ??
-      item.eligiblePercentage ??
-      item.PERCENTAGE ??
-      item.Percentage ??
-      item.percentage ??
-      item.RATE ??
-      item.Rate ??
-      item.rate ??
-      item.PCT ??
-      item.Pct ??
-      item.pct;
-
-    if (val != null && val !== "") {
-      const num = parseFloat(val);
-      if (!isNaN(num)) return Math.round(num);
-    }
-    return strength > 0 ? Math.round((attendance / strength) * 100) : 0;
-  };
-
-  const rawList = normalizeApiData(apiData);
-  const transformedCdplc = rawList
-    .filter((item) => {
-      const catName = getCategoryName(item);
-      return !catName || catName.toUpperCase() !== "TOTAL";
-    })
-    .map((item, idx) => {
-      const rawType = getCategoryName(item) || `Category ${idx + 1}`;
-      const typeUpper = rawType.toUpperCase();
-      
-      // Preserve category name casing if formatted e.g. "Daily Wages", "Contract", "Executive"
-      const formattedName =
-        rawType === rawType.toUpperCase() && rawType.length > 3
-          ? rawType.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ")
-          : rawType;
-
-      const attendance = getAttendanceCount(item);
-      const strength = getStrengthCount(item);
-
-      let absent = Math.max(0, strength - attendance);
-      if (item && item.ABSENT != null && item.ABSENT !== "") {
-        const parsedAbsent = parseInt(item.ABSENT, 10);
-        if (!isNaN(parsedAbsent)) absent = Math.max(0, parsedAbsent);
-      }
-
-      const pct = getPercentageValue(item, attendance, strength);
-
-      return { name: formattedName, typeUpper, attendance, absent, strength, pct };
-    })
-    .sort((a, b) => {
-      const idxA = CATEGORY_ORDER.indexOf(a.typeUpper);
-      const idxB = CATEGORY_ORDER.indexOf(b.typeUpper);
-      if (idxA !== -1 && idxB !== -1) return idxA - idxB;
-      if (idxA !== -1) return -1;
-      if (idxB !== -1) return 1;
-      return 0;
+  // Service numbers that punched IN on the selected date.
+  // GetFilterdAttendenceDetails may carry the service no in ServiceNo or Name
+  // (fields have been swapped in the past), so collect both candidates.
+  const attendedServiceNos = React.useMemo(() => {
+    const set = new Set();
+    (Array.isArray(attendanceList) ? attendanceList : []).forEach((r) => {
+      const inTime = (r.InTime || r.inTime || "").toString().trim();
+      if (!inTime) return; // only count actual check-ins
+      const a = (r.ServiceNo || r.serviceNo || "").toString().trim();
+      const b = (r.Name || r.name || "").toString().trim();
+      if (a) set.add(a);
+      if (b) set.add(b);
     });
+    return set;
+  }, [attendanceList]);
+
+  // Build strength + attendance per category from the employee master.
+  const transformedCdplc = React.useMemo(() => {
+    const list = Array.isArray(employeeList) ? employeeList : [];
+    const byCat = {}; // catUpper -> { name, strength, attendance }
+
+    list.forEach((e) => {
+      const cat = empCategory(e);
+      if (!cat) return; // skip employees with no category
+      const catUpper = cat.toUpperCase();
+      if (catUpper === "TOTAL") return;
+
+      if (!byCat[catUpper]) {
+        byCat[catUpper] = {
+          name: formatCategoryName(cat),
+          typeUpper: catUpper,
+          strength: 0,
+          attendance: 0,
+        };
+      }
+      byCat[catUpper].strength += 1;
+
+      const sno = empServiceNo(e);
+      if (sno && attendedServiceNos.has(sno)) {
+        byCat[catUpper].attendance += 1;
+      }
+    });
+
+    return Object.values(byCat)
+      .map((row) => {
+        const absent = Math.max(0, row.strength - row.attendance);
+        const pct =
+          row.strength > 0
+            ? Math.round((row.attendance / row.strength) * 100)
+            : 0;
+        return { ...row, absent, pct };
+      })
+      .sort((a, b) => {
+        const idxA = CATEGORY_ORDER.indexOf(a.typeUpper);
+        const idxB = CATEGORY_ORDER.indexOf(b.typeUpper);
+        if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+        if (idxA !== -1) return -1;
+        if (idxB !== -1) return 1;
+        return a.name.localeCompare(b.name);
+      });
+  }, [employeeList, attendedServiceNos]);
 
   const formatNumber = (value) => {
     if (!value || value === 0) return "";
@@ -420,6 +344,96 @@ export function CDPLCBreakdown({
         <Typography sx={{ color: GREEN_THEME.titleColor, fontWeight: 600, fontSize: "13px" }}>
           Loading overview data...
         </Typography>
+      </Box>
+    );
+  }
+
+  // No category rows returned for the selected date (or only a TOTAL row that
+  // gets filtered out) → the chart would otherwise render an empty frame that
+  // looks broken. Show a clear "no data" message instead.
+  const hasChartData =
+    transformedCdplc.length > 0 &&
+    transformedCdplc.some((d) => (d.strength || 0) > 0 || (d.attendance || 0) > 0);
+
+  if (!hasChartData) {
+    return (
+      <Box
+        sx={{
+          backgroundColor: GREEN_THEME.cardBg,
+          borderRadius: "20px",
+          padding: { xs: "16px", sm: "24px" },
+          border: `1px solid ${GREEN_THEME.cardBorder}`,
+          boxShadow: GREEN_THEME.cardShadow,
+        }}
+      >
+        {/* Header (title + date picker) is still shown so the user can pick another date */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: { xs: "column", sm: "row" },
+            alignItems: { xs: "stretch", sm: "flex-start" },
+            justifyContent: "space-between",
+            gap: 1.25,
+            marginBottom: 2,
+          }}
+        >
+          <Box>
+            <Typography
+              sx={{
+                fontSize: { xs: "15.5px", sm: "19px", md: "21px" },
+                fontWeight: 700,
+                color: GREEN_THEME.titleColor,
+                letterSpacing: "-0.01em",
+                marginBottom: "2px",
+              }}
+            >
+              Employee Strength &amp; Attendance Overview
+            </Typography>
+            <Typography sx={{ fontSize: { xs: "10.5px", sm: "12px" }, color: GREEN_THEME.subtitleColor }}>
+              Actual strength (orange) with attendance (blue) overlaid inside it
+            </Typography>
+          </Box>
+
+          <TextField
+            type="date"
+            size="small"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value || todayStr)}
+            InputLabelProps={{ shrink: true }}
+            sx={{
+              width: { xs: "100%", sm: 165 },
+              backgroundColor: "#ffffff",
+              borderRadius: "10px",
+              "& .MuiOutlinedInput-root": {
+                height: 36,
+                fontSize: "12.5px",
+                borderRadius: "10px",
+                "& fieldset": { borderColor: GREEN_THEME.cardBorder },
+                "&:hover fieldset": { borderColor: GREEN_THEME.strength },
+                "&.Mui-focused fieldset": { borderColor: GREEN_THEME.titleColor, borderWidth: "1.5px" },
+              },
+            }}
+          />
+        </Box>
+
+        <Box
+          sx={{
+            minHeight: 180,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            gap: 0.75,
+          }}
+        >
+          <Typography sx={{ fontSize: "14px", fontWeight: 700, color: GREEN_THEME.titleColor }}>
+            No attendance data for this date
+          </Typography>
+          <Typography sx={{ fontSize: "12px", color: GREEN_THEME.subtitleColor, maxWidth: 260 }}>
+            There are no category records for {selectedDate}. Try selecting another date.
+          </Typography>
+        </Box>
       </Box>
     );
   }
@@ -646,7 +660,12 @@ export function CDPLCBreakdown({
                   fontWeight: 600,
                 }}
               />
-              <Tooltip content={<CDPLCCustomTooltip />} cursor={{ fill: "rgba(224,123,57,0.06)" }} />
+              <Tooltip
+                content={<CDPLCCustomTooltip />}
+                cursor={{ fill: "rgba(224,123,57,0.06)" }}
+                allowEscapeViewBox={{ x: true, y: true }}
+                wrapperStyle={{ zIndex: 50 }}
+              />
 
               <Bar
                 dataKey="strength"
@@ -727,14 +746,14 @@ export function CDPLCBreakdown({
                   dataKey="attendance"
                   name="Attendance"
                   fill={GREEN_THEME.attendance}
-                  radius={[5, 5, 5, 5]}
-                  barSize={isMobile ? 9 : 12}
+                  radius={[6, 6, 6, 6]}
+                  barSize={isMobile ? 18 : 24}
                 >
                   <LabelList
                     dataKey="attendance"
                     position="insideRight"
                     style={{ fill: "#ffffff" }}
-                    fontSize={9.5}
+                    fontSize={10.5}
                     fontWeight={700}
                     formatter={(v) => (v > 30 ? formatNumber(v) : "")}
                   />

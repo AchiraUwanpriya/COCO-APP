@@ -143,6 +143,7 @@ const theme = createTheme({
 });
 
 axios.defaults.baseURL = "https://coco.dockyardsoftware.com";
+//axios.defaults.baseURL = "http://localhost:51324";
 
 axios.interceptors.request.use(
   (config) => {
@@ -155,8 +156,11 @@ axios.interceptors.request.use(
       url.toLowerCase().includes("attendance/getattendencedetails") ||
       url.toLowerCase().includes("getbasedoncategory") ||
       url.toLowerCase().includes("getbasedondepartment");
+    const isAllowedEmployees =
+      url.toLowerCase().includes("emp/getemployees") ||
+      url.toLowerCase().includes("emp/getemployeebyid");
 
-    if (!isAllowedLogin && !isAllowedAttendance) {
+    if (!isAllowedLogin && !isAllowedAttendance && !isAllowedEmployees) {
       config.adapter = () => {
         return Promise.resolve({
           data: { StatusCode: 200, ResultSet: [], Count: 0 },
